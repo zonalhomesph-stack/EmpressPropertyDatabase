@@ -222,6 +222,15 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
 .save-st.ok{color:var(--green)}
 .save-st.err{color:var(--red)}
 .divider{height:1px;background:var(--b1);margin:14px 0}
+/* ── CAPTION VERSION CARDS ──────────────────────── */
+#capVersions{display:flex;flex-direction:column;gap:14px;}
+.cap-ver{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:13px 14px;}
+.cv-label{display:flex;align-items:center;gap:8px;margin-bottom:10px;border-bottom:1px solid var(--b1);padding-bottom:8px;}
+.cv-num{font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--gold);background:var(--gd);border:1px solid var(--gold);border-radius:3px;padding:2px 6px;}
+.cv-title{font-size:9px;letter-spacing:.1em;color:var(--td);text-transform:uppercase;}
+.cv-body{font-size:12px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word;}
+/* financial figure — big text in caption */
+.cv-body .fin-fig{font-size:16px;font-weight:700;color:var(--gold);display:inline;}
 </style>
 </head>
 <body>
@@ -239,7 +248,7 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
   <div class="lock-err" id="lockErr">Invalid code. Message Flo for your access code.</div>
   <div class="lock-hint">
     Each agent has a unique code.<br>
-    Contact Florence Christine Alvarez · 0977-3032-007
+    Contact Florence Alvarez · 0977-3032-007
   </div>
 </div>
 
@@ -472,9 +481,32 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
 
             <!-- CAPTION TAB -->
             <div class="out-panel" id="tab-caption">
-              <div class="ca" id="capArea"><span class="cl">Facebook Caption</span><span id="capText"></span></div>
-              <div class="brow">
-                <button class="cbtn" id="b2" onclick="cp('capText','b2')">Copy Caption</button>
+              <div id="capVersions">
+                <div class="cap-ver" id="cv1">
+                  <div class="cv-label"><span class="cv-num">01</span><span class="cv-title">Emotional Hook</span></div>
+                  <div class="cv-body" id="cvt1"></div>
+                  <div class="brow"><button class="cbtn" id="bc1" onclick="cpVer('cvt1','bc1')">Copy Version 1</button></div>
+                </div>
+                <div class="cap-ver" id="cv2">
+                  <div class="cv-label"><span class="cv-num">02</span><span class="cv-title">Mirror / Reality Check</span></div>
+                  <div class="cv-body" id="cvt2"></div>
+                  <div class="brow"><button class="cbtn" id="bc2" onclick="cpVer('cvt2','bc2')">Copy Version 2</button></div>
+                </div>
+                <div class="cap-ver" id="cv3">
+                  <div class="cv-label"><span class="cv-num">03</span><span class="cv-title">OFW Angle</span></div>
+                  <div class="cv-body" id="cvt3"></div>
+                  <div class="brow"><button class="cbtn" id="bc3" onclick="cpVer('cvt3','bc3')">Copy Version 3</button></div>
+                </div>
+                <div class="cap-ver" id="cv4">
+                  <div class="cv-label"><span class="cv-num">04</span><span class="cv-title">Young Professional</span></div>
+                  <div class="cv-body" id="cvt4"></div>
+                  <div class="brow"><button class="cbtn" id="bc4" onclick="cpVer('cvt4','bc4')">Copy Version 4</button></div>
+                </div>
+                <div class="cap-ver" id="cv5">
+                  <div class="cv-label"><span class="cv-num">05</span><span class="cv-title">Investment / Practical</span></div>
+                  <div class="cv-body" id="cvt5"></div>
+                  <div class="brow"><button class="cbtn" id="bc5" onclick="cpVer('cvt5','bc5')">Copy Version 5</button></div>
+                </div>
               </div>
             </div>
 
@@ -852,6 +884,49 @@ let PROPS = [
   {id:"p_NE_TM_001",db:"zonal",name:"Terra Monte Homes",dev:"Terra Monte Homes",model:"TH34 — Inner (I-6.5)",position:"Inner",type:"Townhouse",prov:"Nueva Ecija",city:null,brgy:null,status:"Open",page:"DEFAULT",financing:["Pag-IBIG","In-House"],tcp:"₱ 789,767.00",reservation:"₱ 5,000.00",dp:"Gross Equity ₱64,767.00 over 12 months (Regular Pag-IBIG)",dpMonths:"12",monthlyDp:"₱ 4,980.58",loanable:"₱ 725,000.00",term30:"₱ 4,523.06",income30:"₱ 12,923.02",lot:"31 sqm",floor:"34 sqm",beds:null,toilet:null,highlights:"Nueva Ecija\\nTerra Monte Homes — Blk 15, Georgia/Hera Streets\\n13 identical Inner units available at this price",notes:"Regular Pag-IBIG 30Y @ ₱4,523.06/mo (first 3yrs @ 6.375%pa). 4Ps: loanable ₱740,000, amort ₱3,119.87/mo, income req ₱8,913.91/mo. Expanded 4Ps equity ₱49,767/12 mos. In-House (Westbrook) offered but no figures in this extract. Same price: Blk 15 Lots 17/25/27/29/30/31/33/35/37/43/45/48 (Aug 12 2026).",flagged:true,flagNote:"⚠️ Dev name unconfirmed — verify if Terra Monte Homes is developer or project name ⚠️ City and barangay not stated ⚠️ Contact not in source ⚠️ LTS not confirmed ⚠️ Lots 49 & 51: price conflict between Jul 20 sheet (₱789,767) and Aug 12 sheet (₱809,187.50) — confirm before quoting ⚠️ In-House figures not in this extract ⚠️ Nueva Ecija — confirm agent/page assignment"},
   {id:"p_NE_DECA_001",db:"zonal",name:"Deca Homes Cabanatuan",dev:"Deca Homes",model:"Batch 4",position:null,type:null,prov:"Nueva Ecija",city:"Cabanatuan",brgy:null,status:null,page:"DEFAULT",financing:["Pag-IBIG"],tcp:"₱ 1,060,000.00",reservation:"₱ 5,000.00",dp:"₱ 10,000.00 total DP (includes reservation + first MA)",dpMonths:null,monthlyDp:null,loanable:"₱ 1,050,000.00",term30:null,income30:null,lot:null,floor:null,beds:null,toilet:null,contact:"Deca Gold Juhri Group (name only — no phone)",highlights:"Deca Homes Cabanatuan\\nBatch 4 — marketed as selling fast\\nThrough 4Ps Pag-IBIG financing",notes:"Marketing teaser poster only — not a full pricelist. House type, position, lot/floor area, monthly amortization, and required income all not stated. Final MA pending Pag-IBIG loan approval.",flagged:true,flagNote:"⚠️ No unit type/model specified ⚠️ No position (Inner/End/Corner) ⚠️ Lot and floor area not stated ⚠️ Final amort pending Pag-IBIG approval ⚠️ Required income not stated ⚠️ Project status not stated ⚠️ Reservation is derived — not explicitly labeled on source ⚠️ Contact is group name only, no phone ⚠️ LTS not confirmed ⚠️ Province inferred from Cabanatuan — confirm ⚠️ Nueva Ecija — confirm agent/page assignment"},
   {id:"p_NE_PVH_001",db:"zonal",name:"Primaverde Heights",dev:null,model:"2-Storey Townhouse — Batch 3",position:null,type:"Townhouse",prov:"Nueva Ecija",city:"San Leonardo",brgy:null,status:null,page:"DEFAULT",financing:["Pag-IBIG","In-House"],tcp:"₱ 1,188,699.84",reservation:"₱ 5,000.00",dp:"Net Equity ₱118,699.84 over 18 months (Pag-IBIG)",dpMonths:"18",monthlyDp:"₱ 6,594.44",loanable:"₱ 1,065,000.00",term30:"₱ 6,557.39",term15:"₱ 10,936.48 (In-House only)",income30:"₱ 18,735.39",lot:"40 sqm",floor:"46.6 sqm",beds:null,toilet:null,highlights:"San Leonardo, Nueva Ecija\\nPrimaverde Heights — Batch 3\\n2-Storey Townhouse · FA 46.6 sqm / LA 40 sqm",notes:"Pag-IBIG 30Y @ ₱6,557.39/mo, income req ₱18,735.39/mo. In-House (Westbrook, ₱40K discount): price ₱1,148,699.84, loan ₱936,190.37, 15Y @ ₱10,936.48/mo, income req ₱27,341.21/mo. Source labeled SAMPLE COMPUTATION — subject to change. Source header says 24-month equity but computation uses 18 months — discrepancy on source itself.",flagged:true,flagNote:"⚠️ Source explicitly labeled SAMPLE COMPUTATION — not confirmed live price ⚠️ No Inner/End/Corner position given ⚠️ Developer name not stated ⚠️ Project status not stated ⚠️ Barangay not stated ⚠️ Contact not in source ⚠️ LTS not confirmed ⚠️ Equity term discrepancy: header says 24 mos, computation uses 18 mos — needs developer confirmation ⚠️ Nueva Ecija — confirm agent/page assignment"},
+  // ── LHOOPA BATCH — SEP 22 2026 ──
+  {id:"p_20260922001",db:"lhoopa",name:"Northdale Villas",dev:null,model:null,position:"Inner",type:"Rowhouse",prov:"Cavite",city:"Naic",brgy:"Timalan Balsahan",status:null,page:"PAG",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 68,566.40",dpMonths:"12",lot:"36.00 sqm",floor:"42.00 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 1,672,800.00",loanable:"₱ 1,622,616.00",monthlyDp:"₱ 3,765.33",term30:"₱ 10,299.72",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 29,427.77",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Naic Stadium Mall — 2.1 km\\nNaic Doctors Hospital — 3.8 km\\nTimalan Elementary School — 0.8 km\\nMakati City — 42.9 km",notes:"Pag-IBIG 30Y @ ₱10,299.72/mo (HDMF amort). Address: Block 55 Lot 3 Phase 2, Northdale Villas, Timalan Balsahan, Naic, Cavite. Misc Fee: ₱23,382.40. Monthly section shows ₱3,765.33 plus a second line +₱1,948.53 — total monthly not clearly stated.",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Status unknown (image only shows 'Under Renovation' watermark). ⚠️ Monthly payment breakdown unclear — two figures shown. ⚠️ Lhoopa property — escalate, Flo to confirm before quoting."},
+  {id:"p_20260922002",db:"lhoopa",name:"Caliya Subdivision",dev:null,model:null,position:null,type:"Single Attached",prov:"Quezon",city:"Candelaria",brgy:"Masin Norte",status:null,page:"DEFAULT",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 191,330.80",dpMonths:"12",lot:"60.00 sqm",floor:"58.35 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 3,212,600.00",loanable:"₱ 3,051,970.00",monthlyDp:"₱ 12,969.17",term30:"₱ 19,780.53",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 56,515.81",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Saveland Shopping Center — 1.8 km\\nPeter Paul Medical Center — 1.6 km\\nTayabas Western Academy - Sen — 1.6 km",notes:"Pag-IBIG 30Y @ ₱19,780.53/mo (HDMF amort). Address: Block 11 Lot 19 Phase 2, Caliya Subdivision, Masin Norte, Candelaria, Quezon. Misc Fee: ₱35,700.80. Monthly section shows ₱12,969.17 plus a second line +₱2,975.07 — total monthly not clearly stated.",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Status unknown. ⚠️ TCP above ₱2M — normally routed to CAV page, but this is a Lhoopa listing outside your page network — confirm placement. ⚠️ Monthly payment breakdown unclear. ⚠️ Escalate — Lhoopa property."},
+  {id:"p_20260922003",db:"lhoopa",name:"The Balanga Residences",dev:null,model:null,position:null,type:"Single Attached",prov:"Bataan",city:"Balanga City",brgy:"Cupang Proper",status:null,page:"DEFAULT",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 99,592.20",dpMonths:"12",lot:"54.00 sqm",floor:"42.00 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 1,630,900.00",loanable:"₱ 1,549,355.00",monthlyDp:"₱ 6,378.75",term30:"₱ 10,041.73",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 28,690.67",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Watsons, Vista Mall Bataan — 1.7 km\\nThe Generics Balanga — 3.2 km\\nBataan Christian School Parking Area — 3.9 km",notes:"Pag-IBIG 30Y @ ₱10,041.73/mo (HDMF amort). Address: Blk-9 Lot-31, The Balanga Residences, Cupang Proper, Balanga City, Bataan. Misc Fee: ₱23,047.20. Monthly section shows ₱6,378.75 plus a second line +₱1,920.60 — total monthly not clearly stated.",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Status unknown. ⚠️ Monthly payment breakdown unclear. ⚠️ Escalate — Lhoopa property, outside teammate BAT coverage confirm ownership."},
+  {id:"p_20260922004",db:"lhoopa",name:"Reginarosa Residences",dev:null,model:null,position:null,type:"House and Lot",prov:"Batangas",city:"Sto. Tomas",brgy:"Santa Teresita",status:null,page:"BAT",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 54,571.21",dpMonths:"12",lot:"57.00 sqm",floor:"20.13 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 854,676.00",loanable:"₱ 811,942.20",monthlyDp:"₱ 3,144.48",term30:"₱ 5,262.39",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 15,035.40",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"SM Business Services — 16 km\\nSt. Nazarius Medical Clinic — 12.5 km\\nSan Francisco Elementary School — 0.6 km",notes:"Pag-IBIG 30Y @ ₱5,262.39/mo (HDMF amort). Address: Blk-15 Lot-18, Reginarosa Residences, Santa Teresita, City of Sto. Tomas, Batangas. Misc Fee: ₱16,837.41. Monthly section shows ₱3,144.48 plus a second line +₱1,403.12 — total monthly not clearly stated.",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Status unknown. ⚠️ Monthly payment breakdown unclear. ⚠️ Escalate — Lhoopa property, outside teammate BAT coverage confirm ownership."},
+  {id:"p_20260922005",db:"lhoopa",name:"Carissa Homes 2",dev:null,model:null,position:null,type:"Farm Lot",prov:"Cavite",city:"Tanza",brgy:"Bagtas",status:null,page:"DEFAULT",financing:["In-House"],reservation:"₱ 5,000.00",dp:"In-House Payment Term, 1st–24th month",dpMonths:"24",lot:"88.00 sqm (41.35 sqm total remaining usable lot)",floor:null,beds:null,toilet:null,tcp:"₱ 175,000.00",loanable:null,monthlyDp:"₱ 7,083.33",term30:null,term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 22,216.67",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"All Home Tanza — 3.1 km\\nHigh Integrated Diagnostics And Wellness — 3.5 km\\nCarrisian Community Academe — 0 km\\nSold on 'as-is, where-is' basis",notes:"In-House 24mo @ ₱7,083.33/mo. Address: Block 45 Lot 17, Carissa Homes 2 Phase 2, Bagtas, Tanza, Cavite.",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Status unknown. ⚠️ Lot Only, no floor/bed/toilet data. ⚠️ Escalate — Lhoopa property."},
+  {id:"p_20260922006",db:"lhoopa",name:"Townhill Tanay",dev:null,model:null,position:null,type:"House and Lot",prov:"Rizal",city:"Tanay",brgy:"Tandang Kutyo (Pob.)",status:"Ground Up",page:"RIZ",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 50,000.00",dpMonths:"12",lot:"66.00 sqm",floor:"36.00 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 1,464,000.00",loanable:"₱ 1,409,000.00",monthlyDp:"₱ 5,444.44",term30:"₱ 9,014.10",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 25,754.58",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Tanay Town Center — 2.8 km\\nTanay General Hospital — 2.8 km\\nManhain Elementary School — 0.8 km\\nTanay-Starmall Fx Terminal — 3 km",notes:"Pag-IBIG 30Y @ ₱9,014.10/mo (HDMF amort). 1st–9th mo ₱5,444.44, 10th–12th mo ₱333.33. Address: B4 L24 Townhill (Tanay), Tandang Kutyo, Tanay, Rizal.",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Escalate — Lhoopa property, outside teammate RIZ coverage confirm ownership."},
+  {id:"p_20260922007",db:"lhoopa",name:"BellaVita Pila",dev:null,model:"Standard Deliverables",position:null,type:"Row House",prov:"Laguna",city:"Pila",brgy:"Pansol",status:null,page:"LAG",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 20,017.49",dpMonths:"12",lot:"36.00 sqm",floor:"22.00 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 536,339.03",loanable:"₱ 525,612.25",monthlyDp:"₱ 525.20",term30:"₱ 3,302.33",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 9,435.24",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Sunstar Mall — 3.1 km\\nSanta Cruz Polymedic Hospital — 5.5 km\\nSan Antonio De Padua College — 2 km",notes:"Pag-IBIG 30Y @ ₱3,302.33/mo (HDMF amort). 1st–9th mo ₱525.20, 10th–12th mo ₱333.33. Deliverables Type: Standard. Address: Block 64 Lot 20, BellaVita Pila, Pansol, Pila, Laguna. Note: same block/lot appears twice in uploads with identical figures (duplicate file).",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Status unknown. ⚠️ Duplicate image uploaded (same as this entry). ⚠️ Escalate — Lhoopa property."},
+  {id:"p_20260922008",db:"lhoopa",name:"BellaVita Pila",dev:null,model:"With Improvement - Tiles and Window Grills",position:null,type:"Row House",prov:"Laguna",city:"Pila",brgy:"Pansol",status:null,page:"LAG",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 24,305.55",dpMonths:"12",lot:"36.00 sqm",floor:"22.00 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 689,484.00",loanable:"₱ 675,694.32",monthlyDp:"₱ 865.52",term30:"₱ 4,245.27",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 12,129.35",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Sunstar Mall — 3.1 km\\nSanta Cruz Polymedic Hospital — 5.5 km\\nSan Antonio De Padua College — 2 km",notes:"Pag-IBIG 30Y @ ₱4,245.27/mo (HDMF amort). 1st–9th mo ₱865.52, 10th–12th mo ₱333.33. Deliverables Type: With Improvement — Tiles and Window Grills. Same block/lot as Standard Deliverables entry, higher-spec unit variant.",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Status unknown. ⚠️ Escalate — Lhoopa property."},
+  {id:"p_20260922009",db:"lhoopa",name:"BellaVita San Pablo",dev:null,model:"Standard Deliverables",position:null,type:"Row House",prov:"Laguna",city:"San Pablo City",brgy:"San Bartolome",status:null,page:"LAG",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 20,575.16",dpMonths:"12",lot:"36.00 sqm",floor:"22.00 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 556,255.69",loanable:"₱ 545,130.58",monthlyDp:"₱ 569.46",term30:"₱ 3,424.96",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 9,785.61",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Benetsky - San Pablo Shopping Mall — 4.2 km\\nSts. Francis & Paul General Hospital — 4.6 km\\nSan Pablo City Science High School — 4 km",notes:"Pag-IBIG 30Y @ ₱3,424.96/mo (HDMF amort). 1st–9th mo ₱569.46, 10th–12th mo ₱333.33. Deliverables Type: Standard. Address: Block 74 Lot 7, BellaVita San Pablo, San Bartolome, San Pablo City, Laguna.",flagged:true,flagNote:"⚠️ Developer unknown. ⚠️ Status unknown. ⚠️ Escalate — Lhoopa property."},
+
+  // ── Greenmeadows Residences PH5 (San Jose, Batangas) ──
+  {id:"p_20260922001",db:"zonal",name:"Greenmeadows Residences PH5",dev:null,model:"Tangerine",position:"Inner",type:null,prov:"Batangas",city:"San Jose",brgy:"Lumil - Calansayan",status:null,page:"BAT",financing:["Pag-IBIG"],reservation:"₱ 3,000.00",dp:"₱ 66,000.00 over 22 months (₱ 3,000.00/mo)",dpMonths:"22",lot:"45 sqm",floor:"32 sqm",beds:null,toilet:null,tcp:"₱ 855,000.00",loanable:"₱ 786,000.00",monthlyDp:"₱ 3,000.00",term30:"₱ 3,313.81",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 11,046.02",contact:null,highlights:null,notes:"Pag-IBIG 30Y @ ₱3,313.81/mo. Cheapest Inner unit — identical price (₱855,000.00) appears on two lots (Blocks 38 and 39), both shown with lot numbers struck through in the source.",flagged:true,flagNote:"⚠️ Developer not stated ⚠️ Status not stated ⚠️ Unit type not stated ⚠️ Beds/toilets not stated ⚠️ No contact number ⚠️ Lot # struck through — verify availability"},
+  {id:"p_20260922002",db:"zonal",name:"Greenmeadows Residences PH5",dev:null,model:"Tangerine",position:"End",type:null,prov:"Batangas",city:"San Jose",brgy:"Lumil - Calansayan",status:null,page:"BAT",financing:["Pag-IBIG"],reservation:"₱ 3,440.00",dp:"₱ 92,560.00 over 25 months (₱ 3,702.40/mo)",dpMonths:"25",lot:"62 sqm",floor:"32 sqm",beds:null,toilet:null,tcp:"₱ 946,000.00",loanable:"₱ 850,000.00",monthlyDp:"₱ 3,702.40",term30:"₱ 3,583.63",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 11,945.45",contact:null,highlights:null,notes:"Pag-IBIG 30Y @ ₱3,583.63/mo. Only one End unit listed in source (Block 38), lot number struck through in red.",flagged:true,flagNote:"⚠️ Developer not stated ⚠️ Status not stated ⚠️ Unit type not stated ⚠️ Beds/toilets not stated ⚠️ No contact number ⚠️ Lot # struck through — verify availability ⚠️ Only one End unit found — no range to compare"},
+
+  // ── The Peak at Le Moubreza (CAV — location TBD) ──
+  {id:"p_20260922003",db:"zonal",name:"The Peak at Le Moubreza",dev:null,model:"Midori Cluster",position:null,type:"Condo",prov:null,city:null,brgy:null,status:null,page:"CAV",financing:["Pag-IBIG","Bank","In-House","Deferred"],reservation:"₱ 10,000.00",dp:"₱ 254,000.00 Cash Outlay over 26 months (₱ 9,769.23/mo, Pag-IBIG)",dpMonths:"26",lot:null,floor:"50 sqm",beds:"2 Bedrooms",toilet:"1 Toilet & Bath",tcp:"₱ 2,704,000.00",loanable:"₱ 2,440,000.00",monthlyDp:"₱ 9,769.23",term30:"₱ 15,023.49",term25:null,term20:"₱ 19,781.81",term15:null,term10:null,term5:null,income30:"₱ 42,924.27",contact:null,highlights:"Complete Finish\\nLiving Area\\nDining Area\\nKitchen Area\\nPatio",notes:"Pag-IBIG 30Y @ ₱15,023.49/mo. LTS# 838 (License to Sell confirmed). Original TCP ₱2,890,000.00 less ₱186,000.00 close-out promo discount (valid until Dec 31, 2026) = Discounted TCP ₱2,704,000.00. Bank alt: RCBC 30yr @ ₱16,133.46/mo (NDI ₱53,778.21), bank loan ₱2,365,000.00, reservation ₱10,000.00, cash outlay ₱329,000.00 (₱12,653.85/mo). BPI 20yr NDI ₱65,939.35. In-house: 24% DP ₱648,960.00 (₱53,246.67/mo over 12mo), 76% balance ₱2,055,040.00 payable 5yrs@15% (₱48,889.26/mo, NDI ₱139,683.59) or 10yrs@18% (₱37,028.78/mo, NDI ₱105,796.51). Deferred: ₱112,250.00/mo over 24 months at 0% interest. Bldg. 6, Unit 101.",promo:"Close-out promo: ₱186,000.00 discount off original TCP ₱2,890,000.00 — valid until Dec 31, 2026",flagged:true,flagNote:"⚠️ Developer not stated ⚠️ City/province/barangay not stated — confirm exact location ⚠️ Status not stated ⚠️ No contact number"},
+  {id:"p_20260922004",db:"zonal",name:"The Peak at Le Moubreza",dev:null,model:"Midori Single Detached",position:null,type:"House and Lot",prov:null,city:null,brgy:null,status:null,page:"CAV",financing:["Pag-IBIG","Bank","In-House","Deferred"],reservation:"₱ 10,700.00",dp:"₱ 282,300.00 Cash Outlay over 26 months (₱ 10,857.69/mo, Pag-IBIG)",dpMonths:"26",lot:null,floor:"50 sqm",beds:"2 Bedrooms",toilet:"1 Toilet & Bath",tcp:"₱ 2,760,000.00",loanable:"₱ 2,467,000.00",monthlyDp:"₱ 10,857.69",term30:"₱ 15,189.74",term25:null,term20:"₱ 19,949.09",term15:null,term10:null,term5:null,income30:"₱ 43,399.25",contact:null,highlights:"Complete Finish\\nLiving Area\\nDining Area\\nKitchen Area\\nPatio",notes:"Pag-IBIG 30Y @ ₱15,189.74/mo. LTS# 838 (License to Sell confirmed). Bank alt: RCBC 30yr @ ₱16,269.90/mo (NDI ₱54,232.99), bank loan ₱2,385,000.00, reservation ₱13,500.00, cash outlay ₱361,500.00 (₱13,903.85/mo). BPI 20yr NDI ₱66,496.98. In-house: 24% DP ₱662,400.00 (₱54,308.33/mo over 12mo), 76% balance ₱2,097,600.00 payable 5yrs@15% (₱49,901.76/mo, NDI ₱142,576.45) or 10yrs@18% (₱37,795.65/mo, NDI ₱107,987.56). Deferred: ₱114,554.17/mo over 24 months at 0% interest. Bldg. 11, unit number struck through in source.",flagged:true,flagNote:"⚠️ Developer not stated ⚠️ City/province/barangay not stated — confirm exact location ⚠️ Status not stated ⚠️ No contact number ⚠️ Original TCP/discount not shown for this unit ⚠️ Unit # struck through — verify availability"},
+
+  // ── Villa Assumpta AEDC (Rosario, Batangas) ──
+  {id:"p_20260922010",db:"zonal",name:"Villa Assumpta",dev:"Allanza Exurbia Development Corporation",model:"Joyful",position:null,type:"Single Attached",prov:"Batangas",city:"Rosario",brgy:"Natu",status:null,page:"CAV",financing:["Pag-IBIG"],reservation:"₱ 30,000.00",dp:"No Equity",dpMonths:null,lot:"63 sqm",floor:"61.46 sqm",beds:null,toilet:null,tcp:"₱ 2,100,000.00",loanable:"₱ 2,070,000.00",monthlyDp:null,term30:"₱ 13,577.73",term25:"₱ 14,487.54",term20:"₱ 15,962.60",term15:"₱ 18,581.00",term10:"₱ 24,074.37",term5:"₱ 41,092.36",income30:"₱ 36,600.00",contact:null,highlights:"Near beaches\\nPag-IBIG financing\\nNo equity\\nPrime location\\nLTS No. 0003475",notes:"Pag-IBIG 30Y @ ₱13,577.73/mo. To qualify for 30-year term, buyer must have been born in 1989. Figures are estimated monthly amortization, subject to Pag-IBIG evaluation and approval.",flagged:true,flagNote:"⚠️ Status not stated ⚠️ No contact number ⚠️ Page (CAV) auto-derived from TCP >₱2M — Batangas project, confirm correct page/teammate"},
+  {id:"p_20260922011",db:"zonal",name:"Villa Assumpta",dev:"Allanza Exurbia Development Corporation",model:"Glorious",position:null,type:"Townhouse",prov:"Batangas",city:"Rosario",brgy:"Natu",status:null,page:"BAT",financing:["Pag-IBIG"],reservation:"₱ 20,000.00",dp:"No Equity",dpMonths:null,lot:"48 sqm",floor:"45.41 sqm",beds:null,toilet:null,tcp:"₱ 1,600,000.00",loanable:"₱ 1,580,000.00",monthlyDp:null,term30:"₱ 10,363.64",term25:"₱ 11,058.09",term20:"₱ 12,183.98",term15:"₱ 14,182.59",term10:"₱ 18,375.57",term5:"₱ 31,365.14",income30:"₱ 27,980.00",contact:null,highlights:"Near beaches\\nPag-IBIG financing\\nNo equity\\nPrime location\\nLTS No. 0003475",notes:"Pag-IBIG 30Y @ ₱10,363.64/mo. To qualify for 30-year term, buyer must have been born in 1989. Figures are estimated monthly amortization, subject to Pag-IBIG evaluation and approval.",flagged:true,flagNote:"⚠️ Status not stated ⚠️ No contact number ⚠️ Batangas project — confirm correct page/teammate"},
+  {id:"p_20260922012",db:"zonal",name:"Villa Assumpta",dev:"Allanza Exurbia Development Corporation",model:"Luminous",position:null,type:"Single Attached",prov:"Batangas",city:"Rosario",brgy:"Natu",status:null,page:"CAV",financing:["Pag-IBIG"],reservation:"₱ 50,000.00",dp:"No Equity",dpMonths:null,lot:"72 sqm",floor:"73.84 sqm",beds:null,toilet:null,tcp:"₱ 2,300,000.00",loanable:"₱ 2,250,000.00",monthlyDp:null,term30:"₱ 14,758.40",term25:"₱ 15,747.33",term20:"₱ 17,350.65",term15:"₱ 18,492.85",term10:"₱ 26,167.79",term5:"₱ 42,879.03",income30:"₱ 39,760.00",contact:null,highlights:"Near beaches\\nPag-IBIG financing\\nNo equity\\nPrime location\\nLTS No. 0003475",notes:"Pag-IBIG 30Y @ ₱14,758.40/mo. To qualify for 30-year term, buyer must have been born in 1989. Figures are estimated monthly amortization, subject to Pag-IBIG evaluation and approval.",flagged:true,flagNote:"⚠️ Status not stated ⚠️ No contact number ⚠️ Page (CAV) auto-derived from TCP >₱2M — Batangas project, confirm correct page/teammate"},
+
+  // ── Greenmeadows Residences Phase 5 — updated entry (Single Attached, full terms) ──
+  {id:"p_20260922013",db:"zonal",name:"Greenmeadows Residences Phase 5",dev:"Greenmeadows Residences",model:"Tangerine",position:null,type:"Single Attached",prov:"Batangas",city:"San Jose",brgy:"Lumil-Calansayan-Aguila",status:null,page:"BAT",financing:["Pag-IBIG"],reservation:"₱ 4,000.00",dp:"Cash Outlay — ₱ 104,000.00",dpMonths:"26",lot:"73 sqm",floor:"32 sqm",beds:"Provision for Bedroom",toilet:"1 Toilet & Bath",tcp:"₱ 1,349,000.00",loanable:"₱ 1,241,000.00",monthlyDp:"₱ 4,000.00",term30:"₱ 7,641.05",term25:"₱ 8,186.49",term20:"₱ 9,070.82",term15:"₱ 10,640.62",term10:"₱ 13,933.96",term5:"₱ 24,136.53",income30:"₱ 21,831.57",contact:null,highlights:"Provision for Living Area, Dining Area & Bedroom\\nKitchen/Service Area\\n1 Toilet & Bath\\nCarport\\nLandscaping not included on deliverable unit\\nDHSUD LS No. 0003258, 0003259",notes:"Pag-IBIG 30Y @ ₱7,641.05/mo. Cash Outlay ₱104,000.00 payable in 26 months (₱4,000/mo). Figures updated as of July 15, 2026 and may be subject to change.",flagged:true,flagNote:"⚠️ Status not stated ⚠️ No contact number ⚠️ Page originally tagged SUL in source — reassigned to BAT (Batangas project, TCP <₱2M), confirm with Flo ⚠️ Developer name taken from project name — verify"},
+
+  // ── Alora Heights (Sta. Maria, Bulacan) ──
+  {id:"p_20260922005",db:"zonal",name:"Alora Heights",dev:"Borland Development Corporation",model:"I-7",position:null,type:null,prov:"Bulacan",city:"Sta. Maria",brgy:"Balasing",status:null,page:"BUL",financing:["In-House"],reservation:"₱ 7,500.00",dp:"Gross Equity — ₱ 382,355.68 (Financing Discount ₱40,000.00 already deducted)",dpMonths:"9",lot:"48 sqm",floor:"52 sqm",beds:null,toilet:null,tcp:"₱ 1,951,778.40",loanable:"₱ 1,529,422.72",monthlyDp:"₱ 41,650.63",term30:null,term25:null,term20:null,term15:"₱ 17,866.56",term10:null,term5:null,income30:null,contact:null,highlights:null,notes:"In-House Financing via Westbrook Finance Corporation. 15-year amortization @ 11.5% p.a. Selling Batches 1-7, Re-Open Units — dated Aug 3, 2026. Cheapest unit shown (Block 11 Lot 29, Psalms St.); other available units in this batch range ₱1,951,778.40–₱2,050,877.40 (Block 12 Lot 11 Esther; Block 21 Lot 5 Philippians; Block 21 Lot 38 Ruth; Block 22 Lot 13 Ruth) with correspondingly higher equity/monthly amort. Buyer age must not exceed 60 y/o at reservation, not more than 65 y/o at loan maturity. Pricelist subject to change without notice.",flagged:true,flagNote:"⚠️ Unit type not stated — only unit code I-7 given ⚠️ Status not stated (labeled Re-Open Units) ⚠️ No contact number ⚠️ Only cheapest unit extracted — see notes for price range ⚠️ Bulacan project — confirm teammate/page routing ⚠️ LTS not confirmed"},
+  {id:"p_20260922006",db:"zonal",name:"Alora Heights",dev:"Borland Development Corporation",model:"I-7",position:null,type:null,prov:"Bulacan",city:"Sta. Maria",brgy:"Balasing",status:null,page:"BUL",financing:["Pag-IBIG"],reservation:"₱ 7,500.00",dp:"Gross Equity — ₱ 191,778.40",dpMonths:"9",lot:"48 sqm",floor:"52 sqm",beds:null,toilet:null,tcp:"₱ 1,951,778.40",loanable:"₱ 1,760,000.00",monthlyDp:"₱ 20,475.38",term30:"₱ 10,980.11",term25:null,term20:null,term15:null,term10:null,term5:null,income30:null,contact:null,highlights:null,notes:"Pag-IBIG Financing — for income above ₱17,500 NCR / ₱14,000 region / OFW. Figure shown (₱10,980.11) is the estimated amortization for the FIRST 3 YEARS ONLY, computed at a promotional 30-year term @ 6.375% interest — rate may rise after year 3 and vary based on prevailing Pag-IBIG interest at time of application. Loan value may vary based on borrower paying capacity & Pag-IBIG approval. Amortization subject to additional MRI & Fire Insurance premium. Selling Batches 1-7, Re-Open Units — dated Aug 3, 2026. Cheapest unit shown; other units in batch range ₱1,951,778.40–₱2,050,877.40 with correspondingly higher loan values/equity.",flagged:true,flagNote:"⚠️ Unit type not stated — only unit code I-7 given ⚠️ Status not stated ⚠️ No contact number ⚠️ Only cheapest unit extracted — see notes for price range ⚠️ Only 30-year term listed; 25/20/15-year not shown ⚠️ term30 figure is promo-period estimate (first 3 yrs @6.375%), not full-term rate ⚠️ Bulacan project — confirm teammate/page routing ⚠️ LTS not confirmed"},
+
+  // ── Citadela Townhomes (Sta. Maria, Bulacan) ──
+  {id:"p_20260922007",db:"zonal",name:"Citadela Townhomes",dev:"Borland Development Corporation",model:"TH52",position:null,type:"Townhouse",prov:"Bulacan",city:"Sta. Maria",brgy:"Pulong Buhangin",status:null,page:"BUL",financing:["In-House"],reservation:"₱ 7,500.00",dp:"Gross Equity — ₱ 394,321.60 (Financing Discount ₱40,000.00 already deducted)",dpMonths:"15",lot:"50 sqm",floor:"52 sqm",beds:null,toilet:null,tcp:"₱ 2,011,608.00",loanable:"₱ 1,577,286.40",monthlyDp:"₱ 25,788.11",term30:null,term25:null,term20:null,term15:"₱ 18,425.70",term10:null,term5:null,income30:null,contact:null,highlights:null,notes:"In-House Financing via Westbrook Finance Corporation. 15-year amortization @ 11.5% p.a. Selling Batches 1 to 5 — effective Aug 7, 2026. Cheapest tier shown (Block 14 Lot 15 Maroon St.; same price also applies to Block 14 Lot 51 Maroon and Block 15 Lot 54 Pastel). Block 16 Lot 39 Emerald is same price but 12-month equity term (monthly equity ₱32,235.13). Block 11 Lot 49 Copper is the largest/priciest unit at ₱2,091,672.00 (56 sqm lot, 21-month equity term, ₱19,671.08/mo, amort ₱19,054.10). Buyer age must not exceed 60 y/o at reservation, not more than 65 y/o at loan maturity. Unit code in source: I-8 / Maroon unit desc.",flagged:true,flagNote:"⚠️ Status not stated ⚠️ No contact number ⚠️ Only cheapest unit tier extracted — see notes for other unit prices ⚠️ Bulacan project — confirm teammate/page routing ⚠️ LTS not confirmed"},
+  {id:"p_20260922008",db:"zonal",name:"Citadela Townhomes",dev:"Borland Development Corporation",model:"TH52",position:null,type:"Townhouse",prov:"Bulacan",city:"Sta. Maria",brgy:"Pulong Buhangin",status:null,page:"BUL",financing:["Pag-IBIG"],reservation:"₱ 7,500.00",dp:"Gross Equity — ₱ 201,608.00",dpMonths:"15",lot:"50 sqm",floor:"52 sqm",beds:null,toilet:null,tcp:"₱ 2,011,608.00",loanable:"₱ 1,810,000.00",monthlyDp:"₱ 12,940.53",term30:"₱ 11,292.05",term25:null,term20:null,term15:null,term10:null,term5:null,income30:null,contact:null,highlights:null,notes:"Pag-IBIG Financing — for income above ₱17,500 NCR / ₱14,000 region / OFW. Figure shown (₱11,292.05) is the estimated amortization for the FIRST 3 YEARS ONLY at a promotional 30-year term @ 6.375%; rate may rise after year 3. Amortization subject to additional MRI & Fire Insurance; loan value may vary based on paying capacity & Pag-IBIG approval. Selling Batches 1 to 5 — effective Aug 7, 2026. Cheapest tier shown (Maroon/Pastel); Emerald same price, 12-mo equity term (₱16,175.67/mo). Copper unit is priciest at ₱2,091,672.00 (loan value ₱1,855,000.00, ₱10,912.95/mo equity, amort ₱11,572.79).",flagged:true,flagNote:"⚠️ Status not stated ⚠️ No contact number ⚠️ Only cheapest unit tier extracted — see notes for other unit prices ⚠️ Only 30-year term listed; 25/20/15-year not shown ⚠️ term30 figure is promo-period estimate (first 3 yrs @6.375%), not full-term rate ⚠️ Bulacan project — confirm teammate/page routing ⚠️ LTS not confirmed"},
+
+  // ── Primeworld Enclave (San Rafael, Bulacan) ──
+  {id:"p_20260922009",db:"zonal",name:"Primeworld Enclave",dev:"Primeworld",model:"Eliana",position:null,type:"Townhouse",prov:"Bulacan",city:"San Rafael",brgy:"Caingin",status:"RFO",page:"BUL",financing:["Pag-IBIG","In-House"],reservation:"₱ 7,000.00",dp:"Early Move-In Promo: 3% Cash-Out ₱61,827.00 + 7% Installment over 10 months (₱14,426.30/mo) + Title Transfer Fee ₱206,090.00 = 20% Equity ₱419,180.00",dpMonths:"10",lot:"41 sqm",floor:"47 sqm",beds:null,toilet:null,tcp:"₱ 2,266,990.00",loanable:"₱ 1,847,810.00",monthlyDp:"₱ 14,426.30",term30:"₱ 12,293.53",term25:"₱ 13,059.94",term20:"₱ 14,326.05",term15:"₱ 16,608.64",term10:null,term5:"₱ 44,935.15",income30:"₱ 40,978.42",contact:null,highlights:null,notes:"Pag-IBIG 30Y @ ₱12,293.53/mo. RFO Enclave Phase 1 & 2 — Early Move-In Promo scheme (RESERVATION FEE + 3% cash-out + 7% over 10 mos. equity structure). List Price ₱2,160,900.00 less ₱100,000.00 special RFO discount = Discounted TPP ₱2,060,900.00, plus 10% Title Transfer Fee ₱206,090.00 = TCP ₱2,266,990.00. term5 figure is PLHI In-House 5-year @ 16% interest financing, not Pag-IBIG. A Deferred PLHI Financing option also exists: 2 years @ 0% interest, est. ₱94,457.92/mo, no stated income requirement (N/A). Phase number is blank/unspecified on the source sheet.",flagged:true,flagNote:"⚠️ Phase number not filled in on source sheet ⚠️ No contact number ⚠️ Loan term interest rates (6.5% Pag-IBIG, 16% PLHI) are estimates, subject to change/approval ⚠️ Bulacan project — confirm teammate/page routing ⚠️ LTS not confirmed ⚠️ Bank financing (BPI/RCBC/CBC) also available — not in this scheme"},
+  {id:"p_20260922014",db:"zonal",name:"Primeworld Enclave",dev:"Primeworld",model:"Eliana",position:null,type:"Townhouse",prov:"Bulacan",city:"San Rafael",brgy:"Caingin",status:"RFO",page:"BUL",financing:["Pag-IBIG","Bank","In-House"],reservation:"₱ 7,000.00",dp:"Standard Pag-IBIG: 10% Equity over 18 months (₱11,449.44/mo) + Title Transfer Fee ₱206,090.00 = Equity ₱419,180.00",dpMonths:"18",lot:"41 sqm",floor:"47 sqm",beds:null,toilet:null,tcp:"₱ 2,266,990.00",loanable:"₱ 1,847,810.00",monthlyDp:"₱ 11,449.44",term30:"₱ 11,960.87",term25:"₱ 12,706.55",term20:"₱ 13,938.40",term15:"₱ 16,159.22",term10:null,term5:"₱ 43,719.25",income30:"₱ 39,869.58",contact:null,highlights:null,notes:"Pag-IBIG 30Y @ ₱11,960.87/mo. RFO Enclave Phase 1 & 2 — standard Pag-IBIG financing sheet (companion to Early Move-In Promo, same TCP). Balance for Financing ₱1,847,810.00, may be discounted to ₱1,797,810.00 (additional ₱50,000 incentive) if all 18 equity installments paid on-time/strictly per schedule; if any payment missed, original ₱1,847,810.00 balance applies. Bank financing also available: BPI/RCBC/CBC 25Y @ ₱13,875.79/mo, 20Y @ ₱15,037.60/mo, 15Y @ ₱17,180.81/mo (7% interest). term5 is PLHI In-House 5-year @16%. Deferred PLHI option: 2 years @0% interest, ₱94,457.92/mo, income requirement N/A. Phase number blank on source sheet.",flagged:true,flagNote:"⚠️ Phase number not filled in on source sheet ⚠️ No contact number ⚠️ Conditional discounted balance (₱1,797,810.00) depends on perfect on-time payment — not guaranteed ⚠️ Bulacan project — confirm teammate/page routing ⚠️ LTS not confirmed"},
+  {id:"p_20260922015",db:"zonal",name:"Primeworld Enclave",dev:"Primeworld",model:"Upgraded Eliana",position:null,type:"Townhouse",prov:"Bulacan",city:"San Rafael",brgy:"Caingin",status:"Pre-Selling",page:"BUL",financing:["Pag-IBIG","Bank","In-House"],reservation:"₱ 7,000.00",dp:"Fixed Monthly Equity ₱10,000.00 (1st–24th month) + Bulk Payment ₱180,600.00 on the 25th month = Total Equity ₱427,600.00",dpMonths:"25",lot:"41 sqm",floor:"47 sqm",beds:null,toilet:null,tcp:"₱ 2,313,300.00",loanable:"₱ 1,885,700.00",monthlyDp:"₱ 10,000.00",term30:"₱ 12,545.61",term25:"₱ 13,327.74",term20:"₱ 14,619.81",term15:"₱ 16,949.20",term10:null,term5:"₱ 45,856.56",income30:"₱ 41,818.70",contact:null,highlights:null,notes:"Pag-IBIG 30Y @ ₱12,545.61/mo. Pre-Selling Enclave Phase 3 — TH52-type Upgraded Eliana model. List Price ₱2,203,000.00 less ₱100,000.00 Phase 3 special discount = Discounted TPP ₱2,103,000.00, plus 10% Title Transfer Fee ₱210,300.00 = TCP ₱2,313,300.00. Bank financing also available: BPI/RCBC/CBC 25Y @ ₱14,554.14/mo, 20Y @ ₱15,772.75/mo, 15Y @ ₱18,020.73/mo (7% interest). term5 is PLHI In-House 5-year @16%. Deferred PLHI option: 2 years @0% interest, ₱96,387.50/mo, income requirement N/A.",flagged:true,flagNote:"⚠️ No contact number ⚠️ Bulacan project — confirm teammate/page routing ⚠️ LTS not confirmed ⚠️ Balloon payment structure (25th month ₱180,600 bulk) — buyer must be prepared for lump sum, not standard equal installments"},
+
+  // ── BellaVita Tapia (General Trias, Cavite) ──
+  {id:"p_20260922016",db:"lhoopa",name:"BellaVita Tapia",dev:null,model:"Block 23 Lot 6",position:null,type:"House and Lot",prov:"Cavite",city:"General Trias",brgy:"Tapia",status:null,page:"SUL",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 62,314.28 (1st-9th mo: ₱ 4,823.21 +₱ 1,767.27; 10th-12th mo: ₱ 333.33 +₱ 666.67)",dpMonths:"12",lot:"55.00 sqm",floor:"23.00 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 988,177.27",loanable:"₱ 938,768.41",monthlyDp:"₱ 4,823.21",term30:"₱ 6,084.38",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 17,383.94",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Row House, With Improvement (Tiles and Window Grills)\\nMakati City (Major City) — 57 min / 34.3 km\\nTransportation, 1111 Gov Ferrer Dr, General Trias — 0 min / 0.1 km\\nImart Bacoor (Nearest Mall) — 38 min / 18.5 km\\nCity Of General Trias Medicare Hospital — 5 min / 2.3 km\\nOur Lady Of The Holy Rosary General Trias (Nearest School) — 4 min / 1.9 km",notes:"Pag-IBIG 30Y @ ₱6,084.38/mo. Lhoopa computation sheet, as-of timestamp Sept 22, 2026 10:18 PM — rates subject to re-computation based on age and capacity to pay. Reservation valid 30 days from date; forfeited if requirements not submitted within period.",flagged:true,flagNote:"⚠️ Developer name not stated (Lhoopa is a listing platform, not confirmed developer) ⚠️ Status not clearly stated — photo caption cut off (Under Renov...) ⚠️ Lhoopa/possibly foreclosed-type listing — escalate, confirm before quoting ⚠️ 0 bedroom unit — confirm layout with buyer expectations ⚠️ LTS not confirmed"},
+  {id:"p_20260922017",db:"lhoopa",name:"BellaVita Tapia",dev:null,model:"Block 3 Lot 12",position:null,type:"House and Lot",prov:"Cavite",city:"General Trias",brgy:"Tapia",status:null,page:"SUL",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Net Down Payment — ₱ 132,915.20 (1st-9th mo: ₱ 12,493.33 +₱ 1,941.69; 10th-12th mo: ₱ 333.33 +₱ 666.67)",dpMonths:"12",lot:"60.00 sqm",floor:"24.00 sqm",beds:"0 Bedroom",toilet:"1 Bathroom",tcp:"₱ 1,184,400.00",loanable:"₱ 1,065,960.00",monthlyDp:"₱ 12,493.33",term30:"₱ 7,292.55",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 20,835.87",contact:"(02) 8584-6592 / 0961-136-2719",highlights:"Row House, With Improvement (Tiles and Window Grills)\\nMakati City (Major City) — 57 min / 34.3 km\\nTransportation, 1111 Gov Ferrer Dr, General Trias — 0 min / 0.1 km\\nImart Bacoor (Nearest Mall) — 38 min / 18.5 km\\nCity Of General Trias Medicare Hospital — 5 min / 2.3 km\\nOur Lady Of The Holy Rosary General Trias (Nearest School) — 4 min / 1.9 km",notes:"Pag-IBIG 30Y @ ₱7,292.55/mo. Lhoopa computation sheet, as-of timestamp Sept 22, 2026 10:18 PM — rates subject to re-computation based on age and capacity to pay. Reservation valid 30 days from date; forfeited if requirements not submitted within period.",flagged:true,flagNote:"⚠️ Developer name not stated (Lhoopa is a listing platform, not confirmed developer) ⚠️ Status not clearly stated ⚠️ Lhoopa/possibly foreclosed-type listing — escalate, confirm before quoting ⚠️ 0 bedroom unit — confirm layout with buyer expectations ⚠️ LTS not confirmed"}
 ];
 
 // ── DNA ────────────────────────────────────────────────────────
@@ -1367,145 +1442,131 @@ function buildCaption(p,hook,amort,specs,location,page,persona,position,highligh
   const a=amort.split('/')[0].trim();
   const m=p.model||(p.type||p.name);
   const pos=position!=='Inner'?` (${position} unit)`:'';
-  const specsStr=[specs.lot?`Lot: ${specs.lot}`:null,specs.floor?`Floor: ${specs.floor}`:null,specs.beds,specs.toilet].filter(Boolean).join(' · ');
-
-  // Top 3 proximity highlights for caption body
   const nearbyItems=highlights.filter(h=>/km|m\b|minute/i.test(h)).slice(0,3);
+  const fin=(p.financing||[]).join(' & ');
+  const isLhoopa=(p.db==='lhoopa')||/lhoopa/i.test(p.dev||'');
 
-  // Page-specific caption templates — punchy, story-driven, CTA
-  const captions={
-    NEW:`${hook}
-
-Hindi lang ito condo. Ito ay investment sa tamang lugar — sa gitna ng pinaka-mabilis na lumalagong lungsod sa Cavite.
-
-📍 ${location}
-🏢 ${m}${pos} · Floor: ${specs.floor||'22 sqm'}
-${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
-
-💰 ${a}/month — cheapest via Pag-IBIG
-🔑 Reservation: ${p.reservation||'—'}
-📋 DP: ${p.dp||'—'}
-🏦 Financing: ${(p.financing||[]).join(' & ')}
-
-${persona==='OFW investor'?'Para sa mga OFW — pwede kang mag-reserve remotely. Ang unit, nagtatrabaho para sa iyo habang ikaw ay nasa abroad.':'Para sa mga young professionals at investors — ito ang address na nagbubukas ng pinto sa mas magandang kinabukasan.'}
-
-Gusto mong malaman ang full computation? I-message mo kami — libre at walang pressure. 👇`,
-
-    ANA:`${hook}
-
-Hindi lahat ng subdivision ay parehong pakiramdam. May ilan kang tinitirahan — may ilan, binubuhayan ka.
-
-📍 ${location}
-🏡 ${m}${pos}${specs.lot?` · Lot: ${specs.lot}`:''}${specs.floor?` · Floor: ${specs.floor}`:''}
-${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
-
-💰 ${a}/month (Bank financing)
-🔑 Reservation: ${p.reservation||'—'} · DP: ${p.dp||'—'}
-
-${persona==='Investor'?'Smart investors know — land appreciates. Lifestyle addresses appreciate faster.':'You\'ve worked for this. The right address is waiting.'}
-
-For private viewing and full computation — message us. No pressure, just the facts. 👇`,
-
-    DEFAULT:`${hook}
-
-${m}${pos} sa ${location}. ${p.status||'For Sale'}.
-
-${specsStr?specsStr+'\n':''}${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
-
-💰 ${a}/month
-🔑 Reservation: ${p.reservation||'—'}
-📋 DP Terms: ${p.dp||'—'}
-🏦 ${(p.financing||[]).join(' & ')} financing
-
-I-message mo kami para sa libreng computation at full details. 👇`
+  // ── DYNAMIC HASHTAGS — property + city always included, no ZonalRealty ──
+  function makeTag(str){return '#'+str.replace(/[^a-zA-Z0-9\s]/g,'').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join('');}
+  const propTag=makeTag(p.name);
+  const cityTag=p.city?makeTag(p.city):'';
+  const lhoopaTag=isLhoopa?'#LhoopaHomes #ForeclosedProperty':'';
+  const baseHashtags={
+    MCP:`${propTag} ${cityTag} #MidlandValleyCavite #FarmLotCavite #InvestInCavite #LandBanking #FarmLotForSale ${lhoopaTag}`,
+    NEW:`${propTag} ${cityTag} #CondoInCavite #DasmarinasCavite #OFWInvestment #CaviteRealEstate #UrbanLivingCavite ${lhoopaTag}`,
+    ANA:`${propTag} ${cityTag} #AntelAnyana #TanzaCavite #CaviteRealEstate #PremiumHomesPhilippines #InvestInCavite ${lhoopaTag}`,
+    PAG:`${propTag} ${cityTag} #PagIBIGHousing #AffordableHousesCavite #CaviteRealEstate #FirstHomeBuyersPH #OwnYourHome ${lhoopaTag}`,
+    RIC:`${propTag} ${cityTag} #RichdaleWestResidences #GeneralTriasCavite #PagIBIGHousing #CaviteRealEstate #FloodFreeHomes ${lhoopaTag}`,
+    LIO:`${propTag} ${cityTag} #LioraHomesNaic #EcoTownhouse #GreenHomes #PagIBIGHousing #CaviteRealEstate ${lhoopaTag}`,
+    PAC:`${propTag} ${cityTag} #NaicPrime #NaicCavite #PagIBIGHousing #CaviteRealEstate #OwnYourHome ${lhoopaTag}`,
+    BAT:`${propTag} ${cityTag} #BatangasRealEstate #HouseAndLotBatangas #PagIBIGHousing #OwnYourHome ${lhoopaTag}`,
+    DEFAULT:`${propTag} ${cityTag} #CaviteRealEstate #HouseAndLot #RealEstatePH #OwnYourHome #AffordableHomes ${lhoopaTag}`
   };
+  const tags=(baseHashtags[page]||baseHashtags.DEFAULT).trim();
 
-  const mcpCap=`${hook}
+  // ── SHARED BLOCKS ──────────────────────────────────────────────
+  const nearbyStr=nearbyItems.map(h=>`✅ ${h}`).join('\n');
+  const specsBlock=`📍 ${location}\n🏠 ${m}${pos}${specs.lot?' · Lot: '+specs.lot:''}${specs.floor?' · Floor: '+specs.floor:''}${specs.beds?' · '+specs.beds:''}`;
+  // Financial figures wrapped with @@FIN@@ markers — rendered big in UI
+  const F=(v)=>`@@FIN@@${v}@@/FIN@@`;
+  const amortFig=F(a);
+  const resFig=F(p.reservation||'—');
+  const tcpFig=F(p.tcp||'—');
+  const finBlock=`💰 ${amortFig} lang monthly\n🔑 Reservation: ${resFig}\n📋 DP: ${p.dp||'—'}\n🏦 ${fin} financing`;
+  const softCta=`I-message mo kami para sa libreng computation. Walang pressure. 👇`;
 
-Hindi ito basta lupa. Ito ay legado — 1,000 sqm ng sariling bukid sa bundok ng Cavite, 9 minuto lang mula Tagaytay.
+  // ── 5-VERSION BUILDER ─────────────────────────────────────────
+  // Returns array of 5 plain-text strings (tags appended)
+  function v5(v1,v2,v3,v4,v5){
+    return [v1,v2,v3,v4,v5].map(v=>v+'\n\n'+tags);
+  }
 
-📍 ${location}
-🌄 ${m}${pos} · Min. ${p.lot||'1,000 sqm'}
-${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
+  if(page==='PAG'){
+    return v5(
+      // V1 Emotional
+      `Takot kang hindi ma-qualify sa Pag-IBIG?\n\nMarami sa aming mga buyer — ganyan din ang naisip nila noon. Ngayon, may sarili na silang bahay.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      // V2 Mirror
+      `Nagre-rent ka pa rin ngayon — ilang taon na?\n\nKung ang monthly mo sa renta ay halos katumbas ng amortization, bakit hindi na lang ito ang bayaran mo para sa sarili mong bahay?\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      // V3 OFW
+      `Para sa mga OFW — hindi mo kailangang nandito para magsimula.\n\nPwede kang mag-reserve ng ${p.name} remotely. Ang bahay, nagtatrabaho para sa pamilya mo habang ikaw ay nasa abroad.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami online — anytime ka. 👇`,
+      // V4 Young Pro
+      `First job. First salary. Pwede na bang first home?\n\nOo — kung alam mo ang tamang hakbang. At ang unang hakbang ay ${resFig} lang.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      // V5 Investment
+      `${p.name} sa ${p.city||location} — ${amortFig} lang monthly via Pag-IBIG 30 years.\n\nAng income requirement ay para lang ma-verify kung kaya mo. Hindi hadlang — gabay.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+  if(page==='ANA'){
+    return v5(
+      `Hindi lahat ng subdivision ay parehong pakiramdam. May ilan kang tinitirahan — may ilan, binubuhayan ka.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nFor private viewing and full computation — message us. No pressure, just the facts. 👇`,
+      `Deserve mo na ito. Hindi pa lang nararamdaman ngayon.\n\nSa Anyana — hindi ka bibili ng bahay. Bibili ka ng pamumuhay.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nMessage us for a private tour. 👇`,
+      `Para sa mga OFW na naghahanap ng premium address para sa pamilya — Anyana, Tanza ay ang uri ng tahanan na nagpapakita ng tagumpay mo.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami para sa full details. 👇`,
+      `You built your career. Now build your address.\n\nAnyana is where young professionals who play the long game land.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nMessage us for a private tour and computation. 👇`,
+      `Smart buyers look at lifestyle appreciation — hindi lang property price.\n\nAnyana, Tanza — one of the fastest-appreciating addresses in Cavite.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami para sa full computation at site visit. 👇`
+    );
+  }
+  if(page==='NEW'){
+    return v5(
+      `Hindi lang ito condo. Ito ay investment sa tamang lugar — sa gitna ng pinaka-mabilis na lumalagong lungsod sa Cavite.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nGusto mong malaman ang full computation? I-message mo kami — libre at walang pressure. 👇`,
+      `Naghahanap ka ng condo na hindi lang maganda sa papel — kundi kumikita rin sa hinaharap?\n\nNewTowne Dasmariñas — urban address, Cavite price.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `OFW ka? Hindi mo kailangang nandito para mag-reserve.\n\nNewTowne Dasmariñas — pwede kang mag-secure ng unit online. Ang condo, nagtatrabaho para sa iyo habang ikaw ay nasa abroad.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime. 👇`,
+      `Para sa mga young professionals na gusto ng sariling space — hindi dormitoryo, hindi renta. Sarili mo.\n\nNewTowne Dasmariñas — urban condo sa Cavite na kaya ng sweldo mo.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Condo investment sa Dasmariñas, Cavite — ${amortFig} monthly. Rental yield potential, appreciation, at sariling tirahan sa iisang desisyon.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+  if(page==='MCP'){
+    return v5(
+      `Hindi ito basta lupa. Ito ay legado — sariling bukid sa bundok ng Cavite, 9 minuto lang mula Tagaytay.\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig}\n🔑 Reservation: ${resFig}\n💳 ${p.dp||'—'}\n\nI-message mo kami para sa full pricing at site visit. 👇`,
+      `Ang lupa ay hindi nagbabawas ng halaga. Ang tanong lang — kailan ka mag-iinvest?\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig} · Reservation ${resFig}\n\nMount Talamitam views. Cool climate. Airbnb potential.\n\n${softCta}`,
+      `Para sa mga OFW na naghahanap ng asset na lumalago habang ikaw ay nasa abroad — farm lot sa Cavite-Tagaytay area ang tamang move.\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig}\n🔑 Reservation: ${resFig}\n\nI-message mo kami para sa full pricing at site visit. 👇`,
+      `Young professional ka at gusto mong mag-invest sa lupa — pero hindi mo alam kung saan magsisimula?\n\nMidland Valley, Magallanes, Cavite — farm lot na may Tagaytay proximity. ${resFig} para magsimula.\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig}\n\n${softCta}`,
+      `${p.name} sa ${p.city||location} — farm lot investment na may nature living at appreciation potential.\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig}\n🔑 Reservation: ${resFig}\n\nPara sa mga naghahanap ng sariling espasyo at long-term investment. ${softCta}`
+    );
+  }
+  if(page==='RIC'){
+    return v5(
+      `Flood-free. Cool climate. Natural spring sa loob ng subdivision. Ito ang uri ng komunidad na iniisip mo — nasa General Trias, Cavite.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Naghahanap ka ng bahay na mura, maganda, at flood-free? Marami nang nagsasabi ng ganyan. Richdale West — natutupad niya.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami para sa tripping at computation. 👇`,
+      `Para sa mga OFW na naghahanap ng bahay para sa pamilya sa Cavite — Richdale West sa General Trias ay flood-free, malapit sa CALAX, at ${amortFig} lang monthly via Pag-IBIG.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `First home mo? Richdale West sa General Trias, Cavite — eco community, flood-free, malapit sa expressway. Kaya ng sweldo mo.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `${p.name} sa General Trias, Cavite — malapit sa Tagaytay, CALAX, at Metro Manila. ${amortFig} lang monthly via Pag-IBIG 30 years.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+  if(page==='LIO'){
+    return v5(
+      `Eco-townhouse na may solar panels at rainwater harvesting — libre sa bawat buyer. Sa Liora Homes Naic, ang bahay mo ay nagtatrabaho para sa kalikasan at sa iyong bulsa.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Ang pinaka-affordable na desisyon ngayon ay ang isa na nakakatipid sa susunod na 30 taon. Solar-ready home sa Cavite — ito yun.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami para sa full computation at tripping. 👇`,
+      `OFW ka at gusto mong mag-invest sa bahay na eco-friendly at low-maintenance? Liora Homes Naic — solar panels libre, Pag-IBIG accredited, ${amortFig} monthly lang.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime. 👇`,
+      `Young professional ka at gusto ng bahay na sustainable at mababa ang bills? Liora Homes — solar at rainwater harvesting, libre sa bawat buyer.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `3-star PHILGBC green certified. Sangley Airport at Cavite-Bataan Bridge — proposed sa Naic area. Ang investment timing ay ngayon — hindi bukas.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+  if(page==='PAC'){
+    return v5(
+      `${resFig} lang ang simula. Pag-IBIG, in-house, o rent-to-own — ikaw ang pipili ng mas komportable para sa iyo.\n\n${specsBlock}\n\n${finBlock}\n\nPara sa mga first-timer at young families — ito ang pinaka-accessible na entry point sa sariling bahay ngayon.\n\n${softCta}`,
+      `Hindi mo kailangang may malaking puhunan para magsimula. Sa Naic Prime, Naic, Cavite — ${resFig} reservation at puwede ka nang mag-move forward.\n\n${specsBlock}\n\n${finBlock}\n\n${softCta}`,
+      `Para sa mga OFW na naghahanap ng affordable na property sa Cavite — Naic Prime ay may flexible financing options at ${resFig} reservation lang.\n\n${specsBlock}\n\n${finBlock}\n\nI-message mo kami online anytime. 👇`,
+      `Gusto mong mag-invest pero limitado ang budget mo ngayon? ${resFig} na ang simula mo sa Naic Prime, Cavite.\n\n${specsBlock}\n\n${finBlock}\n\n${softCta}`,
+      `${p.name} sa Naic, Cavite — flexible financing options para sa bawat uri ng buyer. ${amortFig} monthly, ${resFig} reservation.\n\n${specsBlock}\n\n${finBlock}\n\nI-message mo kami. Libre ang tanong. 👇`
+    );
+  }
+  if(page==='BAT'){
+    return v5(
+      `May bahay ka na sa Batangas — at hindi mo pa alam.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami para sa libreng computation at full details. 👇`,
+      `Nagre-rent ka pa rin sa Batangas ngayon? Baka ang bayad mo buwan-buwan ay katumbas na ng sarili mong bahay.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Para sa mga OFW mula Batangas — pwede kang mag-reserve remotely. ${p.name} sa ${p.city||'Batangas City'} — ${amortFig} lang monthly via ${fin}.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime, kahit nasa abroad ka. 👇`,
+      `Young professional ka sa Batangas at gusto mo na ng sarili mong space? ${resFig} lang ang simula. ${amortFig} monthly via Pag-IBIG.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `${p.name} sa ${p.city||'Batangas City'}, Batangas — ${amortFig} lang monthly via ${fin}. Reservation, ${resFig} lang.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
 
-💰 ${p.tcp||'—'} · ${p.sellingPrice||'—'}
-🔑 Reservation: ${p.reservation||'—'}
-💳 Payment: ${p.dp||'—'}
-
-Mount Talamitam views. Cool climate. Airbnb / staycation potential. River-adjacent options available.
-
-${persona==='Investor'?'Ang lupa ay hindi nagbabawas ng halaga. Mag-invest ngayon bago maging mas mahal.':'Para sa naghahanap ng sariling espasyo sa kalikasan — ito ang tamang desisyon.'}
-
-I-message mo kami para sa full pricing at site visit schedule. 👇`;
-
-  if(page==='MCP' && !captions.MCP) captions.MCP=mcpCap;
-
-  // Page-specific captions for new pages
-  const ricCap=`${hook}
-
-Richdale West Residences sa General Trias, Cavite — hindi lang ganda ng komunidad, kundi kalidad ng buhay. Flood-free. Cool climate. Natural spring sa loob ng subdivision.
-
-📍 ${location}
-🏡 ${m}${pos}${specs.lot?` · Lot: ${specs.lot}`:''}${specs.floor?` · Floor: ${specs.floor}`:''}
-${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
-
-💰 ${a}/month via Pag-IBIG 30 years
-🔑 Reservation: ${p.reservation||'—'} · DP: ${p.dp||'—'}
-
-Malapit sa Tagaytay, CALAX, at Metro Manila. Ang uri ng pamumuhay na iniisip mo — mura pa.
-
-I-message mo kami para sa tripping at computation. 👇`;
-
-  const lioCap=`${hook}
-
-Liora Homes Naic — ang unang eco-townhouse sa Cavite na nagbibigay ng solar panels at rainwater harvesting system libre sa bawat buyer.
-
-📍 ${location}
-🏠 ${m}${pos}${specs.lot?` · Lot: ${specs.lot}`:''}${specs.floor?` · Floor: ${specs.floor}`:''}${specs.beds?` · ${specs.beds}`:''}
-${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
-
-💰 ${a}/month via Pag-IBIG
-🔑 Reservation: ${p.reservation||'—'} · DP: ${p.dp||'—'}
-
-3-star PHILGBC green certified. Sangley Airport at Cavite-Bataan Bridge — proposed sa Naic area. Mag-invest ngayon.
-
-I-message mo kami para sa full computation at tripping. 👇`;
-
-  const pacCap=`${hook}
-
-Naic Prime sa Naic, Cavite — ₱5,000 reservation lang ang simula. Pag-IBIG, in-house, at rent-to-own options — ikaw ang pipili ng mas komportable para sa iyo.
-
-📍 ${location}
-🏠 ${m}${pos}${specs.lot?` · Lot: ${specs.lot}`:''}${specs.floor?` · Floor: ${specs.floor}`:''}${specs.beds?` · ${specs.beds}`:''}
-
-💰 ${a}/month via Pag-IBIG
-🔑 Reservation: ${p.reservation||'—'} · DP: ${p.dp||'—'}
-
-Para sa mga first-timer at young families — ito ang pinaka-accessible na entry point sa sariling bahay ngayon.
-
-I-message mo kami. Libre ang tanong. 👇`;
-
-  if(page==='RIC' && !captions.RIC) captions.RIC=ricCap;
-  if(page==='LIO' && !captions.LIO) captions.LIO=lioCap;
-  if(page==='PAC' && !captions.PAC) captions.PAC=pacCap;
-
-  // Hashtags — Andromeda-aligned: geo-specific, buyer-intent, 6-8 only
-  const hashtags={
-    MCP:'#MidlandValleyCavite #FarmLotCavite #MagallanesCavite #ZonalRealty #InvestInCavite #LandBanking #TagaytayArea #FarmLotForSale',
-    NEW:'#NewtowneDasmarinas #CondoInCavite #DasmarinasCavite #InvestInCavite #ZonalRealty #OFWInvestment #CaviteRealEstate #UrbanLivingCavite',
-    ANA:'#AntelAnyana #TanzaCavite #AnyanaTanza #ZonalRealty #CaviteRealEstate #PremiumHomesPhilippines #HouseAndLotCavite #InvestInCavite',
-    PAG:'#PagIBIGHousing #AffordableHousesCavite #ZonalRealty #CaviteRealEstate #FirstHomeBuyersPH #HouseAndLot #OwnYourHome #SariliingBahay',
-    RIC:'#RichdaleWestResidences #GeneralTriasCavite #EcoCommunity #ZonalRealty #PagIBIGHousing #CaviteRealEstate #HouseAndLot #FloodFreeHomes',
-    LIO:'#LioraHomesNaic #EcoTownhouse #NaicCavite #ZonalRealty #GreenHomes #PagIBIGHousing #SolarPanels #CaviteRealEstate',
-    PAC:'#NaicPrime #NaicCavite #AffordableHomes #ZonalRealty #PagIBIGHousing #CaviteRealEstate #HouseAndLot #OwnYourHome',
-    BAT:'#BatangasRealEstate #LhoopaHomes #AffordableHomesBatangas #ZonalRealty #RealEstatePH #HouseAndLotBatangas #PagIBIGHousing #OwnYourHome',
-    DEFAULT:'#CaviteRealEstate #ZonalRealty #HouseAndLot #RealEstatePH #OwnYourHome #AffordableHomes #CaviteProperties #HomeBuyersPH'
-  };
-
-  // Merge dynamic captions into the map
-  const allCaps={...captions,MCP:mcpCap,RIC:ricCap,LIO:lioCap,PAC:pacCap};
-  const cap=allCaps[page]||captions.DEFAULT;
-  return cap+'\n\n'+(hashtags[page]||hashtags.DEFAULT);
+  // ── DEFAULT — 5 versions ───────────────────────────────────────
+  return v5(
+    `${hook}\n\n${m}${pos} sa ${location}. ${p.status||'For Sale'}.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+    `Nagre-rent ka pa rin ngayon? Tingnan mo ito — ${amortFig} lang monthly para sa sarili mong bahay sa ${p.city||location}.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+    `Para sa mga OFW — pwede kang mag-reserve ng ${p.name} remotely. ${amortFig} monthly, ${resFig} reservation.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime. 👇`,
+    `Gusto mong mag-invest pero hindi pa ready? ${resFig} lang ang simula. ${p.name} sa ${p.city||location}.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+    `${p.name} — ${p.city||location}, ${p.prov||''}. ${amortFig} monthly. ${resFig} reservation.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+  );
 }
 
 // ── MESSENGER CARD — COMPUTATION SHEET FORMAT ─────────────────
@@ -2020,7 +2081,17 @@ function generate(){
   document.getElementById('qtext').textContent=`"${quote.q}"`;
   document.getElementById('qattr').textContent=`— ${quote.a}`;
   document.getElementById('qbox').style.display='block';
-  document.getElementById('capText').textContent=caption;
+  // Render 5 caption version cards
+  const capVersions=Array.isArray(caption)?caption:[caption];
+  const cvIds=['cvt1','cvt2','cvt3','cvt4','cvt5'];
+  cvIds.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const raw=capVersions[i]||'';
+    // Render @@FIN@@ markers as big gold text, strip markers for plain copy
+    el.innerHTML=raw.replace(/@@FIN@@(.*?)@@\/FIN@@/g,'<span class="fin-fig">$1</span>');
+    el._plainText=raw.replace(/@@FIN@@(.*?)@@\/FIN@@/g,'$1');
+  });
   document.getElementById('messengerCard').textContent=messenger;
   document.getElementById('quickDmBox').textContent=quickDm;
   document.getElementById('outputTabs').style.display='flex';
@@ -2208,12 +2279,21 @@ function cpAll(){
     setTimeout(()=>{btn.textContent='Copy All';btn.classList.remove('ok');},2000);
   });
 }
+function cpVer(srcId,btnId){
+  const el=document.getElementById(srcId);
+  const text=el._plainText||el.textContent||el.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById(btnId);const orig=btn.textContent;
+    btn.textContent='✓ Copied!';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('ok');},2000);
+  });
+}
 
 // ── PER-AGENT ACCESS CODES ───────────────────────
 // Add or remove agents here. Each agent has a unique code.
 // To revoke access: remove their code and share the updated file.
 const AGENT_CODES = {
-  'EmpFLO':  'Florence Christine Alvarez',
+  'EmpFLO':  'Florence Alvarez',
   'Emp01':   'Jennifer Casem',
   'Emp0101': 'Pia Roldan',
 };
