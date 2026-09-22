@@ -1,0 +1,2209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empress Property Database</title>
+<meta name="application-name" content="Empress Property Database">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Empress DB">
+<meta name="theme-color" content="#0f0f0f">
+<link rel="manifest" href="data:application/json,{%22name%22:%22Empress%20Property%20Database%22,%22short_name%22:%22Empress%20DB%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f0f0f%22,%22theme_color%22:%22%23C9960F%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20192%20192'%253E%253Crect%20width%3D'192'%20height%3D'192'%20fill%3D'%230f0f0f'%2F%253E%253Ctext%20x%3D'96'%20y%3D'130'%20font-size%3D'120'%20text-anchor%3D'middle'%20fill%3D'%23C9960F'%20font-family%3D'Georgia'%253EE%253C%2Ftext%253E%253C%2Fsvg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
+<style>
+/* ── LOCK SCREEN ────────────────────────────────── */
+#lockScreen{
+  position:fixed;inset:0;background:#0f0f0f;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:9999;padding:32px 24px;
+}
+.lock-mark{
+  width:64px;height:64px;border:2px solid #C9960F;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;color:#C9960F;font-style:italic;font-family:Georgia,serif;
+  margin-bottom:24px;
+}
+.lock-title{
+  font-size:14px;font-weight:600;letter-spacing:.12em;
+  color:#f0ece0;text-transform:uppercase;margin-bottom:6px;text-align:center;
+}
+.lock-sub{
+  font-size:11px;color:#888;letter-spacing:.04em;margin-bottom:32px;text-align:center;
+}
+.lock-field{
+  width:100%;max-width:320px;background:#1a1a1a;border:1px solid #2e2e2e;
+  border-radius:6px;color:#f0ece0;font-size:14px;padding:12px 16px;
+  outline:none;text-align:center;letter-spacing:.12em;font-family:inherit;
+  transition:border-color .2s;margin-bottom:10px;
+}
+.lock-field:focus{border-color:#C9960F;}
+.lock-field.err{border-color:#c0392b;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.lock-btn{
+  width:100%;max-width:320px;padding:13px;background:#C9960F;color:#111;
+  border:none;border-radius:6px;font-size:13px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:background .15s;
+}
+.lock-btn:hover{background:#e0b030;}
+.lock-err{
+  font-size:11px;color:#c0392b;margin-top:10px;
+  text-align:center;display:none;letter-spacing:.04em;
+}
+.lock-err.vis{display:block;}
+.lock-hint{
+  font-size:10px;color:#444;margin-top:28px;text-align:center;line-height:1.7;
+}
+/* ── COLOR + LAYOUT SELECTORS ──────────────────── */
+.color-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:4px}
+.color-swatch{
+  height:26px;border-radius:4px;cursor:pointer;border:2px solid transparent;
+  transition:border-color .15s,transform .1s;position:relative;
+}
+.color-swatch.picked{border-color:#fff;transform:scale(1.12);}
+.color-swatch.picked::after{
+  content:'✓';position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;font-size:11px;color:#fff;font-weight:700;
+  text-shadow:0 0 4px rgba(0,0,0,.8);
+}
+.layout-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:4px}
+.layout-card{
+  background:var(--s2);border:1.5px solid var(--b1);border-radius:6px;
+  padding:5px 3px;cursor:pointer;text-align:center;transition:border-color .15s;
+}
+.layout-card.picked{border-color:var(--gold);background:var(--gd);}
+.lc-preview{height:38px;background:var(--s3);border-radius:3px;margin-bottom:4px;
+  position:relative;overflow:hidden;}
+.lc-label{font-size:8px;color:var(--td);letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.lc-use{font-size:7px;color:var(--tm);margin-top:1px;line-height:1.3}
+.layout-card.picked .lc-label{color:var(--gold);}
+.layout-card.picked .lc-use{color:var(--gold);opacity:.7;}
+/* layout preview mini diagrams */
+.lp-photo{position:absolute;background:#3a3a3a;border-radius:2px;}
+.lp-bar{position:absolute;background:var(--gold);opacity:.5;border-radius:1px;}
+.lp-agent{position:absolute;background:#5a5a5a;border-radius:2px;}
+/* hook suggestion chips */
+.hook-chip{
+  padding:4px 10px;border:1px solid var(--b2);border-radius:12px;
+  font-size:10px;color:var(--td);cursor:pointer;background:var(--s2);
+  transition:all .15s;white-space:nowrap;
+}
+.hook-chip:hover{border-color:var(--gold);color:var(--gl);}
+</style>
+<style>
+@media(max-width:600px){
+  .wrap{padding:12px 10px 0}
+  .grid{grid-template-columns:1fr!important}
+  .steps{display:none}
+  header{padding:12px 16px}
+  header h1{font-size:11px}
+  .pb{padding:12px}
+  .otabs .otab{font-size:9px;padding:8px 4px}
+  .oa,.mc{max-height:300px;font-size:10px}
+  .gbtn{padding:14px;font-size:13px}
+  .ptog label .pb2{font-size:10px;padding:8px 4px}
+}
+/* ── MAIN CONTENT ───────────────────────────────── */
+#mainContent{display:none;}
+#mainContent.unlocked{display:block;}
+</style>
+<style>
+:root{--bg:#0f0f0f;--s1:#1a1a1a;--s2:#222;--s3:#2a2a2a;--b1:#2e2e2e;--b2:#3a3a3a;--gold:#C9960F;--gl:#e0b030;--gd:rgba(201,150,15,0.12);--text:#f0ece0;--td:#888;--tm:#444;--red:#c0392b;--rd:rgba(192,57,43,0.15);--green:#27ae60;--r:6px;--blue:#2980b9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:60px}
+header{background:var(--s1);border-bottom:1px solid var(--b1);padding:14px 24px;display:flex;align-items:center;gap:12px}
+.hm{width:32px;height:32px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--gold);font-style:italic;font-family:Georgia,serif;flex-shrink:0}
+header h1{font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--text);text-transform:uppercase}
+header p{font-size:10px;color:var(--td);letter-spacing:.04em;margin-top:2px}
+.tag{font-size:8px;background:var(--gd);border:1px solid var(--gold);color:var(--gold);padding:2px 7px;border-radius:10px;margin-left:8px;letter-spacing:.06em}
+.wrap{max-width:1060px;margin:0 auto;padding:22px 18px 0}
+.grid{display:grid;grid-template-columns:330px 1fr;gap:18px}
+@media(max-width:740px){.grid{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+.panel{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+.ph{padding:10px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:7px}
+.ph .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.ph span{font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.pb{padding:15px}
+.steps{display:flex;margin-bottom:20px;border:1px solid var(--b1);border-radius:var(--r);overflow:hidden}
+.step{flex:1;padding:8px 6px;font-size:8px;text-align:center;color:var(--tm);letter-spacing:.04em;border-right:1px solid var(--b1);text-transform:uppercase}
+.step:last-child{border-right:none}
+.step.active{background:var(--gd);color:var(--gold)}
+.step.done{color:var(--green)}
+.step .sn{font-size:11px;font-weight:700;display:block;margin-bottom:1px;color:var(--tm)}
+.step.active .sn{color:var(--gold)}
+.step.done .sn{color:var(--green)}
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:9px;letter-spacing:.1em;color:var(--td);text-transform:uppercase;margin-bottom:5px}
+select,input,textarea{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:4px;color:var(--text);font-size:12px;padding:7px 10px;outline:none;transition:border-color .18s;appearance:none;-webkit-appearance:none;font-family:inherit}
+select:focus,input:focus,textarea:focus{border-color:var(--gold)}
+textarea{resize:vertical;min-height:52px;line-height:1.6}
+.sw{position:relative}
+.sw::after{content:'▾';position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none;font-size:10px}
+/* prop card */
+.pc{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:12px;margin-top:10px;display:none}
+.pc.vis{display:block}
+#lhPropCard{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:12px;margin-top:10px;display:none}
+#lhPropCard.vis{display:block}
+#lhFlagBox{background:var(--rd);border:1px solid var(--red);border-radius:4px;padding:8px 11px;font-size:11px;color:#e74c3c;line-height:1.6;margin-top:8px;display:none}
+#lhFlagBox.vis{display:block}
+.pr{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid var(--b1)}
+.pr:last-child{border-bottom:none}
+.pr .k{color:var(--td)}
+.pr .v{font-weight:600;text-align:right;max-width:65%}
+.pr .v.gold{color:var(--gold);font-size:12px}
+.flag{background:var(--rd);border:1px solid var(--red);border-radius:4px;padding:8px 11px;font-size:11px;color:#e74c3c;line-height:1.6;margin-top:8px;display:none}
+.flag.vis{display:block}
+/* position toggle */
+.ptog{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--b1);border-radius:4px;overflow:hidden;margin-top:0}
+.ptog input{display:none}
+.ptog label{margin:0;text-transform:none;letter-spacing:0;cursor:pointer}
+.pb2{display:block;padding:7px 4px;text-align:center;font-size:11px;color:var(--td);background:var(--s2);border-right:1px solid var(--b1)}
+.ptog label:last-child .pb2{border-right:none}
+.ptog input:checked+.pb2{background:var(--gd);color:var(--gl);border-bottom:2px solid var(--gold)}
+/* hook toggle */
+.htog{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--b1);border-radius:4px;overflow:hidden}
+.htog input{display:none}
+.htog label{margin:0;text-transform:none;letter-spacing:0;cursor:pointer}
+.hb{display:block;padding:8px;text-align:center;font-size:11px;color:var(--td);background:var(--s2);border-right:1px solid var(--b1)}
+.htog label:last-child .hb{border-right:none}
+.htog input:checked+.hb{background:var(--gd);color:var(--gl);border-bottom:2px solid var(--gold)}
+/* checkboxes */
+.hg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.hi{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--s2);border:1px solid var(--b1);border-radius:4px;cursor:pointer;font-size:11px;color:var(--td);user-select:none}
+.hi:has(input:checked){border-color:var(--gold);color:var(--text);background:var(--gd)}
+.hi input{display:none}
+.ck{width:12px;height:12px;border:1px solid var(--tm);border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px}
+.hi:has(input:checked) .ck{background:var(--gold);border-color:var(--gold);color:#111}
+/* output tabs */
+.otabs{display:flex;border-bottom:1px solid var(--b1);margin:-15px -15px 15px}
+.otab{flex:1;padding:10px;text-align:center;font-size:10px;color:var(--td);cursor:pointer;border-right:1px solid var(--b1);letter-spacing:.04em;transition:all .15s}
+.otab:last-child{border-right:none}
+.otab.active{background:var(--gd);color:var(--gold);border-bottom:2px solid var(--gold)}
+/* output type toggle */
+.otog{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.ob{padding:6px 13px;border-radius:20px;border:1px solid var(--b1);background:transparent;color:var(--td);font-size:10px;cursor:pointer;transition:all .15s}
+.ob.active{border-color:var(--gold);color:var(--gold);background:var(--gd)}
+/* buttons */
+.gbtn{width:100%;padding:12px;background:var(--gold);color:#111;border:none;border-radius:var(--r);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+.gbtn:hover{background:var(--gl)}
+.gbtn:disabled{background:var(--tm);cursor:not-allowed;color:var(--td)}
+/* output areas */
+.out-panel{display:none}
+.out-panel.active{display:block}
+.oa{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:15px;font-size:11px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto;font-family:'Courier New',monospace}
+.ca{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:13px;font-size:12px;line-height:1.75;color:var(--text);white-space:pre-wrap}
+.cl{font-size:9px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:7px;display:block}
+.qb{background:var(--s2);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;font-size:12px;font-style:italic;color:var(--text);line-height:1.65;margin-top:10px}
+.qa{font-size:10px;font-style:normal;color:var(--gold);margin-top:5px}
+/* messenger card */
+.mc{background:var(--s2);border:1px solid rgba(201,150,15,0.4);border-radius:var(--r);padding:15px;font-size:11px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto;font-family:'Courier New',monospace}
+.mc-note{background:rgba(41,128,185,0.1);border:1px solid rgba(41,128,185,0.3);border-radius:4px;padding:8px 12px;font-size:11px;color:#5ab4ff;margin-bottom:12px;line-height:1.6}
+/* btn row */
+.brow{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.cbtn{padding:7px 14px;background:transparent;border:1px solid var(--gold);color:var(--gold);border-radius:4px;font-size:10px;cursor:pointer;transition:all .15s}
+.cbtn:hover{background:var(--gd)}
+.cbtn.ok{color:var(--green);border-color:var(--green)}
+.cbtn2{padding:7px 14px;background:transparent;border:1px solid var(--b2);color:var(--td);border-radius:4px;font-size:10px;cursor:pointer;transition:all .15s}
+.cbtn2:hover{background:var(--s3);color:var(--text)}
+.cbtn2.ok{color:var(--green);border-color:var(--green)}
+.savebtn{padding:7px 14px;background:transparent;border:1px solid var(--b2);color:var(--td);border-radius:4px;font-size:10px;cursor:pointer;transition:all .15s}
+.savebtn:hover{background:var(--gd);border-color:var(--gold);color:var(--gold)}
+.savebtn.saving{color:var(--blue);border-color:var(--blue)}
+.savebtn.saved{color:var(--green);border-color:var(--green)}
+/* update panel */
+.upd-note{background:rgba(201,150,15,0.07);border:1px dashed rgba(201,150,15,0.3);border-radius:4px;padding:10px 12px;font-size:11px;color:var(--td);line-height:1.65;margin-bottom:10px}
+.upd-note strong{color:var(--gold)}
+.notice{background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:4px;padding:8px 12px;font-size:11px;color:#5acd5a;margin-bottom:10px;display:none}
+.notice.vis{display:block}
+.save-st{font-size:10px;color:var(--td);margin-top:7px;display:none;line-height:1.6}
+.save-st.vis{display:block}
+.save-st.ok{color:var(--green)}
+.save-st.err{color:var(--red)}
+.divider{height:1px;background:var(--b1);margin:14px 0}
+</style>
+</head>
+<body>
+<!-- ── LOCK SCREEN ──────────────────────────────── -->
+<div id="lockScreen">
+  <div class="lock-mark">E</div>
+  <div class="lock-title">Empress Property Database</div>
+  <div class="lock-sub">Zonal Realty · Enter your agent access code</div>
+  <input class="lock-field" id="lockInput" type="password"
+    placeholder="Your agent code"
+    maxlength="30"
+    onkeydown="if(event.key==='Enter')tryUnlock()"
+    autocomplete="off">
+  <button class="lock-btn" onclick="tryUnlock()">Unlock</button>
+  <div class="lock-err" id="lockErr">Invalid code. Message Flo for your access code.</div>
+  <div class="lock-hint">
+    Each agent has a unique code.<br>
+    Contact Florence Christine Alvarez · 0977-3032-007
+  </div>
+</div>
+
+<!-- ── MAIN CONTENT ──────────────────────────────── -->
+<div id="mainContent">
+<header>
+  <div class="hm">E</div>
+  <div>
+    <h1>Empress Property Database <span class="tag">ZONAL REALTY</span></h1>
+    <p>ChatGPT · Canva · Google Flow · Messenger Card</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="steps">
+    <div class="step active" id="s1"><span class="sn">01</span>Property</div>
+    <div class="step" id="s2"><span class="sn">02</span>Position</div>
+    <div class="step" id="s3"><span class="sn">03</span>Configure</div>
+    <div class="step" id="s4"><span class="sn">04</span>Generate</div>
+  </div>
+
+  <div class="grid">
+    <!-- LEFT -->
+    <div>
+      <!-- ZONAL REALTY BROWSE -->
+      <div class="panel">
+        <div class="ph"><div class="dot"></div><span>Zonal Realty Properties</span></div>
+        <div class="pb">
+          <div class="field">
+            <label>Province</label>
+            <div class="sw"><select id="selProv" onchange="onProv('zonal')"><option value="">— Select province —</option></select></div>
+          </div>
+          <div class="field" id="fMuni" style="display:none">
+            <label>Municipality / City</label>
+            <div class="sw"><select id="selMuni" onchange="onMuni('zonal')"><option value="">— Select municipality —</option></select></div>
+          </div>
+          <div class="field" id="fProj" style="display:none">
+            <label>Project</label>
+            <div class="sw"><select id="selProj" onchange="onProject()"><option value="">— Select project —</option></select></div>
+          </div>
+          <div class="field" id="fModel" style="display:none">
+            <label>Model / Unit Type</label>
+            <div class="sw"><select id="selModel" onchange="onModel()"><option value="">— Select model —</option></select></div>
+          </div>
+          <div class="field" id="fUnit" style="display:none">
+            <label>View / Specific Unit</label>
+            <div class="sw"><select id="selUnit" onchange="onUnit()"><option value="">— Select unit —</option></select></div>
+          </div>
+          <div class="field" id="fPos" style="display:none">
+            <label>Unit Position</label>
+            <div class="ptog">
+              <label><input type="radio" name="pos" value="Inner" checked><span class="pb2">🏠 Inner</span></label>
+              <label><input type="radio" name="pos" value="End"><span class="pb2">🏡 End</span></label>
+              <label><input type="radio" name="pos" value="Corner"><span class="pb2">⭐ Corner</span></label>
+            </div>
+          </div>
+          <div id="fLocation" style="display:none">
+            <div class="field">
+              <label>Province <span style="color:var(--tm);text-transform:none;letter-spacing:0;font-size:9px">(auto-filled · editable)</span></label>
+              <input type="text" id="inProvince" placeholder="e.g. Cavite">
+            </div>
+            <div class="field">
+              <label>Municipality / City <span style="color:var(--tm);text-transform:none;letter-spacing:0;font-size:9px">(auto-filled · editable)</span></label>
+              <input type="text" id="inCity" placeholder="e.g. General Trias">
+            </div>
+            <div class="field">
+              <label>Barangay <span style="color:var(--tm);text-transform:none;letter-spacing:0;font-size:9px">(auto-filled · editable)</span></label>
+              <input type="text" id="inBrgy" placeholder="e.g. Brgy. Panungyanan">
+            </div>
+          </div>
+          <div class="pc" id="propCard"></div>
+          <div class="flag" id="flagBox"></div>
+        </div>
+      </div>
+
+      <!-- LHOOPA BROWSE — separate section -->
+      <div class="panel">
+        <div class="ph"><div class="dot"></div><span>Lhoopa Properties</span></div>
+        <div class="pb">
+          <div class="field">
+            <label>Province</label>
+            <div class="sw"><select id="selLhProv" onchange="onProv('lhoopa')"><option value="">— Select province —</option></select></div>
+          </div>
+          <div class="field" id="fLhMuni" style="display:none">
+            <label>Municipality / City</label>
+            <div class="sw"><select id="selLhMuni" onchange="onMuni('lhoopa')"><option value="">— Select municipality —</option></select></div>
+          </div>
+          <div class="field" id="fLhProj" style="display:none">
+            <label>Project</label>
+            <div class="sw"><select id="selLhProj" onchange="onLhProject()"><option value="">— Select project —</option></select></div>
+          </div>
+          <div class="field" id="fLhModel" style="display:none">
+            <label>Model / Unit Type</label>
+            <div class="sw"><select id="selLhModel" onchange="onLhModel()"><option value="">— Select model —</option></select></div>
+          </div>
+          <div class="pc" id="lhPropCard"></div>
+          <div class="flag" id="lhFlagBox"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="ph"><div class="dot"></div><span>Agent Details</span></div>
+        <div class="pb">
+          <div class="field">
+            <label>Your Name</label>
+            <input type="text" id="agentName" placeholder="e.g. Flo Alvarez">
+          </div>
+          <div class="field">
+            <label>Contact Number</label>
+            <input type="tel" id="contact" value="0977-3032-007">
+          </div>
+          <div class="field">
+            <label>Buyer Persona</label>
+            <div class="sw"><select id="persona">
+              <option value="First-time buyer">First-time buyer</option>
+              <option value="OFW investor">OFW investor</option>
+              <option value="Young professional">Young professional</option>
+              <option value="Breadwinner family">Breadwinner family</option>
+              <option value="Upgrader / lifestyle buyer">Upgrader / lifestyle buyer</option>
+              <option value="Investor">Investor</option>
+            </select></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="ph"><div class="dot"></div><span>Design Style</span></div>
+        <div class="pb">
+
+          <!-- BRAND COLOR -->
+          <div class="field">
+            <label>Brand Accent Color</label>
+            <div class="color-grid" id="colorGrid"></div>
+            <input type="hidden" id="selColor" value="#C9960F">
+            <input type="hidden" id="selBg" value="#1A1A1A">
+          </div>
+
+          <!-- LAYOUT STYLE -->
+          <div class="field" style="margin-top:10px">
+            <label>Layout Style</label>
+            <div class="layout-grid" id="layoutGrid"></div>
+            <input type="hidden" id="selLayout" value="1">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="ph"><div class="dot"></div><span>Hook & Extras</span></div>
+        <div class="pb">
+          <div class="field">
+            <label>Hook Line <span style="color:var(--tm);text-transform:none;letter-spacing:0;font-size:9px">(short · punchy · English · max 6 words)</span></label>
+            <input type="text" id="hookLine" placeholder="Leave blank for auto-generated">
+            <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap" id="hookSuggestions"></div>
+          </div>
+          <div class="field" style="margin-top:10px">
+            <label>Extra Highlights</label>
+            <div class="hg">
+              <label class="hi"><input type="checkbox" value="Gated community"><span class="ck">✓</span>Gated</label>
+              <label class="hi"><input type="checkbox" value="Pag-IBIG eligible"><span class="ck">✓</span>Pag-IBIG</label>
+              <label class="hi"><input type="checkbox" value="RFO available"><span class="ck">✓</span>RFO</label>
+              <label class="hi"><input type="checkbox" value="Pre-selling"><span class="ck">✓</span>Pre-selling</label>
+              <label class="hi"><input type="checkbox" value="Expandable unit"><span class="ck">✓</span>Expandable</label>
+              <label class="hi"><input type="checkbox" value="Corner lot"><span class="ck">✓</span>Corner lot</label>
+              <label class="hi"><input type="checkbox" value="CALAX access"><span class="ck">✓</span>CALAX</label>
+              <label class="hi"><input type="checkbox" value="Near hospital"><span class="ck">✓</span>Hospital</label>
+            </div>
+          </div>
+          <div class="field" style="margin-top:8px">
+            <label>Extra Notes <span style="color:var(--tm);text-transform:none;letter-spacing:0;font-size:9px">(optional)</span></label>
+            <textarea id="extraNotes" placeholder="e.g. last 3 units, panoramic view, near gate"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="ph"><div class="dot"></div><span>Photo Note</span></div>
+        <div class="pb" style="font-size:11px;color:var(--td);line-height:1.75">
+          Upload these when you use the prompt:<br><br>
+          📷 <strong style="color:var(--gold)">Property photo</strong> — background layer<br>
+          🧑 <strong style="color:var(--gold)">Your photo</strong> — half-body, exact photo<br>
+          🔷 <strong style="color:var(--gold)">Zonal logo</strong> — top-left corner
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: OUTPUT -->
+    <div>
+      <div class="panel full">
+        <div class="ph"><div class="dot"></div><span>Generate</span></div>
+        <div class="pb">
+          <!-- OUTPUT TYPE -->
+          <!-- FORMAT SELECTOR -->
+          <div class="field" style="margin-bottom:14px;">
+            <label>Canvas Format</label>
+            <div class="ptog" style="grid-template-columns:1fr 1fr 1fr;">
+              <label><input type="radio" name="fmt" value="1080x1080" id="fmt1"><span class="pb2">1:1<br><span style="font-size:9px;color:var(--td)">1080×1080</span></span></label>
+              <label><input type="radio" name="fmt" value="1080x1350" id="fmt2"><span class="pb2">4:5<br><span style="font-size:9px;color:var(--td)">1080×1350</span></span></label>
+              <label><input type="radio" name="fmt" value="1080x1920" id="fmt3" checked><span class="pb2">9:16<br><span style="font-size:9px;color:var(--td)">1080×1920</span></span></label>
+            </div>
+          </div>
+
+          <div class="otog">
+            <button class="ob active" onclick="setOut('chatgpt',this)">ChatGPT</button>
+            <button class="ob" onclick="setOut('canva',this)">Canva</button>
+            <button class="ob" onclick="setOut('gflow',this)">Google Flow</button>
+          </div>
+          <button class="gbtn" id="genBtn" onclick="generate()" disabled>Select a unit first</button>
+
+          <div style="margin-top:16px" id="outputWrap">
+            <!-- TABS -->
+            <div class="otabs" id="outputTabs" style="display:none">
+              <div class="otab active" onclick="switchTab('listing',this)">📋 Listing Card Prompt</div>
+              <div class="otab" onclick="switchTab('caption',this)">✍️ Caption + Hashtags</div>
+              <div class="otab" onclick="switchTab('messenger',this)">💬 Messenger Card</div>
+            </div>
+
+            <!-- LISTING CARD TAB -->
+            <div class="out-panel active" id="tab-listing">
+              <div class="oa" id="outArea"></div>
+              <div class="qb" id="qbox" style="display:none"><span id="qtext"></span><div class="qa" id="qattr"></div></div>
+              <div class="brow">
+                <button class="cbtn" id="b1" onclick="cp('outArea','b1')">Copy Prompt</button>
+                <button class="cbtn2" id="b3" onclick="cpAll()">Copy All</button>
+                <button class="savebtn" id="bSave" onclick="savePrompt()">💾 Save to Drive</button>
+              </div>
+              <div class="save-st" id="saveStatus"></div>
+            </div>
+
+            <!-- CAPTION TAB -->
+            <div class="out-panel" id="tab-caption">
+              <div class="ca" id="capArea"><span class="cl">Facebook Caption</span><span id="capText"></span></div>
+              <div class="brow">
+                <button class="cbtn" id="b2" onclick="cp('capText','b2')">Copy Caption</button>
+              </div>
+            </div>
+
+            <!-- MESSENGER CARD TAB -->
+            <div class="out-panel" id="tab-messenger">
+              <div class="mc-note">💬 For DM / Messenger only — do NOT post this publicly. Send to buyers who inquire.</div>
+
+              <!-- QUICK DM -->
+              <div style="margin-bottom:18px;">
+                <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">⚡ Quick DM — Copy & Paste to Messenger</div>
+                <div id="quickDmBox" style="background:var(--c2);border:1px solid var(--bor);border-radius:6px;padding:12px 14px;font-size:12.5px;line-height:1.7;color:var(--t1);white-space:pre-wrap;word-break:break-word;"></div>
+                <div class="brow" style="margin-top:8px;">
+                  <button class="cbtn" id="b4q" onclick="cp('quickDmBox','b4q')">Copy Quick DM</button>
+                </div>
+              </div>
+
+              <!-- MESSENGER CARD PROMPT -->
+              <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">🎨 Messenger Card Prompt — for ChatGPT / Canva</div>
+              <div class="mc" id="messengerCard"></div>
+              <div class="brow">
+                <button class="cbtn" id="b4" onclick="cp('messengerCard','b4')">Copy Messenger Prompt</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PROPERTY DATA ──────────────────────────────────────────────
+let PROPS = [
+  // ── ANYANA BY ANTEL LAND (Tanza, Cavite) ──
+  {id:"p_178954533601",name:"Anyana",model:"Sydney A",type:"Single Attached",prov:"Cavite",city:"Tanza",brgy:"Brgy. Sanya Mayor",status:"Pre-Selling",page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% net of RF — 18 months at 0% interest",dpMonths:"18",lot:"90 sqm",floor:null,beds:null,toilet:null,term5:"₱ 118,965.71",term10:"₱ 71,167.93",term20:"₱ 49,073.36",loanable:"₱ 5,862,406.36",highlights:"192-hectare Bel-Air township\\nAnyana Spine Road inside\\nSM City Tanza — 3-4 km\\nVista Mall Tanza — 4-5 km\\nCALAX expressway access\\nShopGrounds commercial hub inside\\nSeattle's Best Coffee incoming\\nChurch of Saint Ignatius inside",notes:"Bank 8% p.a.",flagged:false,flagNote:""},
+  {id:"p_178954533602",name:"Anyana",model:"Sydney B",type:"Single Attached",prov:"Cavite",city:"Tanza",brgy:"Brgy. Sanya Mayor",status:"Pre-Selling",page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% net of RF — 18 months at 0% interest",dpMonths:"18",lot:"95 sqm",floor:null,beds:null,toilet:null,term10:"₱ 78,432.18",term20:"₱ 54,078.59",loanable:"₱ 6,459,226.66",highlights:"192-hectare Bel-Air township\\nAnyana Spine Road inside\\nSM City Tanza — 3-4 km\\nCALAX expressway access\\nShopGrounds commercial hub inside\\nSeattle's Best Coffee incoming",notes:"Bank 8% p.a.",flagged:false,flagNote:""},
+  {id:"p_178954533603",name:"Anyana",model:"Tokyo",type:"Single Attached",prov:"Cavite",city:"Tanza",brgy:"Brgy. Sanya Mayor",status:"Pre-Selling",page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% net of RF — 18 months at 0% interest",dpMonths:"18",lot:"100 sqm",floor:"~107 sqm (estimate)",beds:null,toilet:null,term5:"₱ 147,671.69",term10:"₱ 88,362.11",term20:"₱ 60,917.40",loanable:"₱ 7,282,936.61",highlights:"192-hectare Bel-Air township\\nAnyana Spine Road inside\\nSM City Tanza — 3-4 km\\nVista Mall Tanza — 4-5 km\\nCALAX expressway access\\nShopGrounds commercial hub inside\\nSeattle's Best Coffee incoming\\nChurch of Saint Ignatius inside",notes:"Bank 8% p.a.",flagged:true,flagNote:"Floor area ~107 sqm UNCONFIRMED — use estimate only, do not quote officially."},
+  {id:"p_178954533604",name:"Anyana",model:"New York",type:"Single Attached",prov:"Cavite",city:"Tanza",brgy:"Brgy. Sanya Mayor",status:"Pre-Selling",page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% net of RF — 18 months at 0% interest",dpMonths:"18",lot:"120 sqm",floor:null,beds:null,toilet:null,term10:"₱ 111,042.83",term20:"₱ 76,543.02",loanable:"₱ 9,145,384.81",highlights:"192-hectare Bel-Air township\\nAnyana Spine Road inside\\nSM City Tanza — 3-4 km\\nCALAX expressway access\\nShopGrounds commercial hub\\nSeattle's Best Coffee incoming",notes:"Bank 8% p.a.",flagged:false,flagNote:""},
+  {id:"p_178954533605",name:"Anyana",model:"Paris",type:"Single Attached",prov:"Cavite",city:"Tanza",brgy:"Brgy. Sanya Mayor",status:"Pre-Selling",page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% net of RF — 18 months at 0% interest",dpMonths:"18",lot:"150 sqm",floor:"187.32 sqm",beds:"4 Bedrooms",toilet:"3 Toilet and Bath",term5:"₱ 258,488.48",term10:"₱ 154,671.41",term20:"₱ 106,631.45",loanable:"₱ 12,748,246.88",highlights:"192-hectare Bel-Air township\\nAnyana Spine Road inside\\nSM City Tanza — 3-4 km\\nVista Mall Tanza — 4-5 km\\nCALAX expressway access\\nShopGrounds commercial hub inside\\nSeattle's Best Coffee incoming\\nChurch of Saint Ignatius inside\\nDual covered carport\\nWalk-in closet in master bedroom\\nPrivate master balcony",notes:"Flagship model. Bank 8% p.a.",flagged:false,flagNote:""},
+
+  // ── NEWTOWNE DASMARIÑAS (Dasmariñas, Cavite) ──
+  {id:"p_1752681600001",name:"Newtowne Dasmariñas",model:"Studio w/o Balcony",position:"City View",type:"Condo",prov:"Cavite",city:"Dasmariñas",brgy:"Brgy. Burol",status:"Pre-Selling",page:"NEW",financing:["Bank","Pag-IBIG"],reservation:"₱ 20,000.00",dp:"17.50% — ₱ 598,080.61",dpMonths:"31",lot:null,floor:"22 sqm",beds:null,toilet:null,term5:"₱ 55,002.27",term10:"₱ 31,836.08",term15:"₱ 24,367.73",term20:"₱ 20,814.62",loanable:"₱ 2,819,522.89",highlights:"De La Salle Medical & Health Science Institute — 800m\\nCavite State University — 1.6km\\nWaltermart Dasmariñas — 3.3km\\nEAC Medical Center — 2.3km\\nDLSU-D — 2.9km\\nCity Hall — 4.0km",notes:"Pag-IBIG: 30Y @ ₱16,834.21/mo (cheapest). Bank 20Y @ ₱20,814.62.",flagged:false,flagNote:""},
+  {id:"p_1752681600002",name:"Newtowne Dasmariñas",model:"Studio w/o Balcony",position:"Amenity View",type:"Condo",prov:"Cavite",city:"Dasmariñas",brgy:"Brgy. Burol",status:"Pre-Selling",page:"NEW",financing:["Bank","Pag-IBIG"],reservation:"₱ 20,000.00",dp:"17.50% — ₱ 603,138.37",dpMonths:"31",lot:null,floor:"22 sqm",beds:null,toilet:null,term5:"₱ 55,467.40",term10:"₱ 32,105.31",term15:"₱ 24,573.80",term20:"₱ 20,990.64",loanable:"₱ 2,843,366.59",highlights:"De La Salle Medical & Health Science Institute — 800m\\nCavite State University — 1.6km\\nWaltermart Dasmariñas — 3.3km\\nEAC Medical Center — 2.3km\\nDLSU-D — 2.9km\\n50 DLSU-D staff pre-bought units\\nAll competitors sold out — supply gap real",notes:"Pag-IBIG: 30Y @ ₱16,976.57/mo (cheapest). Bank 20Y @ ₱20,990.64.",flagged:false,flagNote:""},
+  {id:"p_1752681600003",name:"Newtowne Dasmariñas",model:"Studio w/ Balcony",position:"City View",type:"Condo",prov:"Cavite",city:"Dasmariñas",brgy:"Brgy. Burol",status:"Pre-Selling",page:"NEW",financing:["Bank","Pag-IBIG"],reservation:"₱ 20,000.00",dp:"17.50%",dpMonths:"31",lot:null,floor:"25 sqm",beds:null,toilet:null,term20:"₱ 22,500.00",highlights:"De La Salle Medical & Health Science Institute — 800m\\nCavite State University — 1.6km\\nWaltermart Dasmariñas — 3.3km\\nEAC Medical Center — 2.3km\\nPrivate balcony",notes:"Estimated amort — confirm with developer.",flagged:true,flagNote:"Amortization estimated — confirm exact figures with developer before quoting."},
+  {id:"p_1752681600004",name:"Newtowne Dasmariñas",model:"1BR w/ Balcony",position:"City View",type:"Condo",prov:"Cavite",city:"Dasmariñas",brgy:"Brgy. Burol",status:"Pre-Selling",page:"NEW",financing:["Bank","Pag-IBIG"],reservation:"₱ 20,000.00",dp:"17.50%",dpMonths:"31",lot:null,floor:"36 sqm",beds:"1 Bedroom",toilet:"1 Toilet and Bath",term20:"₱ 30,200.00",highlights:"De La Salle Medical & Health Science Institute — 800m\\nCavite State University — 1.6km\\nWaltermart Dasmariñas — 3.3km\\nEAC Medical Center — 2.3km\\nPrivate balcony\\nIdeal for couples and young professionals",notes:"Estimated amort — confirm with developer.",flagged:true,flagNote:"Amortization estimated — confirm exact figures with developer before quoting."},
+  {id:"p_1752681600005",name:"Newtowne Dasmariñas",model:"1BR Combinable",position:"City View",type:"Condo",prov:"Cavite",city:"Dasmariñas",brgy:"Brgy. Burol",status:"Pre-Selling",page:"NEW",financing:["Bank","Pag-IBIG"],reservation:"₱ 20,000.00",dp:"17.50%",dpMonths:"31",lot:null,floor:"44 sqm",beds:"1 Bedroom (combinable to 2BR)",toilet:"1 Toilet and Bath",term20:"₱ 34,500.00",highlights:"De La Salle Medical & Health Science Institute — 800m\\nCavite State University — 1.6km\\nWaltermart Dasmariñas — 3.3km\\nCombineable with adjacent unit — effective 2BR\\nStrong rental income potential",notes:"Estimated amort — confirm with developer.",flagged:true,flagNote:"Amortization estimated — confirm with developer."},
+
+  // ── RICHDALE WEST RESIDENCES (General Trias, Cavite) ──
+  {id:"p_RIC_JAS",name:"Richdale West Residences",model:"Jasmine",position:"Inner Unit",type:"Townhouse Expanded",prov:"Cavite",city:"General Trias",brgy:"Brgy. Panungyanan",status:"Pre-Selling",page:"RIC",financing:["Pag-IBIG"],reservation:"₱ 12,800.00",dp:"Cash Outlay — ₱ 371,200.00",dpMonths:"29",lot:"81.25 sqm",floor:"78.65 sqm",beds:"Provision for 3 Bedrooms",toilet:"2 Toilet & Bath",tcp:"₱ 3,437,000.00",loanable:"₱ 3,053,000.00",monthlyDp:"₱ 12,800.00",term30:"₱ 18,797.84",income30:"₱ 53,708.11",highlights:"Flood-free elevated location\\nNear Tagaytay — 30 min\\nNear CALAX — 7 km\\nMetro Manila — 30-45 min\\nPanungyanan Elementary School — 2 min\\nPanungyanan Chapel — 2 min\\nGentri Doctors Medical Center — 13 min\\nGateway Business Park — 7 min\\nDali Grocery Amadeo — 9 min\\nLPU Cavite — 12 min\\nBalite Falls — 7 min\\nEagle Ridge Golf — adjacent\\n100% mineral spring water on-site\\nNatural spring (Bukal) on property\\nEco park, fruit-bearing trees\\nCamping area, amphitheater\\nTreehouse, Japanese garden\\nBasketball court, playground\\nGated — 3 entrances\\nNon-VAT unit\\nLowest monthly in project",notes:"Pag-IBIG 30Y @ ₱18,797.84/mo. Net Disposable Income req: ₱53,708.11. Monthly Cash Outlay: ₱12,800 @ 29 months. Largest floor area in project.",flagged:false,flagNote:""},
+  {id:"p_RIC_LIN",name:"Richdale West Residences",model:"Linnea",position:"Inner Unit",type:"Single Attached",prov:"Cavite",city:"General Trias",brgy:"Brgy. Panungyanan",status:"Pre-Selling",page:"RIC",financing:["Pag-IBIG"],reservation:"₱ 16,000.00",dp:"Cash Outlay — ₱ 464,000.00",dpMonths:"29",lot:"100 sqm",floor:"77.25 sqm",beds:"Provision for 3 Bedrooms",toilet:"2 Toilet & Bath",tcp:"₱ 4,406,000.00",loanable:"₱ 3,926,000.00",monthlyDp:"₱ 16,000.00",term30:"₱ 24,173.05",income30:"₱ 69,065.86",highlights:"Flood-free elevated location\\nNear Tagaytay — 30 min\\nNear CALAX — 7 km\\nMetro Manila — 30-45 min\\nPanungyanan Elementary School — 2 min\\nPanungyanan Chapel — 2 min\\nGentri Doctors Medical Center — 13 min\\nGateway Business Park — 7 min\\nLPU Cavite — 12 min\\nBalite Falls — 7 min\\nEagle Ridge Golf — adjacent\\n100% mineral spring water on-site\\n2-car garage side by side\\nGlass panel staircase\\n5 windows on 2nd floor\\nGated community — 3 entrances\\n⚠️ Selling fast — inventory alert",notes:"Pag-IBIG 30Y @ ₱24,173.05/mo. Net Disposable Income req: ₱69,065.86. Monthly Cash Outlay: ₱16,000 @ 29 months.",flagged:false,flagNote:"Linnea inventory at risk of selling out — flag serious buyers urgently."},
+  {id:"p_RIC_CAR",name:"Richdale West Residences",model:"Carnation",position:"Inner Unit",type:"Single Attached",prov:"Cavite",city:"General Trias",brgy:"Brgy. Panungyanan",status:"Pre-Selling",page:"RIC",financing:["Pag-IBIG"],reservation:"₱ 16,000.00",dp:"Cash Outlay — ₱ 448,000.00",dpMonths:"28",lot:"100-128 sqm",floor:"66 sqm",beds:"Provision for 3 Bedrooms",toilet:"2 Toilet & Bath",tcp:"₱ 3,888,000.00",loanable:"₱ 3,424,000.00",monthlyDp:"₱ 16,000.00",term30:"₱ 21,082.15",income30:"₱ 60,234.71",highlights:"Flood-free elevated location\\nNear Tagaytay — 30 min\\nNear CALAX — 7 km\\nMetro Manila — 30-45 min\\nPanungyanan Elementary School — 2 min\\nGentri Doctors Medical Center — 13 min\\n2-car tandem garage\\nNon-VAT unit\\n100-128 sqm lot area\\nSingle attached — no shared wall\\nGated community — 3 entrances\\nBrick-design door accent",notes:"Pag-IBIG 30Y @ ₱21,082.15/mo. Net Disposable Income req: ₱60,234.71. Monthly Cash Outlay: ₱16,000 @ 28 months.",flagged:false,flagNote:""},
+
+  // ── LIORA HOMES NAIC (Naic, Cavite) ──
+  {id:"p_LIO_AMORA_PAG",name:"Liora Homes Naic",model:"Amora EcoLove",position:"Inner Unit",type:"Townhouse",prov:"Cavite",city:"Naic",brgy:"Brgy. Malainen Bago",status:"Ongoing Construction",page:"LIO",financing:["Pag-IBIG"],reservation:"₱ 12,000.00",dp:"4.03% — ₱ 101,400.00",dpMonths:"6-9",lot:"50 sqm",floor:"43.75 sqm",beds:"2 Bedrooms",toilet:"1 Toilet & Bath",tcp:"₱ 2,516,400.00",loanable:"₱ 2,307,000.00",term30:"₱ 14,205.00",term25:"₱ 15,219.00",term20:"₱ 16,863.00",term15:"₱ 19,781.00",term10:"₱ 25,903.00",term5:"₱ 44,869.00",income30:"₱ 40,585.00",highlights:"Naic, Cavite\\nStadium Shopping Strip — 10 mins\\nSky King Mall — 10 mins\\nNaic Doctors Hospital — nearby\\nBataan-Cavite Interlink Bridge — proposed\\nSangley International Airport — proposed\\nFlood-free location — verified\\nNo fault-line — verified\\n31.4 hectares total land area\\nFree solar panel system — up to 30% Meralco savings\\nFree rainwater harvesting — up to 35% water bill savings\\nPHILGBC BERDE 3-star certified\\nClubhouse, swimming pool, covered court\\nPlayground and park\\nSUV-friendly parking lot",notes:"Pag-IBIG 30Y @ ₱14,205/mo (cheapest). TCP ₱2,516,400. Discounted TCP ₱2,408,400 with ₱12K reservation. Semi-finished unit. EcoLove features: solar panels + rainwater harvesting standard.",flagged:true,flagNote:"⚠️ Missing: confirmed drive times to hospital, school, wet market. End unit pricing exists (₱2,813,400) but computation sheet not uploaded. Tripping schedule — direct to CBDI."},
+  {id:"p_LIO_AMORA_BANK",name:"Liora Homes Naic",model:"Amora EcoLove",position:"Bank Financing",type:"Townhouse",prov:"Cavite",city:"Naic",brgy:"Brgy. Malainen Bago",status:"Ongoing Construction",page:"LIO",financing:["Bank"],reservation:"₱ 12,000.00",dp:"4.03% — ₱ 101,400.00",dpMonths:"6-9",lot:"50 sqm",floor:"43.75 sqm",beds:"2 Bedrooms",toilet:"1 Toilet & Bath",tcp:"₱ 2,516,400.00",loanable:"₱ 2,307,000.00",term20:"₱ 16,863.00",term15:"₱ 19,781.00",term10:"₱ 25,903.00",term5:"₱ 44,869.00",highlights:"Naic, Cavite\\nStadium Shopping Strip — 10 mins\\nSky King Mall — 10 mins\\nNaic Doctors Hospital — nearby\\nBataan-Cavite Interlink Bridge — proposed\\nSangley International Airport — proposed\\nFlood-free location — verified\\nFree solar panel system — 30% Meralco savings\\nFree rainwater harvesting — 35% water bill savings\\nPHILGBC BERDE 3-star certified",notes:"Bank financing variant. 20Y @ ₱16,863/mo (cheapest bank term). Semi-finished unit.",flagged:false,flagNote:""},
+
+  // ── MAPLETREE RESIDENCES (Naic, Cavite) ──
+  {id:"p_MTP_INNER",name:"Mapletree Residences",model:"DX45.50",position:"Inner Unit",type:"Duplex with Garage",prov:"Cavite",city:"Naic",brgy:"Brgy. Mabolo",status:"Pre-Selling",page:"PAG",financing:["Pag-IBIG"],reservation:"₱ 7,500.00",dp:"Equity — ₱ 114,947.50 / 20 years",dpMonths:"240",lot:null,floor:"58.5 sqm",beds:null,toilet:null,tcp:"₱ 1,912,447.50",loanable:"₱ 1,720,000.00",monthlyDp:"₱ 5,747.38",term30:"₱ 31,999.26",income30:"₱ 11,199.74",highlights:"Brgy. Mabolo, Naic, Cavite\\nPag-IBIG accredited\\nDuplex with garage\\nEntry-level pricing — as low as ₱1.9M\\nReservation only ₱7,500",notes:"Pag-IBIG HDMF monthly amort: ₱31,999.26. Required basic salary: ₱11,199.74. Discounted TCP after ₱70,000 discount: ₱1,842,447.50. Pricelist effective Aug 1, 2026.",flagged:false,flagNote:""},
+  {id:"p_MTP_CORNER",name:"Mapletree Residences",model:"DX45.50",position:"Corner Unit",type:"Duplex with Garage",prov:"Cavite",city:"Naic",brgy:"Brgy. Mabolo",status:"Pre-Selling",page:"PAG",financing:["Pag-IBIG"],reservation:"₱ 7,500.00",dp:"Equity — ₱ 319,050.00 / 20 years",dpMonths:"240",lot:null,floor:"57 sqm",beds:null,toilet:null,tcp:"₱ 2,103,550.00",loanable:"₱ 1,707,000.00",monthlyDp:"₱ 15,952.50",term30:"₱ 31,762.26",income30:"₱ 11,116.79",highlights:"Brgy. Mabolo, Naic, Cavite\\nCorner unit — extra side lot\\nPag-IBIG accredited\\nDuplex with garage",notes:"Corner unit. Pag-IBIG HDMF monthly amort: ₱31,762.26. Required basic salary: ₱11,116.79. Discounted TCP: ₱2,033,550.",flagged:false,flagNote:""},
+  {id:"p_MTP_END",name:"Mapletree Residences",model:"SA45.50",position:"End Unit",type:"Single Attached with Garage",prov:"Cavite",city:"Naic",brgy:"Brgy. Mabolo",status:"Pre-Selling",page:"PAG",financing:["Pag-IBIG"],reservation:"₱ 7,500.00",dp:"Equity — ₱ 247,677.50 / 20 years",dpMonths:"240",lot:null,floor:"78 sqm",beds:null,toilet:null,tcp:"₱ 2,244,177.50",loanable:"₱ 1,919,000.00",monthlyDp:"₱ 12,383.88",term30:"₱ 35,640.17",income30:"₱ 12,474.06",highlights:"Brgy. Mabolo, Naic, Cavite\\nEnd unit — largest floor area 78 sqm\\nSingle attached — no shared wall\\nPag-IBIG accredited\\nDuplex with garage",notes:"End unit SA45.50. Pag-IBIG HDMF monthly amort: ₱35,640.17. Required basic salary: ₱12,474.06. Discounted TCP: ₱2,174,177.50.",flagged:false,flagNote:""},
+
+  // ── NAIC PRIME / PACIFICTOWN NAIC (Naic, Cavite) ──
+  {id:"p_1789049031786",name:"Naic Prime",model:"TH-Inner",position:"Inner Unit",type:"Townhouse",prov:"Cavite",city:"Naic",brgy:"",status:"Pre-Selling",page:"PAC",financing:["Pag-IBIG","In-house","Rent-to-Own"],reservation:"₱ 5,000",dp:"₱ 50,000",dpMonths:"18",lot:"40 sqm",floor:"40 sqm",beds:"Provision for 2 Bedrooms",toilet:null,tcp:"₱ 2,005,000",loanable:"₱ 1,950,000",monthlyDp:"₱ 2,778",term30:"₱ 12,864",highlights:"Naic, Cavite\\nPag-IBIG, In-house & Rent-to-Own financing\\nSemi-finished\\nProvision for 2 bedrooms\\nLow reservation — ₱5,000 only",notes:"Pag-IBIG 30Y @ ₱12,864/mo. Misc fees ₱255,000. Contact: 09763398960.",flagged:false,flagNote:""},
+
+  // ── MASAITO / MOSAITO HOMES (Imus & Kawit, Cavite) ──
+  {id:"p_1789122297641",name:"Masaito Homes Imus",model:"Felicity",type:"Single Attached",prov:"Cavite",city:"Imus",brgy:"",status:"Pre-Selling",page:"PAG",financing:["Bank"],reservation:null,dp:"₱ 708,850.00",lot:"66 sqm",floor:"47.25 sqm",beds:null,toilet:null,highlights:"Imus, Cavite\\nBank financing\\nSeptember 2026 promo: Complete Dining Package (units above ₱3.1M)",notes:"Masaito Homes Imus — Felicity model. Promo: Sep 2026 Complete Dining Package. Most financial details TBC — contact developer.",flagged:true,flagNote:"Most financial details not yet in database — reservation, TCP, amortization TBC. Contact developer directly."},
+  {id:"p_1789122139125",name:"Masaito Homes Imus",model:"Felicity (Brgy. Alapan IIA)",type:"Single Attached",prov:"Cavite",city:"Imus",brgy:"Brgy. Alapan II-A",status:"Pre-Selling",page:"PAG",financing:["Bank"],reservation:null,dp:"₱ 708,850.00",lot:"66 sqm",floor:"47.25 sqm",beds:null,toilet:null,highlights:"Brgy. Alapan II-A, Imus, Cavite\\nBank financing",notes:"Masaito Homes Imus Brgy. Alapan IIA — Felicity model. Financial details TBC.",flagged:true,flagNote:"Financial details not confirmed — contact developer before quoting."},
+  {id:"p_1789093761577",name:"Mosaito Homes",model:"Danna",type:"Single Attached",prov:"Cavite",city:"Imus",brgy:"",status:"Pre-Selling",page:"PAG",financing:["Bank"],reservation:null,dp:"₱ 940,765.50",dpMonths:"50",lot:"88 sqm",floor:"72.06 sqm",beds:null,toilet:null,highlights:"Imus, Cavite\\nBank financing\\nLarger lot 88 sqm · Floor 72.06 sqm\\nSeptember 2026 promo: Complete Dining Package (units above ₱3.1M)",notes:"Mosaito Homes Imus — Danna model. DP ₱940,765.50 @ 50 months. Financial details TBC.",flagged:true,flagNote:"TCP, reservation, and amortization not in database — confirm with developer before quoting."},
+  {id:"p_1789112570615",name:"Mosaito Homes Kawit",model:"Felicity",type:"Single Attached",prov:"Cavite",city:"Kawit",brgy:"Brgy. San Sebastian",status:"Pre-Selling",page:"PAG",financing:["Bank"],reservation:null,dp:"₱ 715,491.00",lot:"66 sqm",floor:"47.25 sqm",beds:null,toilet:null,highlights:"Brgy. San Sebastian, Kawit, Cavite\\nBank financing",notes:"Mosaito Homes Kawit — Felicity model. Financial details TBC.",flagged:true,flagNote:"TCP, reservation, and amortization not in database — confirm with developer before quoting."},
+
+  // ── MIDLAND VALLEY — THE FAB ESTATES (Magallanes, Cavite) ──
+  {id:"p_1758028800001",name:"Midland Valley — The Fab Estates",model:"Signature Lot",position:"Spot Cash — 45% discount",type:"Farm Lot",prov:"Cavite",city:"Magallanes",brgy:"Brgy. Caluangan",status:"Pre-Selling",page:"MCP",financing:["In-house"],reservation:"₱ 20,000.00",dp:"Spot Cash — 45% discount → ₱5,390/sqm net",tcp:"₱ 5,821,200.00",lot:"1,000 sqm min (up to 3,333 sqm)",highlights:"9 mins to Tagaytay Rotonda\\n47 mins to major city centers\\nNear Cavitex West Lateral Road\\nNear Nasugbu Highway\\nMount Talamitam views + hiking access\\nElevated, cool, fresh-air setting\\nAirbnb / Staycation income potential\\nRiver-adjacent lots available\\nCamping and farming in open spaces\\nFuture infinity pool with mountain views\\nSecured perimeter, landscaped fire trees\\nPrefab tie-in via Instahomes available",notes:"Signature Lot — elevated, road-fronting, best view. Min lot 1,000 sqm. Spot cash = full payment. No amortization.",flagged:true,flagNote:"⚠️ LTS/ECC permits in process — not yet confirmed released. Confirm ranch fence promo validity (stated Aug 30, 2026). Contact number unconfirmed."},
+  {id:"p_1758028800002",name:"Midland Valley — The Fab Estates",model:"Signature Lot",position:"50% DP — 30% discount",type:"Farm Lot",prov:"Cavite",city:"Magallanes",brgy:"Brgy. Caluangan",status:"Pre-Selling",page:"MCP",financing:["In-house"],reservation:"₱ 20,000.00",dp:"50% Down Payment — 30% discount → ₱6,860/sqm net",tcp:"₱ 7,408,800.00",loanable:"₱ 3,704,400.00",term30:"₱ 102,900.00",lot:"1,000 sqm min (up to 3,333 sqm)",highlights:"9 mins to Tagaytay Rotonda\\n47 mins to major city centers\\nNear Cavitex West Lateral Road\\nNear Nasugbu Highway\\nMount Talamitam views + hiking access\\nElevated, cool, fresh-air setting\\nAirbnb / Staycation income potential\\nRiver-adjacent lots available\\nCamping and farming open spaces\\nFuture infinity pool with mountain views\\nSecured perimeter, landscaped fire trees",notes:"36 months zero interest on balance. Interest from Year 4 onward. Min lot 1,000 sqm. 50% DP scheme.",flagged:true,flagNote:"⚠️ LTS/ECC permits in process. DP installment period not stated — confirm months. Ranch fence promo — confirm if extended."},
+  {id:"p_1758028800003",name:"Midland Valley — The Fab Estates",model:"Signature Lot",position:"30% DP — 15% discount",type:"Farm Lot",prov:"Cavite",city:"Magallanes",brgy:"Brgy. Caluangan",status:"Pre-Selling",page:"MCP",financing:["In-house"],reservation:"₱ 20,000.00",dp:"30% Down Payment — 15% discount → ₱8,330/sqm net",tcp:"₱ 8,996,400.00",loanable:"₱ 6,297,480.00",term30:"₱ 174,930.00",lot:"1,000 sqm min (up to 3,333 sqm)",highlights:"9 mins to Tagaytay Rotonda\\n47 mins to major city centers\\nNear Cavitex West Lateral Road\\nMount Talamitam views + hiking access\\nElevated, cool, fresh-air setting\\nAirbnb / Staycation income potential\\nRiver-adjacent lots available\\nFuture infinity pool with mountain views",notes:"36 months zero interest on balance. Interest from Year 4 onward. Min lot 1,000 sqm. 30% DP scheme.",flagged:true,flagNote:"⚠️ LTS/ECC permits in process. Ranch fence promo — confirm if extended."},
+  {id:"p_1758028800004",name:"Midland Valley — The Fab Estates",model:"Prime Lot",position:"Spot Cash — 35% discount",type:"Farm Lot",prov:"Cavite",city:"Magallanes",brgy:"Brgy. Caluangan",status:"Pre-Selling",page:"MCP",financing:["In-house"],reservation:"₱ 20,000.00",dp:"Spot Cash — 35% discount → ₱4,420/sqm net",tcp:"₱ 4,773,600.00",lot:"1,000 sqm min (up to 3,333 sqm)",highlights:"9 mins to Tagaytay Rotonda\\n47 mins to major city centers\\nNear Cavitex West Lateral Road\\nNear Nasugbu Highway\\nMount Talamitam views + hiking access\\nRoad-facing, scenic position\\nAirbnb / Staycation income potential\\nRiver-adjacent lots available\\nCamping and farming open spaces\\nFuture infinity pool with mountain views",notes:"Prime Lot — road-facing, scenic, slightly lower elevation than Signature. Min lot 1,000 sqm. Spot cash = full payment.",flagged:true,flagNote:"⚠️ LTS/ECC permits in process. Ranch fence promo — confirm if extended."},
+  {id:"p_1758028800005",name:"Midland Valley — The Fab Estates",model:"Prime Lot",position:"50% DP — 20% discount",type:"Farm Lot",prov:"Cavite",city:"Magallanes",brgy:"Brgy. Caluangan",status:"Pre-Selling",page:"MCP",financing:["In-house"],reservation:"₱ 20,000.00",dp:"50% Down Payment — 20% discount → ₱5,440/sqm net",tcp:"₱ 5,875,200.00",loanable:"₱ 2,937,600.00",term30:"₱ 81,600.00",lot:"1,000 sqm min (up to 3,333 sqm)",highlights:"9 mins to Tagaytay Rotonda\\n47 mins to major city centers\\nNear Cavitex West Lateral Road\\nMount Talamitam views + hiking access\\nRoad-facing, scenic position\\nAirbnb / Staycation income potential\\nRiver-adjacent lots available",notes:"36 months zero interest on balance. Interest from Year 4 onward. Min lot 1,000 sqm. 50% DP scheme.",flagged:true,flagNote:"⚠️ LTS/ECC permits in process. DP installment period not stated. Ranch fence promo — confirm if extended."},
+  {id:"p_1758028800006",name:"Midland Valley — The Fab Estates",model:"Prime Lot",position:"30% DP — 10% discount",type:"Farm Lot",prov:"Cavite",city:"Magallanes",brgy:"Brgy. Caluangan",status:"Pre-Selling",page:"MCP",financing:["In-house"],reservation:"₱ 20,000.00",dp:"30% Down Payment — 10% discount → ₱6,120/sqm net",tcp:"₱ 6,609,600.00",loanable:"₱ 4,626,720.00",term30:"₱ 128,520.00",lot:"1,000 sqm min (up to 3,333 sqm)",highlights:"9 mins to Tagaytay Rotonda\\n47 mins to major city centers\\nNear Cavitex West Lateral Road\\nMount Talamitam views + hiking access\\nRoad-facing, scenic position\\nAirbnb / Staycation income potential",notes:"36 months zero interest on balance. Interest from Year 4 onward. Min lot 1,000 sqm. 30% DP scheme.",flagged:true,flagNote:"⚠️ LTS/ECC permits in process. Ranch fence promo — confirm if extended."},
+
+  // ── LHOOPA — BATANGAS ──
+  {id:"p_LHOOPA_BAT_007",db:"lhoopa",name:"Reginarosa Residences",model:"Renovation Unit",type:"House and Lot",prov:"Batangas",city:"Santo Tomas",brgy:"Santa Teresita",status:"For Sale",page:"BAT",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Not shown",dpMonths:"12",lot:"57.00 sqm",floor:"20.12 sqm",beds:null,toilet:null,monthlyDp:"₱ 3,144.40",loanable:"₱ 811,923.20",highlights:"Near San Francisco Elementary — 0.6km\\nSt. Nazarius Medical Clinic — 12.5km\\nSM Business Services — 16km\\n69.9km from Makati",notes:"Pag-IBIG financing. Renovation unit.",flagged:false,flagNote:""},
+
+  // ── LHOOPA — OTHER PROVINCES (folders exist, no JSON data yet) ──
+  {id:"p_LHOOPA_BUL_placeholder",db:"lhoopa",name:"Lhoopa Bulacan",model:"(No units yet)",type:"House and Lot",prov:"Bulacan",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Bulacan — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet for Bulacan Lhoopa properties. Check back soon."},
+  {id:"p_LHOOPA_TAR_placeholder",db:"lhoopa",name:"Lhoopa Tarlac",model:"(No units yet)",type:"House and Lot",prov:"Tarlac",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Tarlac — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet for Tarlac Lhoopa properties. Check back soon."},
+  {id:"p_LHOOPA_ZAM_placeholder",db:"lhoopa",name:"Lhoopa Zambales",model:"(No units yet)",type:"House and Lot",prov:"Zambales",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Zambales — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet for Zambales Lhoopa properties. Check back soon."},
+  {id:"p_LHOOPA_ZDN_placeholder",db:"lhoopa",name:"Lhoopa Zamboanga Del Norte",model:"(No units yet)",type:"House and Lot",prov:"Zamboanga Del Norte",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Zamboanga Del Norte — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet. Check back soon."},
+  {id:"p_LHOOPA_ZDS_placeholder",db:"lhoopa",name:"Lhoopa Zamboanga Del Sur",model:"(No units yet)",type:"House and Lot",prov:"Zamboanga Del Sur",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Zamboanga Del Sur — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet. Check back soon."},
+  {id:"p_LHOOPA_ZSI_placeholder",db:"lhoopa",name:"Lhoopa Zamboanga Sibugay",model:"(No units yet)",type:"House and Lot",prov:"Zamboanga Sibugay",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Zamboanga Sibugay — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet. Check back soon."},
+  {id:"p_LHOOPA_SDN_placeholder",db:"lhoopa",name:"Lhoopa Surigao Del Norte",model:"(No units yet)",type:"House and Lot",prov:"Surigao Del Norte",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Surigao Del Norte — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet. Check back soon."},
+  {id:"p_LHOOPA_SDS_placeholder",db:"lhoopa",name:"Lhoopa Surigao Del Sur",model:"(No units yet)",type:"House and Lot",prov:"Surigao Del Sur",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Surigao Del Sur — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet. Check back soon."},
+  {id:"p_LHOOPA_TAW_placeholder",db:"lhoopa",name:"Lhoopa Tawi-tawi",model:"(No units yet)",type:"House and Lot",prov:"Tawi-tawi",city:"TBD",brgy:"",status:"Coming Soon",page:"BAT",financing:["Pag-IBIG"],reservation:null,dp:null,lot:null,floor:null,beds:null,toilet:null,highlights:"Tawi-tawi — Lhoopa properties coming soon",notes:"No property data in database yet.",flagged:true,flagNote:"No unit data available yet. Check back soon."},
+
+  // ── THE STEPS AT VALLE VERDE V (Dasmariñas, Cavite) ──
+  {id:"p_202609190001",db:"zonal",name:"The Steps at Valle Verde V",dev:null,model:"Midori",position:"1st Floor",type:"Condo",prov:"Cavite",city:"Dasmariñas",brgy:null,status:null,page:"DEFAULT",financing:["In-house"],reservation:"₱ 14,400.00",dp:"24% Net DP — ₱ 724,800.00",dpMonths:"29",lot:null,floor:"50 sqm",beds:null,toilet:null,tcp:"₱ 3,080,000.00",loanable:"₱ 2,340,800.00",monthlyDp:"₱ 24,993.10",term10:"₱ 42,177.75",income30:"₱ 120,507.86",highlights:"Cheapest available unit under In-house Financing scheme\nModel: Midori, 50 sqm\n1st Floor unit",notes:"In-house 10Y @ ₱42,177.75/mo. Extracted as cheapest In-house financing option only, per Flo's request. Pag-IBIG (HDMF) computation also present in source but not extracted here. In-house financing computation confirmed from PKS sheet. Terms: DP over 29 months, then loanable balance amortized over 10 years at stated interest rate (unconfirmed if 19% flat applies).",flagged:true,flagNote:"⚠️ Developer name, city/province/barangay, project status, LTS/ECC, promo, and contact number not stated in source. ⚠️ Multiple units tied at same ₱3,080,000 TCP (Blk 8-U0102, Blk 9-U0201, Blk 10-U0301, Blk 11-U0102 among others) — specific unit not confirmed by Flo. ⚠️ Interest rate footnote '19.000% MA. INT RATE' unclear if it applies to this scheme."},
+
+  // ── METROGATE DASMARIÑAS (Dasmariñas, Cavite) ──
+  {id:"p_20260919001",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Bailey Model",position:"Regular Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Ongoing Construction",page:"DEFAULT",financing:["In-house"],reservation:"₱ 40,000.00",dp:"20% Downpayment — Net ₱ 1,231,047.68 (after ₱40,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:"66.80 sqm",beds:"2 Bedrooms",toilet:"2 Toilet & Bath",tcp:"₱ 6,355,238.40",loanable:"₱ 5,453,021.52",monthlyDp:"₱ 51,293.65",term10:"₱ 87,976.30",term5:"₱ 115,860.35",highlights:"2BR, 2 T&B\nService Area: 1\nNo carport/lanai, no maids room\nFloor area 66.80sqm on 120sqm lot",notes:"In-house 10Y @ ₱87,976.30/mo. 7-year term also available @ ₱99,201.37/mo. 12-month DP option: ₱102,587.31/mo. Total Package Price (incl. misc fee ₱453,945.60): ₱6,809,184.00. Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive. Sample computation valid 7 calendar days from signing per developer disclaimer.",flagged:true,flagNote:"⚠️ Contact number not in source. ⚠️ LTS/License to Sell not confirmed. ⚠️ Pag-IBIG/Bank financing not confirmed — only in-house shown. ⚠️ Promo discount expiry not stated."},
+
+  // ── METROGATE INDANG (Indang, Cavite) ──
+  {id:"p_20260919009",db:"zonal",name:"MetroGate Indang",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Lot Only",position:"Regular Inner",type:"Lot Only",prov:"Cavite",city:"Indang",brgy:"Alulod",status:"Pre-Selling",page:"DEFAULT",financing:["In-house"],reservation:"₱ 20,000.00",dp:"20% Downpayment — Net ₱ 535,464.45 (after ₱20,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"132.00 sqm",floor:null,beds:null,toilet:null,tcp:"₱ 2,777,322.24",loanable:"₱ 2,383,041.67",monthlyDp:"₱ 22,311.02",term10:"₱ 38,446.79",term5:"₱ 50,632.49",highlights:"Lot Only, no house\n132 sqm\nRegular Inner classification",notes:"In-house 10Y @ ₱38,446.79/mo. 7-year term also available @ ₱43,352.29/mo. 12-month DP option: ₱44,622.04/mo. Total Package Price (incl. registration fee ₱161,183.88): ₱2,938,506.12. Location: Brgy. Alulod, Indang, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"Missing: model name"},
+
+  // ── NAIC COUNTRY HOMES PHASE 2 (Naic, Cavite) ──
+  {id:"p_1789862400",db:"zonal",name:"Naic Country Homes Phase 2",model:"Carnation SA",type:"Single Attached",prov:"Cavite",city:"Naic",brgy:"Malainen Luna",status:null,page:"DEFAULT",financing:["Pag-IBIG"],reservation:"₱ 13,600.00",dp:"28-month installment DP at ₱ 14,335.71/mo",dpMonths:"28",tcp:"₱ 3,189,000.00",loanable:"₱ 2,774,000.00",monthlyDp:"₱ 14,335.71",lot:"108 sqm",floor:null,beds:null,toilet:null,highlights:"Naic Country Homes Phase 2\nBrgy. Malainen Luna, Naic, Cavite\nCarnation SA model — Single Attached",notes:"Cheapest available unit (Blk 52 Lot 22, 108 sqm) extracted from HDMF Pag-IBIG computation sheet. Monthly amortization ₱17,079.99/mo shown under the 6.25% rate tier, requiring net disposable income of ₱48,799.97/mo — exact loan term (years) not labeled in source, so term/income fields were omitted rather than assumed. Full model price range across 13 units in this project: ₱3,189,000–₱3,451,000.",flagged:true,flagNote:"⚠️ Developer name not stated ⚠️ Project status not stated ⚠️ Unit position (corner/end/inner) not stated ⚠️ Loan term (years) for the 6.25% rate not explicitly labeled — term30/term25/etc. and income30 omitted rather than guessed ⚠️ Only cheapest of 13 units extracted; others range ₱3,189,000–₱3,451,000 ⚠️ Contact is email only (axeiacavitereservation02@gmail.com) — no phone number"},
+
+  // ── METROGATE DASMARIÑAS — Additional Models (Dasmariñas, Cavite) ──
+  {id:"p_202609190002",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Chloe Model",position:"Regular Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Ongoing Construction",page:"DEFAULT",financing:["In-house"],reservation:"₱ 40,000.00",dp:"20% Downpayment — Net ₱ 1,582,055.68 (after ₱40,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:"120.06 sqm",beds:"1 Master Bedroom + 2 Bedrooms",toilet:"3 Toilet & Bath",tcp:"₱ 8,110,278.40",loanable:"₱ 6,958,908.52",monthlyDp:"₱ 65,918.99",term10:"₱ 112,271.52",term5:"₱ 147,855.93",highlights:"1 MBR + 2BR, 3 T&B\n1 Car Garage\nService Area: 1 SA\nFloor area 120.06sqm on 120sqm lot",notes:"In-house 10Y @ ₱112,271.52/mo. 7-year term also available @ ₱126,596.46/mo. 12-month DP option: ₱131,837.97/mo. Total Package Price (incl. misc fee ₱579,305.60): ₱8,689,584.00. Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"⚠️ Contact number not in source. ⚠️ LTS/License to Sell not confirmed. ⚠️ Pag-IBIG/Bank financing not confirmed — only in-house shown. ⚠️ Promo discount expiry not stated."},
+  {id:"p_202609190003",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Elise",position:"Regular Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Ongoing Construction",page:"DEFAULT",financing:["In-house","Cash"],reservation:"₱ 40,000.00",dp:"20% Downpayment — Net ₱ 1,203,047.68 (after ₱40,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:"64.00 sqm",beds:"3 Bedrooms",toilet:"3 Toilet & Bath",tcp:"₱ 6,215,238.40",loanable:"₱ 5,332,896.52",monthlyDp:"₱ 50,126.99",term10:"₱ 86,038.26",term5:"₱ 113,308.05",highlights:"3BR, 3 T&B\nService Area: 1\nFloor area 64sqm on 120sqm lot",notes:"In-house 10Y @ ₱86,038.26/mo. 7-year term also available @ ₱97,016.05/mo. 12-month DP option: ₱100,253.97/mo. Also offers Cash Payment (7% disc, 7-day window) — Net TCP ₱5,780,171.71, Total Package Price ₱6,237,390.78 — and Deferred Payment (15 months) — Total Package Price ₱6,672,457.47, payable ₱444,830.50/mo. Inhouse Total Package Price: ₱6,659,184.00 (misc/move-in+reg fee). Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"⚠️ Contact number not in source. ⚠️ LTS/License to Sell not confirmed. ⚠️ Pag-IBIG/Bank financing not confirmed. ⚠️ Cash Payment 7% discount has unclear exact expiry (labeled only '7 Days')."},
+  {id:"p_202609190004",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Eloise Model",position:"Regular Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Ongoing Construction",page:"DEFAULT",financing:["In-house"],reservation:"₱ 40,000.00",dp:"20% Downpayment — Net ₱ 1,222,759.68 (after ₱40,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:"80.00 sqm",beds:"2 Bedrooms",toilet:"1 Toilet & Bath",tcp:"₱ 6,313,798.40",loanable:"₱ 5,417,464.52",monthlyDp:"₱ 50,948.32",term10:"₱ 87,402.64",term5:"₱ 115,104.87",highlights:"2BR, 1 T&B\nService Area: 1\nFloor area 80sqm on 120sqm lot",notes:"In-house 10Y @ ₱87,402.64/mo. 7-year term also available @ ₱98,554.51/mo. 12-month DP option: ₱101,896.64/mo. Total Package Price (incl. misc fee ₱450,985.60): ₱6,764,784.00. Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"⚠️ Contact number not in source. ⚠️ LTS/License to Sell not confirmed. ⚠️ Pag-IBIG/Bank financing not confirmed. ⚠️ Promo discount expiry not stated."},
+  {id:"p_202609190005",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Julien Model",position:"Regular Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Ongoing Construction",page:"DEFAULT",financing:["In-house"],reservation:"₱ 40,000.00",dp:"20% Downpayment — Net ₱ 1,918,055.68 (after ₱40,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:"172.55 sqm",beds:"1 Master Bedroom + 2 Bedrooms",toilet:"3 Toilet & Bath",tcp:"₱ 9,790,278.40",loanable:"₱ 8,400,408.52",monthlyDp:"₱ 79,918.99",term10:"₱ 135,527.95",term5:"₱ 178,483.48",highlights:"1 MBR + 2BR, 3 T&B\n1 Car Garage, 1 Maid's Room, 1 Service Area\nFloor area 172.55sqm on 120sqm lot",notes:"In-house 10Y @ ₱135,527.95/mo. 7-year term also available @ ₱152,820.23/mo. 12-month DP option: ₱159,837.97/mo. Total Package Price (incl. misc fee ₱699,305.60): ₱10,489,584.00. Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"⚠️ Contact number not in source. ⚠️ LTS/License to Sell not confirmed. ⚠️ Pag-IBIG/Bank financing not confirmed. ⚠️ Promo discount expiry not stated."},
+  {id:"p_202609190006",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Kathryn Model 100",position:"Regular Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Ongoing Construction",page:"DEFAULT",financing:["In-house","Cash"],reservation:"₱ 40,000.00",dp:"20% Downpayment — Net ₱ 1,783,431.68 (after ₱40,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:"139.00 sqm",beds:"2 Bedrooms",toilet:"2 Toilet & Bath",tcp:"₱ 9,117,158.40",loanable:"₱ 7,822,847.52",monthlyDp:"₱ 74,309.65",term10:"₱ 126,209.88",term5:"₱ 166,212.04",highlights:"2BR, 2 T&B\nFamily Area, Balcony, Lanai, Maid's Room, Service Area, Carport — all x1\nFloor area 139sqm on 120sqm lot",notes:"In-house 10Y @ ₱126,209.88/mo. 7-year term also available @ ₱142,313.24/mo. 12-month DP option: ₱148,619.31/mo. Also offers Cash Payment (7% disc, 7-day window) — Net TCP ₱9,084,597.12, Package ₱9,695,822.72 — and Deferred Payment (15 months) — Package ₱10,257,504.80, payable ₱683,833.65/mo. Inhouse Total Package Price: ₱9,768,384.00 (misc fee ₱529,120.80). Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"⚠️ Contact number not in source. ⚠️ LTS/License to Sell not confirmed. ⚠️ Pag-IBIG/Bank financing not confirmed. ⚠️ Cash/Deferred Payment boxes label ₱9,768,384.00 as 'Total Contract Price', which actually matches the Total Package Price, not the ₱9,117,158.40 TCP — verify with developer before quoting exact figures."},
+  {id:"p_202609190007",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Kathryn 128",position:"Regular Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Ongoing Construction",page:"DEFAULT",financing:["In-house"],reservation:"₱ 60,000.00",dp:"20% Downpayment — Net ₱ 2,182,983.68 (after ₱60,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:"187.00 sqm",beds:"2 Master Rooms + 2 Bedrooms",toilet:"3 Toilet & Bath",tcp:"₱ 11,214,918.40",loanable:"₱ 9,622,800.52",monthlyDp:"₱ 90,957.65",term10:"₱ 155,249.41",term5:"₱ 204,455.64",highlights:"2 Master Rooms + 2BR, 3 T&B\n2 Car Garage, 1 Maid's Room, 1 Service Area\nFloor area 187sqm on 120sqm lot",notes:"In-house 10Y @ ₱155,249.41/mo. 7-year term also available @ ₱175,057.99/mo. 12-month DP option: ₱181,915.31/mo. Total Package Price (incl. misc fee ₱819,089.58): ₱12,034,007.98. Reservation fee here is ₱60,000 — higher than the ₱40,000 used on other models. Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"⚠️ Contact number not in source. ⚠️ LTS/License to Sell not confirmed. ⚠️ Pag-IBIG/Bank financing not confirmed. ⚠️ Reservation fee of ₱60,000 differs from other models — confirm intentional."},
+  {id:"p_202609190008",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Shannon Model",position:"Regular Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Ongoing Construction",page:"DEFAULT",financing:["In-house"],reservation:"₱ 40,000.00",dp:"20% Downpayment — Net ₱ 1,914,471.68 (after ₱40,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:"154.05 sqm",beds:"1 Master Bedroom + 2 Bedrooms",toilet:"3 Toilet & Bath",tcp:"₱ 9,772,358.40",loanable:"₱ 8,385,032.52",monthlyDp:"₱ 79,769.65",term10:"₱ 135,279.89",term5:"₱ 178,156.79",highlights:"1 MBR + 2BR, 3 T&B\n1 Car Garage, 1 Maid's Room, 1 Service Area\nFloor area 154.05sqm on 120sqm lot",notes:"In-house 10Y @ ₱135,279.89/mo. 7-year term also available @ ₱152,540.51/mo. 12-month DP option: ₱159,539.31/mo. Total Package Price (incl. misc fee ₱698,025.60): ₱10,470,384.00. Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"⚠️ Contact number not in source. ⚠️ LTS/License to Sell not confirmed. ⚠️ Pag-IBIG/Bank financing not confirmed. ⚠️ Promo discount expiry not stated."},
+  {id:"p_202609190010",db:"zonal",name:"MetroGate Dasmariñas",dev:"Moldex (Moldex Realty Inc. / Moldex Land Inc)",model:"Lot Only 120sqm",position:"Regular Inner",type:"Lot Only",prov:"Cavite",city:"Dasmariñas",brgy:"Langkaan",status:"Pre-Selling",page:"DEFAULT",financing:["In-house"],reservation:"₱ 20,000.00",dp:"20% Downpayment — Net ₱ 484,967.68 (after ₱20,000 reservation), payable over 12 or 24 months",dpMonths:"12 or 24",lot:"120.00 sqm",floor:null,beds:null,toilet:null,tcp:"₱ 2,524,838.40",loanable:"₱ 2,166,401.52",monthlyDp:"₱ 20,206.99",term10:"₱ 34,951.63",term5:"₱ 46,029.53",highlights:"Lot Only, no house\n120 sqm\nRegular Inner classification",notes:"In-house 10Y @ ₱34,951.63/mo. 7-year term also available @ ₱39,411.18/mo. 12-month DP option: ₱40,413.97/mo. Total Package Price (incl. registration fee ₱146,530.80): ₱2,671,369.20. Location: Governor's Drive, Brgy. Langkaan, Dasmariñas, Cavite. Prices VAT-inclusive.",flagged:true,flagNote:"Missing: model name"},
+
+  // ── ANYANA - WESTHOLME RESIDENCES (Tanza, Cavite) ──
+  {id:"p_20260920009",db:"zonal",name:"Anyana - Westholme Residences",dev:"Antel Tanza Inc.",model:"Sydney",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Pag-IBIG","Bank"],reservation:"₱ 80,000.00",dp:"Higher DP Scheme — Net DP ₱ 2,098,399.38 payable in 21 months at 0% interest (starting Sep 1, 2026)",dpMonths:"21",lot:"86 sqm",floor:"76.09 sqm",beds:null,toilet:null,tcp:"₱ 6,095,250.00",loanable:"₱ 4,188,960.00",monthlyDp:"₱ 99,923.78",term30:"₱ 25,792.14",term25:"₱ 27,633.27",term20:"₱ 30,618.28",term15:"₱ 40,031.88",term10:null,term5:null,income30:"₱ 73,739.72",
+  financeGroups:[
+    {label:"Pag-IBIG Financing",terms:[
+      {label:"30Y",amort:"₱ 25,792.14",income:"₱ 73,739.72"},
+      {label:"25Y",amort:"₱ 27,633.27",income:"₱ 79,003.52"},
+      {label:"20Y",amort:"₱ 30,618.28",income:"₱ 87,537.67"}
+    ]},
+    {label:"Bank Financing",terms:[
+      {label:"25Y",amort:"₱ 41,772.66",income:"₱ 137,849.79"},
+      {label:"20Y",amort:"₱ 45,270.28",income:"₱ 149,391.91"},
+      {label:"15Y",amort:"₱ 51,722.33",income:"₱ 170,683.70"}
+    ]}
+  ],
+  highlights:null,notes:"Pag-IBIG 30Y @ ₱25,792.14/mo. Scheme: higher upfront DP (~34% of total collectible), leaving smaller balance of ₱4,188,960.00, financeable via Pag-IBIG (20Y=₱30,618.28/mo req.₱87,537.67; 25Y=₱27,633.27/mo req.₱79,003.52; 30Y=₱25,792.14/mo req.₱73,739.72) OR Bank (15Y=₱40,031.88/mo req.₱132,105.22; 20Y=₱35,038.14/mo req.₱115,625.87; 25Y=₱32,331.07/mo req.₱106,692.54). Total amount collectible ₱6,367,359.38 (incl. 5% misc ₱272,109.38). Village: Westholme Residences, Block 8 Lot 2. Prepared by JBANILA REALTY, checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",contact:null,flagged:true,flagNote:"⚠️ Developer name inferred from payee line — confirm. ⚠️ City/Barangay/Status not stated. ⚠️ Contact number not in source. ⚠️ Page assigned to ANA (Anyana/Antel Land, Tanza) — confirm if correct."},
+
+  {id:"p_20260920010",db:"zonal",name:"Anyana - Westholme Residences",dev:"Antel Tanza Inc.",model:"Sydney",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"Standard 15% DP — Net DP ₱ 875,103.91 payable in 21 months at 0% interest (starting Sep 1, 2026)",dpMonths:"21",lot:"86 sqm",floor:"76.09 sqm",beds:null,toilet:null,tcp:"₱ 6,095,250.00",loanable:"₱ 5,412,255.47",monthlyDp:"₱ 41,671.61",term30:null,term25:"₱ 41,772.66",term20:"₱ 45,270.28",term15:"₱ 51,722.33",term10:null,term5:null,income30:null,
+  financeGroups:[
+    {label:"Bank Financing",terms:[
+      {label:"25Y",amort:"₱ 41,772.66",income:"₱ 137,849.79"},
+      {label:"20Y",amort:"₱ 45,270.28",income:"₱ 149,391.91"},
+      {label:"15Y",amort:"₱ 51,722.33",income:"₱ 170,683.70"}
+    ]}
+  ],
+  highlights:null,notes:"Standard 15% DP scheme, no Pag-IBIG table shown for this scheme — Bank financing only. Cheapest: 25Y @ ₱41,772.66/mo (req.₱137,849.79); 20Y=₱45,270.28/mo (req.₱149,391.91); 15Y=₱51,722.33/mo (req.₱170,683.70). Total amount collectible ₱6,367,359.37 (incl. 5% misc ₱272,109.38). Full payment on balance due June 1, 2028. Village: Westholme Residences, Block 8 Lot 2. Prepared by JBANILA REALTY, checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",contact:null,flagged:true,flagNote:"⚠️ No Pag-IBIG option shown for this DP scheme — confirm if unavailable or omitted. ⚠️ Developer name inferred from payee line — confirm. ⚠️ City/Barangay/Status not stated. ⚠️ Contact number not in source."},
+
+  // ── ANYANA (Beverly Parks, Tanza, Cavite) — New models from Drive ──
+  {id:"p_20260920002",db:"zonal",name:"Anyana",dev:"Antel Land",model:"California",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% Downpayment — ₱ 2,868,420.06 net, payable in 21 months at 0% interest",dpMonths:"21",lot:"216 sqm",floor:"202.95 sqm",beds:null,toilet:null,tcp:"₱ 18,816,128.00",loanable:"₱ 16,707,713.66",monthlyDp:"₱ 136,591.43",term25:"₱ 128,952.84",term20:"₱ 139,750.02",term15:"₱ 159,667.62",highlights:null,notes:"Cheapest term: 25Y Bank @ ₱128,952.84/mo (req. income ₱425,544.37). 20Y=₱139,750.02/mo (req.₱461,175.06); 15Y=₱159,667.62/mo (req.₱526,903.13) — presentation only, subject to bank rate. Village: Beverly Parks, Block 3 Lot 1. Total collectible ₱19,656,133.71 (incl. 5% misc ₱840,005.71). Cash: 5% disc on House TCP, 10% on Lot TCP (30 days). Checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",flagged:true,flagNote:"⚠️ No Pag-IBIG offered — TCP likely exceeds Pag-IBIG ceiling. ⚠️ Status not stated. ⚠️ Barangay not confirmed. ⚠️ Contact number not in source."},
+  {id:"p_20260920003",db:"zonal",name:"Anyana",dev:"Antel Land",model:"Lot Only (no house model)",position:null,type:"Farm Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank"],reservation:"₱ 50,000.00",dp:"15% Downpayment — ₱ 956,931.25 net, payable in 21 months at 0% interest",dpMonths:"21",lot:"180 sqm",floor:null,beds:null,toilet:null,tcp:"₱ 6,426,000.00",loanable:"₱ 5,705,943.75",monthlyDp:"₱ 45,568.15",term10:"₱ 69,228.84",term5:"₱ 115,695.96",highlights:null,notes:"Lot-only unit, no house model. Cheapest term: 10Y Bank @ ₱69,228.84/mo (req.₱228,455.17); 5Y=₱115,695.96/mo (req.₱381,796.68) — presentation only. Village: Beverly Parks, Block 2 Lot 22. Total collectible ₱6,712,875.00 (incl. 5% misc ₱286,875.00). Cash: 10% disc on TCP (30 days). Checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",flagged:true,flagNote:"⚠️ Status not stated. ⚠️ Barangay not stated. ⚠️ Contact number not in source. ⚠️ Only 5Y/10Y terms shown — confirm if longer terms exist."},
+  {id:"p_20260920004",db:"zonal",name:"Anyana",dev:"Antel Land",model:"Tokyo",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% Downpayment — ₱ 1,220,580.36 net, payable in 21 months at 0% interest",dpMonths:"21",lot:"100 sqm",floor:"107.35 sqm",beds:null,toilet:null,tcp:"₱ 8,300,000.00",loanable:"₱ 7,369,955.36",monthlyDp:"₱ 58,122.87",term25:"₱ 56,882.51",term20:"₱ 61,645.26",term15:"₱ 70,431.13",highlights:null,notes:"Cheapest term: 25Y Bank @ ₱56,882.51/mo (req.₱187,712.28); 20Y=₱61,645.26/mo (req.₱203,429.36); 15Y=₱70,431.13/mo (req.₱232,422.74) — presentation only. Village: Beverly Parks, Block 12 Lot 14. Total collectible ₱8,670,535.71 (incl. 5% misc ₱370,535.71). Cash: 10% disc on lot TCP, 5% on house TCP (30 days). Checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",flagged:true,flagNote:"⚠️ Status not stated. ⚠️ Barangay not stated. ⚠️ Contact number not in source. ⚠️ No Pag-IBIG option shown."},
+  {id:"p_20260920005",db:"zonal",name:"Anyana",dev:"Antel Land",model:"New York",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% Downpayment — ₱ 1,586,770.51 net, payable in 21 months at 0% interest",dpMonths:"21",lot:"130 sqm",floor:"130.35 sqm",beds:null,toilet:null,tcp:"₱ 10,636,940.00",loanable:"₱ 9,445,032.88",monthlyDp:"₱ 75,560.50",term25:"₱ 72,898.29",term20:"₱ 79,002.04",term15:"₱ 90,261.66",highlights:null,notes:"Cheapest term: 25Y Bank @ ₱72,898.29/mo (req.₱240,564.37); 20Y=₱79,002.04/mo (req.₱260,706.74); 15Y=₱90,261.66/mo (req.₱297,863.46) — presentation only. Village: Beverly Parks, Block 26 Lot 11. Total collectible ₱11,111,803.39 (incl. 5% misc ₱474,863.39). Cash: 10% disc on lot TCP, 5% on house TCP (30 days). Checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",flagged:true,flagNote:"⚠️ Status not stated. ⚠️ Barangay not stated. ⚠️ Contact number not in source. ⚠️ No Pag-IBIG option shown."},
+  {id:"p_20260920006",db:"zonal",name:"Anyana",dev:"Antel Land",model:"Paris (No Firewall)",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% Downpayment — ₱ 2,500,751.00 net, payable in 21 months at 0% interest",dpMonths:"21",lot:"175 sqm",floor:"187.32 sqm",beds:null,toilet:null,tcp:"₱ 16,469,750.00",loanable:"₱ 14,624,255.69",monthlyDp:"₱ 119,083.38",term25:"₱ 112,872.37",term20:"₱ 122,323.14",term15:"₱ 139,757.01",highlights:null,notes:"Cheapest term: 25Y Bank @ ₱112,872.37/mo (req.₱372,478.84); 20Y=₱122,323.14/mo (req.₱403,666.36); 15Y=₱139,757.01/mo (req.₱461,198.12) — presentation only. Village: Beverly Parks, Block 17 Lot 2. Total collectible ₱17,205,006.70 (incl. 5% misc ₱735,256.70). Cash: 10% disc on lot TCP, 5% on house TCP (30 days). Checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",flagged:true,flagNote:"⚠️ Status not stated. ⚠️ Barangay not stated. ⚠️ Contact number not in source. ⚠️ No Pag-IBIG option shown. ⚠️ Model listed as 'Paris No Firewall' — confirm if distinct variant name."},
+  {id:"p_20260920007",db:"zonal",name:"Anyana",dev:"Antel Land",model:"Florida",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% Downpayment — ₱ 1,731,401.31 net, payable in 21 months at 0% interest",dpMonths:"21",lot:"130 sqm",floor:"141.41 sqm",beds:null,toilet:null,tcp:"₱ 11,559,940.00",loanable:"₱ 10,264,607.44",monthlyDp:"₱ 82,447.68",term25:"₱ 79,223.90",term20:"₱ 85,857.29",term15:"₱ 98,093.94",highlights:null,notes:"Cheapest term: 25Y Bank @ ₱79,223.90/mo (req.₱261,438.88); 20Y=₱85,857.29/mo (req.₱283,329.07); 15Y=₱98,093.94/mo (req.₱323,709.99) — presentation only. Village: Beverly Parks, Block 26 Lot 11. Total collectible ₱12,076,008.75 (incl. 5% misc ₱516,068.75). Cash: 5% disc on House TCP, 10% on Lot TCP (30 days). Checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",flagged:true,flagNote:"⚠️ Status not stated. ⚠️ Barangay not stated. ⚠️ Contact number not in source. ⚠️ No Pag-IBIG option shown."},
+  {id:"p_20260920008",db:"zonal",name:"Anyana",dev:"Antel Land",model:"Nevada",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank"],reservation:"₱ 80,000.00",dp:"15% Downpayment — ₱ 2,398,584.93 net, payable in 21 months at 0% interest",dpMonths:"21",lot:"175 sqm",floor:"167.22 sqm",beds:null,toilet:null,tcp:"₱ 15,817,750.00",loanable:"₱ 14,045,314.62",monthlyDp:"₱ 114,218.33",term25:"₱ 108,404.01",term20:"₱ 117,480.64",term15:"₱ 134,224.34",highlights:null,notes:"Cheapest term: 25Y Bank @ ₱108,404.01/mo (req.₱357,733.24); 20Y=₱117,480.64/mo (req.₱387,686.12); 15Y=₱134,224.34/mo (req.₱442,940.34) — presentation only. Village: Beverly Parks, Block 17 Lot 2. Total collectible ₱16,523,899.55 (incl. 5% misc ₱706,149.55). Cash: 10% disc on lot TCP, 5% on house TCP (30 days). Checks payable to ANTEL TANZA INC. Dated Aug 1, 2026.",flagged:true,flagNote:"⚠️ Status not stated. ⚠️ Barangay not stated. ⚠️ Contact number not in source. ⚠️ No Pag-IBIG option shown."},
+
+  // ── ENDURALAND PRESIDIO (Tanza, Cavite) ──
+  {id:"p_EDU_PRESIDIO_GRANT",db:"zonal",name:"Enduraland Presidio",dev:"Enduraland",model:"Grant",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank","Pag-IBIG","In-House"],reservation:"₱ 20,000.00",lot:"80 sqm",floor:"84 sqm",beds:null,toilet:null,tcp:"₱ 6,074,739.52",loanable:null,monthlyDp:null,
+  financeGroups:[
+    {label:"Bank Financing (10% DP — 18 mos at ₱32,637.44/mo)",misc:"₱ 650,864.95 (18 mos @ ₱36,159.16/mo)",loanable:"₱ 5,467,265.57",terms:[
+      {label:"30Y",amort:"₱ 38,227.91",income:"₱ 127,426.38"},
+      {label:"25Y",amort:"₱ 40,402.61",income:null},
+      {label:"20Y",amort:"₱ 44,043.92",income:null},
+      {label:"15Y",amort:"₱ 50,682.23",income:null},
+      {label:"10Y",amort:"₱ 64,897.41",income:null}
+    ]},
+    {label:"Pag-IBIG / HDMF Financing (40% DP — 36 mos at ₱66,941.55/mo)",misc:"₱ 650,864.95 (18 mos @ ₱36,159.16/mo)",loanable:"₱ 3,644,843.71",terms:[
+      {label:"30Y",amort:"₱ 22,441.93",income:"₱ 74,806.43"},
+      {label:"25Y",amort:"₱ 24,043.92",income:null},
+      {label:"20Y",amort:"₱ 26,641.19",income:null},
+      {label:"15Y",amort:"₱ 31,251.72",income:null},
+      {label:"10Y",amort:"₱ 40,924.34",income:null}
+    ]},
+    {label:"In-House Financing (20% DP — 24 mos at ₱49,789.50/mo)",misc:"₱ 650,864.95 (18 mos @ ₱36,159.16/mo)",loanable:"₱ 4,859,791.61",terms:[
+      {label:"10Y",amort:"₱ 75,456.25",income:"₱ 251,520.84"},
+      {label:"5Y",amort:"₱ 113,078.85",income:null}
+    ]}
+  ],
+  highlights:"Enduraland Presidio — Grant model\nLot: 80 sqm · Floor: 84 sqm\nBank / Pag-IBIG / In-House financing\nReservation: ₱20,000.00",notes:"Sample computations only, subject to change without prior notice. Misc fees start after full DP payment. Reservation fee non-refundable/non-transferrable. Source: Enduraland Tanza price list computation sheets (Sep 20 2026).",flagged:true,flagNote:"⚠️ Barangay not stated ⚠️ Project status not stated ⚠️ Contact number not in source ⚠️ LTS/License to Sell not confirmed"},
+
+  {id:"p_EDU_PRESIDIO_FELL",db:"zonal",name:"Enduraland Presidio",dev:"Enduraland",model:"Fell",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank","Pag-IBIG","In-House"],reservation:"₱ 20,000.00",lot:"80 sqm",floor:"75 sqm",beds:null,toilet:null,tcp:"₱ 5,560,659.52",loanable:null,monthlyDp:null,
+  financeGroups:[
+    {label:"Bank Financing (10% DP — 18 mos at ₱29,781.44/mo)",misc:"₱ 595,784.95 (18 mos @ ₱33,099.16/mo)",loanable:"₱ 5,004,593.57",terms:[
+      {label:"30Y",amort:"₱ 34,992.84",income:"₱ 116,642.81"},
+      {label:"25Y",amort:"₱ 36,983.50",income:null},
+      {label:"20Y",amort:"₱ 40,316.67",income:null},
+      {label:"15Y",amort:"₱ 46,393.20",income:null},
+      {label:"10Y",amort:"₱ 59,405.41",income:null}
+    ]},
+    {label:"Pag-IBIG / HDMF Financing (40% DP — 36 mos at ₱61,229.55/mo)",misc:"₱ 595,784.95 (18 mos @ ₱33,099.16/mo)",loanable:"₱ 3,336,395.71",terms:[
+      {label:"30Y",amort:"₱ 20,542.76",income:"₱ 68,475.87"},
+      {label:"25Y",amort:"₱ 22,009.18",income:null},
+      {label:"20Y",amort:"₱ 24,386.66",income:null},
+      {label:"15Y",amort:"₱ 28,607.02",income:null},
+      {label:"10Y",amort:"₱ 37,461.08",income:null}
+    ]},
+    {label:"In-House Financing (20% DP — 24 mos at ₱45,505.50/mo)",misc:"₱ 595,784.95 (18 mos @ ₱33,099.16/mo)",loanable:"₱ 4,448,527.61",terms:[
+      {label:"10Y",amort:"₱ 69,070.70",income:"₱ 230,235.67"},
+      {label:"5Y",amort:"₱ 103,509.46",income:null}
+    ]}
+  ],
+  highlights:"Enduraland Presidio — Fell model\nLot: 80 sqm · Floor: 75 sqm\nBank / Pag-IBIG / In-House financing\nReservation: ₱20,000.00",notes:"Sample computations only, subject to change without prior notice. Misc fees start after full DP payment. Reservation fee non-refundable/non-transferrable. Source: Enduraland Tanza price list computation sheets (Sep 20 2026).",flagged:true,flagNote:"⚠️ Barangay not stated ⚠️ Project status not stated ⚠️ Contact number not in source ⚠️ LTS/License to Sell not confirmed"},
+
+  {id:"p_EDU_PRESIDIO_EMBARCADERO",db:"zonal",name:"Enduraland Presidio",dev:"Enduraland",model:"Embarcadero",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank","Pag-IBIG","In-House"],reservation:"₱ 20,000.00",lot:"80 sqm",floor:"66 sqm",beds:null,toilet:null,tcp:"₱ 5,103,988.06",loanable:null,monthlyDp:null,
+  financeGroups:[
+    {label:"Bank Financing (10% DP — 18 mos at ₱27,244.38/mo)",misc:"₱ 546,855.86 (18 mos @ ₱30,380.88/mo)",loanable:"₱ 4,593,589.26",terms:[
+      {label:"30Y",amort:"₱ 32,119.04",income:"₱ 107,063.48"},
+      {label:"25Y",amort:"₱ 33,946.22",income:null},
+      {label:"20Y",amort:"₱ 37,005.64",income:null},
+      {label:"15Y",amort:"₱ 42,583.14",income:null},
+      {label:"10Y",amort:"₱ 54,526.72",income:null}
+    ]},
+    {label:"Pag-IBIG / HDMF Financing (40% DP — 36 mos at ₱56,155.42/mo)",misc:"₱ 546,855.86 (18 mos @ ₱30,380.88/mo)",loanable:"₱ 3,062,392.84",terms:[
+      {label:"30Y",amort:"₱ 18,855.68",income:"₱ 62,852.26"},
+      {label:"25Y",amort:"₱ 20,201.67",income:null},
+      {label:"20Y",amort:"₱ 22,383.89",income:null},
+      {label:"15Y",amort:"₱ 26,257.66",income:null},
+      {label:"10Y",amort:"₱ 34,384.58",income:null}
+    ]},
+    {label:"In-House Financing (20% DP — 24 mos at ₱41,699.90/mo)",misc:"₱ 546,855.86 (18 mos @ ₱30,380.88/mo)",loanable:"₱ 4,083,190.45",terms:[
+      {label:"10Y",amort:"₱ 63,398.24",income:"₱ 211,327.47"},
+      {label:"5Y",amort:"₱ 95,008.70",income:null}
+    ]}
+  ],
+  highlights:"Enduraland Presidio — Embarcadero model\nLot: 80 sqm · Floor: 66 sqm\nBank / Pag-IBIG / In-House financing\nReservation: ₱20,000.00",notes:"Sample computations only, subject to change without prior notice. Misc fees start after full DP payment. Reservation fee non-refundable/non-transferrable. Source: Enduraland Tanza price list computation sheets (Sep 20 2026).",flagged:true,flagNote:"⚠️ Barangay not stated ⚠️ Project status not stated ⚠️ Contact number not in source ⚠️ LTS/License to Sell not confirmed"},
+
+  {id:"p_EDU_PRESIDIO_DALTON",db:"zonal",name:"Enduraland Presidio",dev:"Enduraland",model:"Dalton",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank","Pag-IBIG","In-House"],reservation:"₱ 20,000.00",lot:"80 sqm",floor:"58 sqm",beds:null,toilet:null,tcp:"₱ 4,524,249.36",loanable:null,monthlyDp:null,
+  financeGroups:[
+    {label:"Bank Financing (10% DP — 18 mos at ₱24,023.61/mo)",misc:"₱ 484,741.00 (18 mos @ ₱26,930.06/mo)",loanable:"₱ 4,071,824.42",terms:[
+      {label:"30Y",amort:"₱ 28,470.79",income:"₱ 94,902.62"},
+      {label:"25Y",amort:"₱ 30,090.42",income:null},
+      {label:"20Y",amort:"₱ 32,802.34",income:null},
+      {label:"15Y",amort:"₱ 37,746.32",income:null},
+      {label:"10Y",amort:"₱ 48,333.28",income:null}
+    ]},
+    {label:"Pag-IBIG / HDMF Financing (40% DP — 36 mos at ₱49,713.88/mo)",misc:"₱ 484,741.00 (18 mos @ ₱26,930.06/mo)",loanable:"₱ 2,714,549.62",terms:[
+      {label:"30Y",amort:"₱ 16,713.95",income:"₱ 55,713.16"},
+      {label:"25Y",amort:"₱ 17,907.05",income:null},
+      {label:"20Y",amort:"₱ 19,841.41",income:null},
+      {label:"15Y",amort:"₱ 23,275.17",income:null},
+      {label:"10Y",amort:"₱ 30,478.99",income:null}
+    ]},
+    {label:"In-House Financing (20% DP — 24 mos at ₱36,868.74/mo)",misc:"₱ 484,741.00 (18 mos @ ₱26,930.06/mo)",loanable:"₱ 3,619,399.49",terms:[
+      {label:"10Y",amort:"₱ 56,197.13",income:"₱ 187,323.75"},
+      {label:"5Y",amort:"₱ 84,217.10",income:null}
+    ]}
+  ],
+  highlights:"Enduraland Presidio — Dalton model\nLot: 80 sqm · Floor: 58 sqm\nBank / Pag-IBIG / In-House financing\nReservation: ₱20,000.00",notes:"Sample computations only, subject to change without prior notice. Misc fees start after full DP payment. Reservation fee non-refundable/non-transferrable. Source: Enduraland Tanza price list computation sheets (Sep 20 2026).",flagged:true,flagNote:"⚠️ Barangay not stated ⚠️ Project status not stated ⚠️ Contact number not in source ⚠️ LTS/License to Sell not confirmed"},
+
+  // ── ENDURALAND WOODSIDE (Tanza, Cavite) ──
+  {id:"p_EDU_WOODSIDE_DELANO",db:"zonal",name:"Enduraland Woodside",dev:"Enduraland",model:"Delano",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank","Pag-IBIG","In-House"],reservation:"₱ 10,000.00",lot:"80 sqm",floor:"62 sqm",beds:null,toilet:null,tcp:"₱ 5,042,508.80",loanable:null,monthlyDp:null,
+  financeGroups:[
+    {label:"Bank Financing (10% DP — 18 mos at ₱27,458.38/mo)",misc:null,loanable:"₱ 4,538,257.92",terms:[
+      {label:"30Y",amort:"₱ 31,732.16",income:"₱ 105,773.86"},
+      {label:"25Y",amort:"₱ 33,537.33",income:null},
+      {label:"20Y",amort:"₱ 36,559.90",income:null},
+      {label:"15Y",amort:"₱ 42,070.21",income:null},
+      {label:"10Y",amort:"₱ 53,869.92",income:null}
+    ]},
+    {label:"Pag-IBIG / HDMF Financing (40% DP — 36 mos at ₱55,750.10/mo)",misc:null,loanable:"₱ 3,025,505.28",terms:[
+      {label:"30Y",amort:"₱ 18,628.56",income:"₱ 62,095.19"},
+      {label:"25Y",amort:"₱ 19,958.33",income:null},
+      {label:"20Y",amort:"₱ 22,114.27",income:null},
+      {label:"15Y",amort:"₱ 25,941.37",income:null},
+      {label:"10Y",amort:"₱ 33,970.40",income:null}
+    ]},
+    {label:"In-House Financing (20% DP — 24 mos at ₱41,604.24/mo)",misc:null,loanable:"₱ 4,034,007.04",terms:[
+      {label:"10Y",amort:"₱ 62,634.59",income:"₱ 208,781.96"},
+      {label:"5Y",amort:"₱ 93,864.29",income:null}
+    ]}
+  ],
+  highlights:"Enduraland Woodside — Delano model\nLot: 80 sqm · Floor: 62 sqm\nBank / Pag-IBIG / In-House financing\nReservation: ₱10,000.00",notes:"Sample computations only, subject to change without prior notice. Reservation fee non-refundable/non-transferrable. Misc fees not stated in source. Source: Enduraland Tanza price list computation sheets (Sep 20 2026).",flagged:true,flagNote:"⚠️ Barangay not stated ⚠️ Project status not stated ⚠️ Contact number not in source ⚠️ LTS/License to Sell not confirmed ⚠️ Misc fees not stated in source"},
+
+  {id:"p_EDU_WOODSIDE_BROADWAY",db:"zonal",name:"Enduraland Woodside",dev:"Enduraland",model:"Broadway",position:null,type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank","Pag-IBIG","In-House"],reservation:"₱ 10,000.00",lot:"60 sqm",floor:"43 sqm",beds:null,toilet:null,tcp:"₱ 3,003,680.00",loanable:null,monthlyDp:null,
+  financeGroups:[
+    {label:"Bank Financing (10% DP — 18 mos at ₱16,131.56/mo)",misc:null,loanable:"₱ 2,703,312.00",terms:[
+      {label:"30Y",amort:"₱ 18,901.95",income:"₱ 63,006.50"},
+      {label:"25Y",amort:"₱ 19,977.24",income:null},
+      {label:"20Y",amort:"₱ 21,777.70",income:null},
+      {label:"15Y",amort:"₱ 25,060.04",income:null},
+      {label:"10Y",amort:"₱ 32,088.79",income:null}
+    ]},
+    {label:"Pag-IBIG / HDMF Financing (35% DP — 36 mos at ₱28,924.67/mo)",misc:null,loanable:"₱ 1,952,392.00",terms:[
+      {label:"30Y",amort:"₱ 12,021.21",income:"₱ 40,070.71"},
+      {label:"25Y",amort:"₱ 12,879.33",income:null},
+      {label:"20Y",amort:"₱ 14,270.58",income:null},
+      {label:"15Y",amort:"₱ 16,740.26",income:null},
+      {label:"10Y",amort:"₱ 21,921.48",income:null}
+    ]},
+    {label:"In-House Financing (20% DP — 24 mos at ₱24,614.00/mo)",misc:null,loanable:"₱ 2,402,944.00",terms:[
+      {label:"10Y",amort:"₱ 37,309.65",income:"₱ 124,365.52"},
+      {label:"5Y",amort:"₱ 55,912.30",income:null}
+    ]}
+  ],
+  highlights:"Enduraland Woodside — Broadway model\nLot: 60 sqm · Floor: 43 sqm\nBank / Pag-IBIG / In-House financing\nReservation: ₱10,000.00",notes:"Sample computations only, subject to change without prior notice. Reservation fee non-refundable/non-transferrable. Misc fees not stated in source. Note: Pag-IBIG DP is 35% here (differs from Presidio's 40%). Source: Enduraland Tanza price list computation sheets (Sep 20 2026).",flagged:true,flagNote:"⚠️ Barangay not stated ⚠️ Project status not stated ⚠️ Contact number not in source ⚠️ LTS/License to Sell not confirmed ⚠️ Misc fees not stated in source ⚠️ Pag-IBIG DP is 35% (not the usual 40%) — verify"},
+
+  // ── ENDURALAND MONTARA (Tanza, Cavite) ──
+  {id:"p_EDU_MONTARA_ASHTON_INNER",db:"zonal",name:"Enduraland Montara",dev:"Enduraland",model:"Ashton",position:"Inner",type:"House and Lot",prov:"Cavite",city:"Tanza",brgy:null,status:null,page:"ANA",financing:["Bank","Pag-IBIG","In-House"],reservation:"₱ 10,000.00",lot:"60 sqm",floor:"49 sqm",beds:null,toilet:null,tcp:"₱ 3,524,480.00",loanable:null,monthlyDp:null,
+  financeGroups:[
+    {label:"Bank Financing (10% DP — 18 mos at ₱19,024.89/mo)",misc:null,loanable:"₱ 3,172,032.00",terms:[
+      {label:"30Y",amort:"₱ 22,179.31",income:"₱ 73,931.03"},
+      {label:"25Y",amort:"₱ 23,441.04",income:null},
+      {label:"20Y",amort:"₱ 25,553.67",income:null},
+      {label:"15Y",amort:"₱ 29,405.13",income:null},
+      {label:"10Y",amort:"₱ 37,652.58",income:null}
+    ]},
+    {label:"Pag-IBIG / HDMF Financing (40% DP — 36 mos at ₱38,883.11/mo)",misc:null,loanable:"₱ 2,114,688.00",terms:[
+      {label:"30Y",amort:"₱ 13,020.50",income:"₱ 43,401.66"},
+      {label:"25Y",amort:"₱ 13,949.95",income:null},
+      {label:"20Y",amort:"₱ 15,456.85",income:null},
+      {label:"15Y",amort:"₱ 18,131.82",income:null},
+      {label:"10Y",amort:"₱ 23,743.74",income:null}
+    ]},
+    {label:"In-House Financing (20% DP — 24 mos at ₱28,954.00/mo)",misc:null,loanable:"₱ 2,819,584.00",terms:[
+      {label:"10Y",amort:"₱ 43,778.68",income:"₱ 145,928.92"},
+      {label:"5Y",amort:"₱ 65,606.79",income:null}
+    ]}
+  ],
+  highlights:"Enduraland Montara — Ashton Inner model\nLot: 60 sqm · Floor: 49 sqm\nBank / Pag-IBIG / In-House financing\nReservation: ₱10,000.00",notes:"Sample computations only, subject to change without prior notice. Reservation fee non-refundable/non-transferrable. Misc fees not stated in source. Only Inner-position unit captured — corner/other positions likely priced higher. Source: Enduraland Tanza price list computation sheets (Sep 20 2026).",flagged:true,flagNote:"⚠️ Barangay not stated ⚠️ Project status not stated ⚠️ Contact number not in source ⚠️ LTS/License to Sell not confirmed ⚠️ Misc fees not stated in source ⚠️ Only Inner unit extracted — corner/other positions not in source"},
+
+  // ── MENARRA (Dasmariñas, Cavite) — Enduraland ──
+  {id:"p_20260919014",db:"zonal",name:"Menarra",dev:"Enduraland",model:"Dahlia",position:"Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:null,status:null,page:"DEFAULT",financing:["Bank"],reservation:"₱ 20,000.00",dp:"10% Downpayment — Net DP ₱ 558,412.80 over 24 months (₱23,267.20/mo)",dpMonths:"24",lot:"70 sqm",floor:"68 sqm",beds:null,toilet:null,tcp:"₱ 5,784,128.00",loanable:"₱ 5,205,715.20",monthlyDp:"₱ 23,267.20",term30:"₱ 33,775.82",term25:"₱ 35,697.25",term20:"₱ 38,914.48",term15:"₱ 44,779.68",term10:"₱ 57,339.34",term5:"₱ 96,794.06",income30:"₱ 112,586.07",highlights:"Menarra, Dahlia - Inner model\nLot Area: 70 sqm | Floor Area: 68 sqm",notes:"Bank 30Y @ ₱33,775.82/mo. Loan balance 90% of TCP (₱5,205,715.20) at 7.5% bank interest rate. Misc Fees ₱619,728.00 payable over 18 months (₱34,429.33/mo), starting after full payment of downpayment. Required GMI based on 30-year term (YTP). Sample computation only, subject to change without prior notice. Reservation fee is non-refundable and non-transferable.",flagged:true,flagNote:"⚠️ Contact number not in source ⚠️ Project status not stated ⚠️ Barangay not stated ⚠️ LTS/permit status not confirmed ⚠️ Unit type not explicitly stated — confirm with developer"},
+  {id:"p_20260919015",db:"zonal",name:"Menarra",dev:"Enduraland",model:"Dahlia",position:"Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:null,status:null,page:"DEFAULT",financing:["Pag-IBIG"],reservation:"₱ 20,000.00",dp:"40% Downpayment — Net DP ₱ 2,293,651.20 over 36 months (₱63,712.53/mo)",dpMonths:"36",lot:"70 sqm",floor:"68 sqm",beds:null,toilet:null,tcp:"₱ 5,784,128.00",loanable:"₱ 3,470,476.80",monthlyDp:"₱ 63,712.53",term30:"₱ 19,828.30",term25:"₱ 21,243.72",term20:"₱ 23,538.51",term15:"₱ 27,612.09",term10:"₱ 36,158.22",term5:null,income30:"₱ 66,094.33",highlights:"Menarra, Dahlia - Inner model\nLot Area: 70 sqm | Floor Area: 68 sqm",notes:"Pag-IBIG (HDMF) 30Y @ ₱19,828.30/mo. Loan balance 60% of TCP (₱3,470,476.80) at 6.25% HDMF interest rate. Misc Fees ₱619,728.00 payable over 18 months (₱34,429.33/mo), starting after full payment of downpayment. Required GMI based on 30-year term (YTP). Sample computation only, subject to change without prior notice. Reservation fee is non-refundable and non-transferable.",flagged:true,flagNote:"⚠️ Contact number not in source ⚠️ Project status not stated ⚠️ Barangay not stated ⚠️ LTS/permit status not confirmed ⚠️ Unit type not explicitly stated ⚠️ 5-year term not shown for Pag-IBIG in source"},
+  {id:"p_20260919016",db:"zonal",name:"Menarra",dev:"Enduraland",model:"Dahlia",position:"Inner",type:"House and Lot",prov:"Cavite",city:"Dasmariñas",brgy:null,status:null,page:"DEFAULT",financing:["In-house"],reservation:"₱ 20,000.00",dp:"20% Downpayment — Net DP ₱ 1,136,825.60 over 24 months (₱47,367.73/mo)",dpMonths:"24",lot:"70 sqm",floor:"68 sqm",beds:null,toilet:null,tcp:"₱ 5,784,128.00",loanable:"₱ 4,627,302.40",monthlyDp:"₱ 47,367.73",term30:null,term25:null,term20:null,term15:null,term10:"₱ 66,668.48",term5:"₱ 99,909.48",income30:null,highlights:"Menarra, Dahlia - Inner model\nLot Area: 70 sqm | Floor Area: 68 sqm",notes:"In-house 10Y @ ₱66,668.48/mo (max term for in-house is 10 years). Loan balance 80% of TCP (₱4,627,302.40) at 14% in-house interest rate. Misc Fees ₱619,728.00 payable over 18 months (₱34,429.33/mo), starting after full payment of downpayment. Required GMI ₱222,228.27 is based on 10-year term (10YTP). Sample computation only, subject to change without prior notice. Reservation fee is non-refundable and non-transferable.",flagged:true,flagNote:"⚠️ Contact number not in source ⚠️ Project status not stated ⚠️ Barangay not stated ⚠️ LTS/permit status not confirmed ⚠️ In-house only offers 10Y and 5Y terms — do not offer longer terms ⚠️ income30 is null — required income for 10Y is ₱222,228.27 (see notes)"},
+
+  // ── SOUTHPOINT VILLAS (Alaminos, Laguna) ──
+  {id:"p_1758038400010",db:"zonal",name:"Southpoint Villas",dev:"Borland Development Corporation",model:"I-8 Inner (40sqm lot, Batch 10)",position:"Inner Unit",type:"Townhouse",prov:"Laguna",city:"Alaminos",brgy:"Brgy. Poblacion III",status:"Pre-Selling",page:"DEFAULT",financing:["In-House"],reservation:"₱ 5,000.00",dp:"Gross Equity ₱ 215,556.40 — 15 months (EQ Term 15)",dpMonths:"15",lot:"40 sqm",floor:"46.6 sqm",beds:null,toilet:null,tcp:"₱ 1,390,686.46",loanable:"₱ 1,175,130.06",monthlyDp:"₱ 13,727.75",term15:"₱ 14,037.09",term30:null,term25:null,term20:null,term10:null,term5:null,income30:null,promo:"₱ 40,000.00 Financing Discount (Selling Price: ₱ 1,430,686.46)",contact:"09474439764",highlights:"Southpoint Villas — I-8 Inner, Batch 10\nBorland Development Corporation\nBrgy. Poblacion III, Alaminos, Laguna\nLot: 40 sqm · Floor: 46.6 sqm · Townhouse\nPre-Selling",notes:"In-house via Westbrook 15yrs @ 11.5% p.a. Monthly amort (15Y): ₱14,037.09/mo. Monthly DP equity: ₱13,727.75/mo × 15 mos. Cash option: ₱95,045.76 (15 mos @ 0% interest). Selling price before discount: ₱1,430,686.46. ₱40,000 financing discount applied to get TCP ₱1,390,686.46. Blocks 5 and 28 — multiple lots available. Source: Southpoint Villas Batch 1-10 pricelist Sept 15 2026.",flagged:false,flagNote:null},
+  {id:"p_1758038400011",db:"zonal",name:"Southpoint Villas",dev:"Borland Development Corporation",model:"I-8 End (70sqm lot, Batch 10)",position:"End Unit",type:"Townhouse",prov:"Laguna",city:"Alaminos",brgy:"Brgy. Poblacion III",status:"Pre-Selling",page:"DEFAULT",financing:["In-House"],reservation:"₱ 5,000.00",dp:"Gross Equity ₱ 294,536.00 — 15 months (EQ Term 15)",dpMonths:"15",lot:"70 sqm",floor:"46.6 sqm",beds:null,toilet:null,tcp:"₱ 1,900,232.26",loanable:"₱ 1,605,696.26",monthlyDp:"₱ 18,757.58",term15:"₱ 19,302.40",term30:null,term25:null,term20:null,term10:null,term5:null,income30:null,promo:"₱ 40,000.00 Financing Discount (Selling Price: ₱ 1,940,232.26)",contact:"09474439764",highlights:"Southpoint Villas — I-8 End Unit, Batch 10\nBorland Development Corporation\nBrgy. Poblacion III, Alaminos, Laguna\nLot: 70 sqm · Floor: 46.6 sqm · Townhouse\nPre-Selling",notes:"In-house via Westbrook 15yrs @ 11.5% p.a. Monthly amort (15Y): ₱19,302.40/mo. Monthly DP equity: ₱18,757.58/mo × 15 mos. Cash option: ₱129,015.48 (15 mos @ 0% interest). Selling price before discount: ₱1,940,232.26. ₱40,000 financing discount applied to get TCP ₱1,900,232.26. Block 5 Lots 36 & 37. Source: Southpoint Villas Batch 1-10 pricelist Sept 15 2026.",flagged:false,flagNote:null},
+  {id:"p_1758038400016",db:"zonal",name:"Southpoint Villas",dev:"Borland Development Corporation",model:"I-8 End (75sqm lot, Batch 10)",position:"End Unit",type:"Townhouse",prov:"Laguna",city:"Alaminos",brgy:"Brgy. Poblacion III",status:"Pre-Selling",page:"DEFAULT",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Gross Equity ₱ 239,695.70 — 15 months (EQ Term 15)",dpMonths:"15",lot:"75 sqm",floor:"46.6 sqm",beds:null,toilet:null,tcp:"₱ 2,004,695.70",loanable:"₱ 1,765,000.00",monthlyDp:"₱ 11,011.30",term30:"₱ 15,646.38",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 31,460.87",contact:"09474439764",highlights:"Southpoint Villas — I-8 End Unit 75sqm, Batch 10\nBorland Development Corporation\nBrgy. Poblacion III, Alaminos, Laguna\nLot: 75 sqm · Floor: 46.6 sqm · Townhouse\nPre-Selling · Largest lot in Batch 10 Pag-IBIG",notes:"Pag-IBIG 30Y @ ₱15,646.38/mo. Min. income: ₱31,460.87. Monthly DP equity: ₱11,011.30/mo × 15 mos. Block 5 Lot 22. End unit, largest lot in Batch 10 Pag-IBIG. Source: Southpoint Villas Batch 1-10 pricelist Sept 15 2026.",flagged:false,flagNote:null},
+  {id:"p_1758038400038",db:"zonal",name:"Southpoint Villas",dev:"Borland Development Corporation",model:"I-8 Inner (40sqm lot, Blocks 13 & 15, EQ9)",position:"Inner Unit",type:"Townhouse",prov:"Laguna",city:"Alaminos",brgy:"Brgy. Poblacion III",status:"Pre-Selling",page:"DEFAULT",financing:["Pag-IBIG"],reservation:"₱ 5,000.00",dp:"Gross Equity ₱ 75,207.60 — 9 months (EQ Term 9)",dpMonths:"9",lot:"40 sqm",floor:"46.6 sqm",beds:null,toilet:null,tcp:"₱ 1,310,207.60",loanable:"₱ 1,235,000.00",monthlyDp:"₱ 7,704.79",term30:"₱ 7,800.84",term25:null,term20:null,term15:null,term10:null,term5:null,income30:"₱ 22,013.70",contact:"09474439764",highlights:"Southpoint Villas — I-8 Inner 40sqm, Blocks 13 & 15\nBorland Development Corporation\nBrgy. Poblacion III, Alaminos, Laguna\nLot: 40 sqm · Floor: 46.6 sqm · Townhouse\nPre-Selling · Shortest equity period (EQ Term 9)",notes:"Pag-IBIG 30Y @ ₱7,800.84/mo. Min. income: ₱22,013.70. Monthly DP equity: ₱7,704.79/mo × 9 mos — shortest equity period in Southpoint. Higher loan value (₱1,235,000) vs Batch 9 Blocks 6-7 (₱1,213,000). Blocks 13 and 15. Source: Southpoint Villas Batch 1-10 pricelist Sept 15 2026.",flagged:false,flagNote:null}
+];
+
+// ── DNA ────────────────────────────────────────────────────────
+const DNA={
+  ANA:{colors:"#1A1A1A · #C9960F · #F5F0E6",fonts:"Cormorant Garamond Bold / Montserrat Light",tone:"Elegant · Aspirational · Lifestyle-first",taglish:"15% TG / 85% EN",anchor:"deserve, imagine, maramdaman, feel, lifestyle",accent:"#C9960F",bg:"#1A1A1A"},
+  NEW:{colors:"#2D5016 · #B8860B · #F5F0E8",fonts:"Montserrat Bold / Regular",tone:"Urban · Modern · Investment-aware",taglish:"20% TG / 80% EN",anchor:"sarili, independence, invest, future, OFW",accent:"#B8860B",bg:"#2D5016"},
+  PAG:{colors:"#1E3A78 · #D4900F · #F5F5F0",fonts:"Montserrat Bold / Regular",tone:"Relatable · Warm · Budget-affirming",taglish:"30% TG / 70% EN",anchor:"takot, qualify, hindi alam, kaya, tulong",accent:"#D4900F",bg:"#1E3A78"},
+  MCP:{colors:"#1A1A1A · #C9960F · #F5F0E6",fonts:"Cormorant Garamond / Montserrat Light",tone:"Visionary · Investment-focused · Long-term · Nature premium",taglish:"20% TG / 80% EN",anchor:"invest, appreciate, prime, legacy, deserve",accent:"#C9960F",bg:"#1A1A1A"},
+  RIC:{colors:"#3A4858 · #8B6848 · #F8F6F2",fonts:"Montserrat Bold / Regular",tone:"Grounded · Practical · Warm · Nature-focused",taglish:"30% TG / 70% EN",anchor:"solid, tiwala, pamilya, matibay, kalikasan",accent:"#8B6848",bg:"#3A4858"},
+  LIO:{colors:"#3D5A4C · #C9A96E · #FAF8F4",fonts:"Cormorant Garamond / Montserrat Light",tone:"Eco-conscious · Composed · Growth-minded",taglish:"25% TG / 75% EN",anchor:"tahanan, matibay, sarili, kaya, pamilya",accent:"#C9A96E",bg:"#3D5A4C"},
+  PAC:{colors:"#C4795A · #F8F8F6 · #4F5F72",fonts:"Montserrat Bold / Regular",tone:"Clean · Practical · Modern · First-home proud",taglish:"30% TG / 70% EN",anchor:"sarili, bagong simula, pamilya, tiwala",accent:"#C4795A",bg:"#4F5F72"},
+  BAT:{colors:"#1E3A78 · #D4900F · #F5F5F0",fonts:"Montserrat Bold / Regular",tone:"Relatable · Warm · Community",taglish:"30% TG / 70% EN",anchor:"tahanan, pamilya, sarili, kaya",accent:"#D4900F",bg:"#1E3A78"},
+  DEFAULT:{colors:"#1E3A78 · #D4900F · #F5F5F0",fonts:"Montserrat Bold / Regular",tone:"Relatable · Warm",taglish:"30% TG / 70% EN",anchor:"tahanan, pamilya, sarili",accent:"#D4900F",bg:"#1E3A78"}
+};
+
+// ── STATE ──────────────────────────────────────────────────────
+let ST={unit:null,outType:"chatgpt",lastPrompt:"",lastCaption:"",lastMessenger:"",lastAll:""};
+
+// ── INIT ───────────────────────────────────────────────────────
+// ── BROWSE HIERARCHY ─────────────────────────────────────────
+// Build geographic index from PROPS
+// Normalize city names to canonical spelling
+function normCity(city){
+  if(!city||city.trim()==='') return 'Unknown';
+  const c=city.trim();
+  // Dasmariñas — catches: Dasmarinas, Dasmariñas, DASMARINAS, dasmarinas, etc.
+  if(/dasmar/i.test(c)) return 'Dasmari\u00f1as';
+  // Naic variants
+  if(/^na[i\u00ed]c$/i.test(c)) return 'Naic';
+  // General Trias variants
+  if(/general\s*trias/i.test(c)) return 'General Trias';
+  return c;
+}
+
+function buildGeoIndex(db){
+  // db = 'zonal' | 'lhoopa'
+  const src = db==='lhoopa' ? PROPS.filter(p=>p.db==='lhoopa') : PROPS.filter(p=>p.db!=='lhoopa');
+  const idx={};
+  src.forEach(p=>{
+    const prov=p.prov||'Unknown';
+    const city=normCity(p.city);
+    const proj=p.name;
+    if(!idx[prov]) idx[prov]={};
+    if(!idx[prov][city]) idx[prov][city]={};
+    if(!idx[prov][city][proj]) idx[prov][city][proj]=[];
+    idx[prov][city][proj].push(p);
+  });
+  return idx;
+}
+
+// ── BRAND COLORS ─────────────────────────────────
+const BRAND_COLORS=[
+  {name:'Antique Gold',    hex:'#C9960F', bg:'#1A1A1A', desc:'ANA · MCP · Premium'},
+  {name:'Royal Gold',      hex:'#D4AF37', bg:'#0D1B2A', desc:'Navy + Gold · Trust'},
+  {name:'Warm Gold',       hex:'#C9A96E', bg:'#1C3A2B', desc:'LIO · Eco · Forest'},
+  {name:'Stone Brown',     hex:'#8B6848', bg:'#2A3540', desc:'RIC · Slate · Nature'},
+  {name:'Copper',          hex:'#B87333', bg:'#111111', desc:'Midnight · Dramatic'},
+  {name:'Champagne',       hex:'#C8A96A', bg:'#0E3040', desc:'Dark Teal · Coastal'},
+  {name:'Deep Crimson',    hex:'#8B1A1A', bg:'#1E1E1E', desc:'Bold · Foreclosed'},
+  {name:'Amber',           hex:'#E8A020', bg:'#2C1A0E', desc:'LOT · Farm · Earthy'},
+  {name:'Electric Blue',   hex:'#3A7BD5', bg:'#0A0F1E', desc:'OFW · Urban · Condo'},
+  {name:'Terracotta',      hex:'#C4795A', bg:'#2D2D2D', desc:'PAC · Starter homes'},
+  {name:'Rose Gold',       hex:'#B76E79', bg:'#1A1A1A', desc:'EMP · Women buyers'},
+  {name:'Sage Green',      hex:'#7BA05B', bg:'#232B25', desc:'Eco · Sustainable'},
+];
+function buildColorGrid(){
+  const g=document.getElementById('colorGrid');
+  if(!g)return;
+  g.innerHTML='';
+  const cur=document.getElementById('selColor').value;
+  BRAND_COLORS.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='color-swatch'+(c.hex===cur?' picked':'');
+    d.style.background=c.hex;
+    d.title=`${c.name} — ${c.desc}`;
+    d.onclick=()=>{
+      document.getElementById('selColor').value=c.hex;
+      document.getElementById('selBg').value=c.bg;
+      buildColorGrid();
+    };
+    g.appendChild(d);
+  });
+}
+
+// ── LAYOUT STYLES — ALL 10 ────────────────────────
+const LAYOUT_STYLES=[
+  {id:'1', label:'Full Bleed',    use:'Daily posts · all pages',
+   desc:'Photo fills top 65% · dark gradient info panel bottom 35% · nearby list left · financial right · agent bottom-right half-body',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;height:30px;background:#2d4a3a"></div><div class="lp-photo" style="top:30px;left:0;right:0;bottom:14px;background:#0f0f0f;opacity:.9"></div><div class="lp-bar" style="top:30px;left:0;right:0;height:2px;opacity:1"></div><div class="lp-agent" style="bottom:16px;right:2px;width:10px;height:14px"></div>`},
+  {id:'2', label:'Top Badge',     use:'Launch posts · announcements',
+   desc:'Decorative pill badge top center with project name · property photo middle · agent left panel · financial callout right panel · hook line between photo and panels',
+   preview:`<div class="lp-photo" style="top:8px;left:0;right:0;height:22px;background:#2d3a4a"></div><div class="lp-bar" style="top:2px;left:18px;right:18px;height:6px;border-radius:3px;opacity:.9"></div><div class="lp-photo" style="top:32px;left:0;width:20px;bottom:8px;background:#111"></div><div class="lp-photo" style="top:32px;left:22px;right:0;bottom:8px;background:#0a0a0a"></div><div class="lp-agent" style="top:34px;left:2px;width:10px;height:14px"></div>`},
+  {id:'3', label:'Side Panel',    use:'Premium · ANA · Reels',
+   desc:'Vertical sidebar left with rotated project name in bold · property photo fills right top 60% · info zone bottom · agent photo bottom-right half-body',
+   preview:`<div class="lp-photo" style="top:0;left:0;bottom:0;width:12px;background:#0f0f0f"></div><div class="lp-bar" style="top:0;left:0;width:12px;height:2px"></div><div class="lp-photo" style="top:0;left:14px;right:0;height:28px;background:#2d4a3a"></div><div class="lp-photo" style="top:30px;left:14px;right:0;bottom:0;background:#111"></div><div class="lp-agent" style="bottom:4px;right:2px;width:10px;height:14px"></div>`},
+  {id:'4', label:'Minimal Hero',  use:'Boost ads · one big number',
+   desc:'Photo fills 75% of card · one large amort number in accent color · short hook · 2-3 spec pills only · agent photo floating bottom-right overlapping photo boundary',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;height:32px;background:#2d3a4a"></div><div class="lp-photo" style="top:32px;left:0;right:0;bottom:0;background:#0f0f0f"></div><div class="lp-bar" style="top:36px;left:6px;width:28px;height:6px;border-radius:1px;opacity:.8"></div><div class="lp-agent" style="top:26px;right:2px;width:10px;height:16px"></div>`},
+  {id:'5', label:'Triptych',      use:'Messenger DM · computation',
+   desc:'Three equal columns — property photo left · full computation table center — TCP, loan value, amort, NDI · agent half-body right with contact and CTA · house specs row at top across all columns',
+   preview:`<div class="lp-photo" style="top:0;left:0;width:14px;bottom:0;background:#2d4a3a"></div><div class="lp-photo" style="top:0;left:16px;width:14px;bottom:0;background:#0f0f0f"></div><div class="lp-photo" style="top:0;left:32px;right:0;bottom:0;background:#111"></div><div class="lp-bar" style="top:0;left:0;right:0;height:4px;opacity:.6"></div><div class="lp-agent" style="top:8px;left:34px;right:2px;bottom:14px;background:#3a3a3a"></div>`},
+  {id:'6', label:'Diagonal Split', use:'Premium · ANA · MCP',
+   desc:'Property photo fills left 55% with diagonal clip edge · gold diagonal divider line · dark info panel right with hook, amort, specs, CTA · agent bottom-right of info panel',
+   preview:`<div class="lp-photo" style="top:0;left:0;bottom:0;width:26px;background:#2d4a3a;clip-path:polygon(0 0, 100% 0, 70% 100%, 0 100%)"></div><div class="lp-photo" style="top:0;left:24px;right:0;bottom:0;background:#0f0f0f"></div><div class="lp-bar" style="top:0;bottom:0;left:26px;width:2px;transform:skewX(-10deg)"></div><div class="lp-agent" style="bottom:4px;right:2px;width:10px;height:14px"></div>`},
+  {id:'7', label:'Floating Cards', use:'RFO · Richdale · Liora',
+   desc:'Property photo fills 100% of card full bleed · nearby list in floating dark card top-left · financial callout in floating dark card top-right · specs pills floating bottom · agent photo floating bottom-right overlapping photo',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;bottom:0;background:#2d4a3a;border-radius:4px"></div><div class="lp-photo" style="top:4px;left:4px;width:18px;height:18px;background:#0f0f0f;opacity:.9;border-radius:2px"></div><div class="lp-photo" style="top:4px;right:4px;width:16px;height:16px;background:#0f0f0f;opacity:.9;border-radius:2px"></div><div class="lp-bar" style="bottom:16px;left:4px;right:16px;height:8px;border-radius:2px;opacity:.85"></div><div class="lp-agent" style="bottom:4px;right:2px;width:10px;height:18px"></div>`},
+  {id:'8', label:'Editorial',      use:'Luxury · farm lots',
+   desc:'Property photo at 30-40% opacity as texture background · heavy dark overlay 70-80% · large serif hook phrase stacked vertically centered in accent and white · gold divider line · location + amort small below · strong gold bottom bar',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;bottom:0;background:#1C3A2B;opacity:.4;border-radius:4px"></div><div class="lp-photo" style="top:0;left:0;right:0;bottom:0;background:#0a0a0a;opacity:.75;border-radius:4px"></div><div class="lp-bar" style="top:10px;left:8px;width:28px;height:3px;border-radius:1px"></div><div class="lp-bar" style="top:15px;left:8px;width:22px;height:3px;border-radius:1px;opacity:.6"></div><div class="lp-bar" style="top:20px;left:8px;width:26px;height:3px;border-radius:1px"></div><div class="lp-bar" style="bottom:0;left:0;right:0;height:6px;opacity:.9;border-radius:0 0 4px 4px"></div>`},
+  {id:'9', label:'Color Block',    use:'Boost ads · PAG · WTR',
+   desc:'Property photo fills clean top 60% with no overlay · solid brand bg color block bottom 40% no gradient · hook phrase in white and accent on color block · one amort number and 2 spec pills only · agent photo overlapping photo and block boundary',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;height:26px;background:#2d3a4a;border-radius:4px 4px 0 0"></div><div class="lp-photo" style="top:26px;left:0;right:0;bottom:0;background:#1E3A78;border-radius:0 0 4px 4px"></div><div class="lp-bar" style="top:30px;left:6px;width:26px;height:4px;border-radius:1px;opacity:.8"></div><div class="lp-bar" style="top:36px;left:6px;width:18px;height:3px;border-radius:1px;opacity:.5"></div><div class="lp-agent" style="top:20px;right:4px;width:10px;height:16px"></div>`},
+  {id:'10',label:'Story Arc',      use:'Reels cover · emotional',
+   desc:'Three horizontal zones — property photo clean top 40% · large centered hook phrase middle 35% in white and accent color · financial summary bottom 25% with amort and specs · agent photo straddling zones 2 and 3 right side · reads top to bottom like a story',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;height:20px;background:#2d3a2a;border-radius:4px 4px 0 0"></div><div class="lp-photo" style="top:20px;left:0;right:0;height:16px;background:#0a0a0a"></div><div class="lp-bar" style="top:22px;left:6px;width:24px;height:3px;border-radius:1px"></div><div class="lp-bar" style="top:27px;left:6px;width:18px;height:3px;border-radius:1px;opacity:.6"></div><div class="lp-photo" style="top:36px;left:0;right:0;bottom:0;background:#0f0f0f;border-radius:0 0 4px 4px"></div><div class="lp-bar" style="top:36px;left:0;right:0;height:1px;opacity:.5"></div><div class="lp-agent" style="top:16px;right:2px;width:10px;height:20px"></div>`},
+];
+function buildLayoutGrid(){
+  const g=document.getElementById('layoutGrid');
+  if(!g)return;
+  g.innerHTML='';
+  const cur=document.getElementById('selLayout').value;
+  LAYOUT_STYLES.forEach(l=>{
+    const d=document.createElement('div');
+    d.className='layout-card'+(l.id===cur?' picked':'');
+    d.innerHTML=`<div class="lc-preview">${l.preview}</div><div class="lc-label">${l.label}</div><div class="lc-use">${l.use}</div>`;
+    d.title=l.desc;
+    d.onclick=()=>{
+      document.getElementById('selLayout').value=l.id;
+      buildLayoutGrid();
+    };
+    g.appendChild(d);
+  });
+}
+
+// ── HOOK SUGGESTIONS PER PAGE ────────────────────
+const HOOK_SUGGESTIONS={
+  ANA:['Live the Life You Deserve.','Where Every Morning Feels Different.','The Address You\'ve Been Working For.'],
+  NEW:['Your Own Unit in Dasmariñas.','Closer Than You Think.','Invest Where the Students Are.'],
+  RIC:['Mountains Behind You. Home Ahead.','Flood-Free. Nature-Rich. Yours.','Live Green. Live Smart.'],
+  LIO:['The House That Saves You Money.','Eco Living. Real Savings.','Solar. Rainwater. Yours Free.'],
+  PAG:['Stop Renting. Start Owning.','Your First Home Starts Here.','One Step Away From Home.'],
+  MCP:['9 Minutes to Tagaytay.','Your Own Land in the Mountains.','Nature Is Your Neighbor.'],
+  PAC:['₱5K. Your Home Starts Here.','Affordable. Modern. Yours.','First Home. Real Value.'],
+  BAT:['Your Batangas Home Awaits.','Peace. Space. Yours.','The Life You Imagined.'],
+  DEFAULT:['Your Next Home Starts Here.','This Could Be Yours.','The Right Home at the Right Price.']
+};
+function buildHookSuggestions(page){
+  const g=document.getElementById('hookSuggestions');
+  if(!g)return;
+  g.innerHTML='';
+  const suggestions=HOOK_SUGGESTIONS[page]||HOOK_SUGGESTIONS.DEFAULT;
+  suggestions.forEach(s=>{
+    const c=document.createElement('span');
+    c.className='hook-chip';
+    c.textContent=s;
+    c.onclick=()=>{ document.getElementById('hookLine').value=s; };
+    g.appendChild(c);
+  });
+}
+
+// ── INIT ──────────────────────────────────────────
+window.onload=()=>{
+  // Init runs after unlock — see ACCESS CODE GATE section below
+  buildColorGrid();
+  buildLayoutGrid();
+};
+
+function initBrowse(db){
+  const idx=buildGeoIndex(db);
+  const provs=Object.keys(idx).sort();
+  const sel=document.getElementById(db==='zonal'?'selProv':'selLhProv');
+  sel.innerHTML='<option value="">— Select province —</option>';
+  provs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+}
+
+function onProv(db){
+  const idx=buildGeoIndex(db);
+  const zonal=db==='zonal';
+  const prov=document.getElementById(zonal?'selProv':'selLhProv').value;
+  const muniId=zonal?'selMuni':'selLhMuni';
+  const muniF=zonal?'fMuni':'fLhMuni';
+  const projF=zonal?'fProj':'fLhProj';
+  const modelF=zonal?'fModel':'fLhModel';
+  const unitF=zonal?'fUnit':null;
+  const posF=zonal?'fPos':null;
+  const locF=zonal?'fLocation':null;
+  // Hide downstream
+  [projF,modelF,unitF,posF,locF].filter(Boolean).forEach(id=>document.getElementById(id).style.display='none');
+  hideProp(); resetOutput();
+  if(!prov){document.getElementById(muniF).style.display='none';return;}
+  const cities=Object.keys(idx[prov]||{}).sort();
+  const muniSel=document.getElementById(muniId);
+  muniSel.innerHTML='<option value="">— Select municipality —</option>';
+  cities.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;muniSel.appendChild(o);});
+  document.getElementById(muniF).style.display='block';
+  if(cities.length===1){muniSel.value=cities[0];onMuni(db);}
+}
+
+function onMuni(db){
+  const idx=buildGeoIndex(db);
+  const zonal=db==='zonal';
+  const prov=document.getElementById(zonal?'selProv':'selLhProv').value;
+  const city=document.getElementById(zonal?'selMuni':'selLhMuni').value;
+  const projId=zonal?'selProj':'selLhProj';
+  const projF=zonal?'fProj':'fLhProj';
+  const modelF=zonal?'fModel':'fLhModel';
+  const unitF=zonal?'fUnit':null;
+  const posF=zonal?'fPos':null;
+  const locF=zonal?'fLocation':null;
+  [modelF,unitF,posF,locF].filter(Boolean).forEach(id=>document.getElementById(id).style.display='none');
+  hideProp(); resetOutput();
+  if(!city){document.getElementById(projF).style.display='none';return;}
+  const projs=Object.keys(idx[prov]?.[city]||{}).sort();
+  const projSel=document.getElementById(projId);
+  projSel.innerHTML='<option value="">— Select project —</option>';
+  projs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;projSel.appendChild(o);});
+  document.getElementById(projF).style.display='block';
+  if(projs.length===1){projSel.value=projs[0];zonal?onProject():onLhProject();}
+}
+
+function onProject(){
+  const idx=buildGeoIndex('zonal');
+  const prov=document.getElementById('selProv').value;
+  const city=document.getElementById('selMuni').value;
+  const proj=document.getElementById('selProj').value;
+  ['fModel','fUnit','fPos','fLocation'].forEach(id=>document.getElementById(id).style.display='none');
+  hideProp(); resetOutput();
+  if(!proj) return;
+  const units=idx[prov]?.[city]?.[proj]||[];
+  const models=[...new Set(units.map(p=>p.model||p.type))];
+  const modelSel=document.getElementById('selModel');
+  modelSel.innerHTML='<option value="">— Select model —</option>';
+  models.forEach(m=>{
+    const u=units.find(p=>(p.model||p.type)===m);
+    const fin=u&&u.financing&&u.financing.length?` — ${u.financing.join('/')}` :'';
+    const o=document.createElement('option');
+    o.value=m;
+    o.textContent=m+fin+(units.find(u=>(u.model||u.type)===m&&u.flagged)?' ⚠':'');
+    modelSel.appendChild(o);
+  });
+  document.getElementById('fModel').style.display='block';
+  if(models.length===1){modelSel.value=models[0];onModel();}
+}
+
+function onModel(){
+  const idx=buildGeoIndex('zonal');
+  const prov=document.getElementById('selProv').value;
+  const city=document.getElementById('selMuni').value;
+  const proj=document.getElementById('selProj').value;
+  const model=document.getElementById('selModel').value;
+  ['fUnit','fPos','fLocation'].forEach(id=>document.getElementById(id).style.display='none');
+  hideProp(); resetOutput();
+  if(!model) return;
+  const allUnits=idx[prov]?.[city]?.[proj]||[];
+  const units=allUnits.filter(p=>(p.model||p.type)===model);
+  if(units.length===1){
+    ST.unit=units[0]; renderProp(units[0]);
+    document.getElementById('fPos').style.display='block';
+    document.getElementById('genBtn').disabled=false;
+    document.getElementById('genBtn').textContent='Generate Prompt';
+    setStep(2);
+  } else {
+    // Check if units differ by financing or by position
+    const positions = [...new Set(units.map(p=>p.position||''))];
+    const differByPosition = positions.filter(Boolean).length > 1;
+    const unitSel=document.getElementById('selUnit');
+    unitSel.innerHTML='<option value="">— Select unit / financing —</option>';
+    units.forEach(p=>{
+      const o=document.createElement('option');
+      o.value=p.id;
+      // Build label: show position if differs, financing if differs, both if both differ
+      const pos = p.position ? p.position : '';
+      const fin = (p.financing||[]).join(' / ');
+      let label = '';
+      if(differByPosition && pos) label = pos;
+      if(!differByPosition || !pos) label = fin ? fin : (pos || p.model);
+      if(differByPosition && pos && fin) label = `${pos} — ${fin}`;
+      o.textContent = label + (p.flagged?' ⚠':'');
+      unitSel.appendChild(o);
+    });
+    document.getElementById('fUnit').style.display='block';
+  }
+}
+
+function onUnit(){
+  const idx=buildGeoIndex('zonal');
+  const id=document.getElementById('selUnit').value;
+  hideProp(); resetOutput();
+  if(!id) return;
+  const p=PROPS.find(x=>x.id===id);
+  if(!p) return;
+  ST.unit=p; renderProp(p);
+  document.getElementById('fPos').style.display='block';
+  document.getElementById('genBtn').disabled=false;
+  document.getElementById('genBtn').textContent='Generate Prompt';
+  setStep(2);
+}
+
+// ── LHOOPA BROWSE ─────────────────────────────────────────────
+function onLhProject(){
+  const idx=buildGeoIndex('lhoopa');
+  const prov=document.getElementById('selLhProv').value;
+  const city=document.getElementById('selLhMuni').value;
+  const proj=document.getElementById('selLhProj').value;
+  document.getElementById('fLhModel').style.display='none';
+  hideProp(); resetOutput();
+  if(!proj) return;
+  const units=idx[prov]?.[city]?.[proj]||[];
+  const models=[...new Set(units.map(p=>p.model||p.type))];
+  const modelSel=document.getElementById('selLhModel');
+  modelSel.innerHTML='<option value="">— Select model —</option>';
+  models.forEach(m=>{
+    const u=units.find(p=>(p.model||p.type)===m);
+    const fin=u&&u.financing&&u.financing.length?` — ${u.financing.join('/')}` :'';
+    const o=document.createElement('option');
+    o.value=m;
+    o.textContent=m+fin+(units.find(u=>(u.model||u.type)===m&&u.flagged)?' ⚠':'');
+    modelSel.appendChild(o);
+  });
+  document.getElementById('fLhModel').style.display='block';
+  if(models.length===1){modelSel.value=models[0];onLhModel();}
+}
+
+function onLhModel(){
+  const idx=buildGeoIndex('lhoopa');
+  const prov=document.getElementById('selLhProv').value;
+  const city=document.getElementById('selLhMuni').value;
+  const proj=document.getElementById('selLhProj').value;
+  const model=document.getElementById('selLhModel').value;
+  hideProp(); resetOutput();
+  if(!model) return;
+  const allUnits=idx[prov]?.[city]?.[proj]||[];
+  const p=allUnits.find(u=>(u.model||u.type)===model);
+  if(!p) return;
+  ST.unit=p; renderLhProp(p);
+  document.getElementById('genBtn').disabled=false;
+  document.getElementById('genBtn').textContent='Generate Prompt';
+  setStep(2);
+}
+
+function renderLhProp(p){
+  document.getElementById('inProvince').value=p.prov||'';
+  document.getElementById('inCity').value=p.city||'';
+  document.getElementById('inBrgy').value=p.brgy||'';
+  const amort=cheapest(p);
+  const specs=getSpecs(p);
+  const card=document.getElementById('lhPropCard');
+  const rows=[
+    ['Project',p.name],['Model',p.model||(p.type||'—')],
+    ['Location',[p.brgy,p.city,p.prov].filter(Boolean).join(', ')],
+    ['Status',p.status||'—'],
+    specs.beds?['Bedrooms',specs.beds]:null,
+    specs.lot?['Lot Area',specs.lot]:null,
+    specs.floor?['Floor Area',specs.floor]:null,
+    ['Lowest Monthly',amort],
+  ].filter(Boolean);
+  card.innerHTML=rows.map(([k,v])=>{
+    if(k==='Lowest Monthly'){
+      return `<div class="pr highlight-row"><span class="k">${k}</span><span class="v gold" style="font-size:1.25em;font-weight:700;letter-spacing:.01em;">${v||'—'}</span></div>`;
+    }
+    return `<div class="pr"><span class="k">${k}</span><span class="v">${v||'—'}</span></div>`;
+  }).join('');
+  card.classList.add('vis');
+  const fb=document.getElementById('lhFlagBox');
+  if(p.flagged&&p.flagNote){fb.innerHTML=`⚠️ ${p.flagNote}`;fb.classList.add('vis');}
+  else fb.classList.remove('vis');
+}
+
+function renderProp(p){
+  const amort=cheapest(p);
+  const specs=getSpecs(p);
+  // Auto-fill location fields
+  document.getElementById('inProvince').value = p.prov||'';
+  document.getElementById('inCity').value = p.city||'';
+  document.getElementById('inBrgy').value = p.brgy||'';
+  document.getElementById('fLocation').style.display='block';
+  const card=document.getElementById('propCard');
+  const rows=[
+    ['Project',p.name],
+    ['Model',p.model||(p.type||'—')],
+    p.position?['View / Position',p.position]:null,
+    ['Location',[p.brgy,p.city,p.prov].filter(Boolean).join(', ')],
+    ['Status',p.status||'—'],
+    specs.beds?['Bedrooms',specs.beds]:null,
+    specs.toilet?['T&B',specs.toilet]:null,
+    specs.lot?['Lot Area',specs.lot]:null,
+    specs.floor?['Floor Area',specs.floor]:null,
+    ['Lowest Monthly',amort],
+  ].filter(Boolean);
+  card.innerHTML=rows.map(([k,v])=>{
+    if(k==='Lowest Monthly'){
+      return `<div class="pr highlight-row"><span class="k">${k}</span><span class="v gold" style="font-size:1.25em;font-weight:700;letter-spacing:.01em;">${v||'—'}</span></div>`;
+    }
+    return `<div class="pr"><span class="k">${k}</span><span class="v">${v||'—'}</span></div>`;
+  }).join('');
+  card.classList.add('vis');
+  const fb=document.getElementById('flagBox');
+  if(p.flagged&&p.flagNote){fb.innerHTML=`⚠️ <strong>Flagged:</strong> ${p.flagNote}`;fb.classList.add('vis');}
+  else fb.classList.remove('vis');
+}
+
+// ── HELPERS ────────────────────────────────────────────────────
+function parseAmount(str){
+  if(!str) return Infinity;
+  const m = str.replace(/,/g,'').match(/[\d]+\.?\d*/);
+  return m ? parseFloat(m[0]) : Infinity;
+}
+
+function cheapest(p){
+  // Collect all candidates: amort terms + monthly DP
+  const candidates = [];
+
+  // From financeGroups — find lowest amort across all groups
+  if(p.financeGroups && p.financeGroups.length){
+    p.financeGroups.forEach(g => {
+      if(g.terms) g.terms.forEach(t => {
+        const val = parseAmount(t.amort);
+        if(val < Infinity) candidates.push({val, label:`${t.amort} / mo (${g.label.split(' ')[0]} ${t.label})`});
+      });
+    });
+  }
+
+  // From flat term fields
+  const termFields = [
+    [p.term30,'30Y Pag-IBIG'],[p.term25,'25Y Pag-IBIG'],
+    [p.term20,'20Y Pag-IBIG'],[p.term15,'15Y Bank'],
+    [p.term10,'10Y'],[p.term5,'5Y']
+  ];
+  termFields.forEach(([v,label]) => {
+    const val = parseAmount(v);
+    if(val < Infinity) candidates.push({val, label:`${v} / mo (${label})`});
+  });
+
+  // Monthly DP as a candidate
+  if(p.monthlyDp){
+    const val = parseAmount(p.monthlyDp);
+    if(val < Infinity) candidates.push({val, label:`${p.monthlyDp} / mo (Monthly DP)`});
+  }
+
+  // From notes — Pag-IBIG 30Y
+  if(p.notes && !candidates.length){
+    const m = p.notes.match(/30Y[^₱]*₱[\s]*([\d,]+\.?\d*)/i);
+    if(m) candidates.push({val:parseFloat(m[1].replace(/,/g,'')), label:`₱ ${m[1]} / mo (Pag-IBIG 30Y)`});
+  }
+
+  if(!candidates.length) return '—';
+
+  // Return the lowest
+  candidates.sort((a,b) => a.val - b.val);
+  return candidates[0].label;
+}
+
+function getSpecs(p){
+  return{
+    beds:p.beds&&p.beds!=='0 Bedrooms'?p.beds:null,
+    toilet:p.toilet||null,
+    lot:p.lot||null,
+    floor:p.floor||null
+  };
+}
+
+function getPosition(){
+  return document.querySelector('input[name="pos"]:checked')?.value||'Inner';
+}
+
+function getHighlights(p){
+  const base=(p.highlights||'').split('\\n').map(s=>s.trim()).filter(Boolean);
+  const extras=[...document.querySelectorAll('.hg input:checked')].map(i=>i.value);
+  const seen=new Set();
+  return [...base,...extras].filter(h=>{if(seen.has(h))return false;seen.add(h);return true;});
+}
+
+function getQuote(p,highlights){
+  const page=p.page||'';
+  if(highlights.some(h=>/calax|expressway/i.test(h)))
+    return{q:"Infrastructure follows people. People follow opportunity. CALAX is already here.",a:"Zonal Realty"};
+  if(highlights.some(h=>/school|university|dlsu/i.test(h))&&page==='NEW')
+    return{q:"Invest where the students are. Demand never sleeps.",a:"Zonal Realty · NEW"};
+  const pool={
+    ANA:[{q:"Some neighborhoods you live in. Some, you live for.",a:"Antel Anyana · Zonal Realty"},{q:"The right address tells people where you live — and how far you've come.",a:"Zonal Realty · ANA"}],
+    NEW:[{q:"One unit. One decision. A lifetime of returns.",a:"Newtowne Dasmariñas"},{q:"Your own address in the city that never stops growing.",a:"Zonal Realty · NEW"}],
+    PAG:[{q:"Hindi kailangang mayaman para magkaroon ng sariling bahay. Kailangan mo lang ang tamang hakbang.",a:"Zonal Realty · PAG"},{q:"Ang bawat buwanang bayad mo sa renta — pwede na siyang bahay mo.",a:"Zonal Realty · PAG"}],
+    MCP:[{q:"Land doesn't lie. Cavite's growth corridor is telling you something — are you listening?",a:"Zonal Realty · MCP"},{q:"The buyers who move first are the ones who move well.",a:"MetroCavite Properties"}],
+    RIC:[{q:"Flood-free. Cool climate. Natural spring. Some neighborhoods take care of you back.",a:"Zonal Realty · RIC"},{q:"The best time to buy in General Trias was last year. The second best time is today.",a:"Richdale West · Zonal Realty"}],
+    LIO:[{q:"A home that saves you money while you sleep — that's not a feature. That's the future.",a:"Liora Homes · Zonal Realty"},{q:"Hindi ito basta bahay. Ito ay investment sa mas maliwanag, mas matipid na buhay.",a:"Liora Homes Naic"}],
+    PAC:[{q:"The hardest part of owning a home is starting. ₱5,000 is all it takes here.",a:"Naic Prime · Zonal Realty"},{q:"Abot-kaya hindi ibig sabihin na mababa ang kalidad. Ibig sabihin tamang desisyon.",a:"Zonal Realty · PAC"}],
+    BAT:[{q:"Affordable doesn't mean settling. It means choosing smart.",a:"Lhoopa · Zonal Realty"},{q:"The best investment you can make is in a place people actually want to live.",a:"Zonal Realty"}]
+  };
+  const p2=pool[page]||[{q:"The best time to buy was yesterday. The next best time is today.",a:"Zonal Realty"},{q:"A home isn't just a place. It's the most important decision you'll make.",a:"Zonal Realty"}];
+  return p2[Math.floor(Math.random()*p2.length)];
+}
+
+function getHook(p,amort){
+  const page=p.page||'';
+  // All hooks are text-only, punchy, max ~10 words — no prices in hook
+  const hooks={
+    ANA:"The address that changes how people see you.",
+    NEW:"Your own unit in Dasmariñas. Closer than you think.",
+    PAG:"Renta o sariling bahay — ikaw ang pipili.",
+    MCP:"9 minutes to Tagaytay. Your own land.",
+    RIC:"Flood-free. Natural spring. Mountains behind you.",
+    LIO:"The house that saves you money while you sleep.",
+    PAC:"₱5,000. Sariling bahay na. Ganun kasimple.",
+    BAT:"Sariling bahay sa Batangas. Hindi na malayo.",
+    DEFAULT:`${p.name} — ${p.city||'Cavite'}.`
+  };
+  return hooks[page]||hooks.DEFAULT;
+}
+
+// ── ANDROMEDA-COMPLIANT CAPTION ──────────────────────────────
+function buildCaption(p,hook,amort,specs,location,page,persona,position,highlights){
+  const a=amort.split('/')[0].trim();
+  const m=p.model||(p.type||p.name);
+  const pos=position!=='Inner'?` (${position} unit)`:'';
+  const specsStr=[specs.lot?`Lot: ${specs.lot}`:null,specs.floor?`Floor: ${specs.floor}`:null,specs.beds,specs.toilet].filter(Boolean).join(' · ');
+
+  // Top 3 proximity highlights for caption body
+  const nearbyItems=highlights.filter(h=>/km|m\b|minute/i.test(h)).slice(0,3);
+
+  // Page-specific caption templates — punchy, story-driven, CTA
+  const captions={
+    NEW:`${hook}
+
+Hindi lang ito condo. Ito ay investment sa tamang lugar — sa gitna ng pinaka-mabilis na lumalagong lungsod sa Cavite.
+
+📍 ${location}
+🏢 ${m}${pos} · Floor: ${specs.floor||'22 sqm'}
+${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
+
+💰 ${a}/month — cheapest via Pag-IBIG
+🔑 Reservation: ${p.reservation||'—'}
+📋 DP: ${p.dp||'—'}
+🏦 Financing: ${(p.financing||[]).join(' & ')}
+
+${persona==='OFW investor'?'Para sa mga OFW — pwede kang mag-reserve remotely. Ang unit, nagtatrabaho para sa iyo habang ikaw ay nasa abroad.':'Para sa mga young professionals at investors — ito ang address na nagbubukas ng pinto sa mas magandang kinabukasan.'}
+
+Gusto mong malaman ang full computation? I-message mo kami — libre at walang pressure. 👇`,
+
+    ANA:`${hook}
+
+Hindi lahat ng subdivision ay parehong pakiramdam. May ilan kang tinitirahan — may ilan, binubuhayan ka.
+
+📍 ${location}
+🏡 ${m}${pos}${specs.lot?` · Lot: ${specs.lot}`:''}${specs.floor?` · Floor: ${specs.floor}`:''}
+${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
+
+💰 ${a}/month (Bank financing)
+🔑 Reservation: ${p.reservation||'—'} · DP: ${p.dp||'—'}
+
+${persona==='Investor'?'Smart investors know — land appreciates. Lifestyle addresses appreciate faster.':'You\'ve worked for this. The right address is waiting.'}
+
+For private viewing and full computation — message us. No pressure, just the facts. 👇`,
+
+    DEFAULT:`${hook}
+
+${m}${pos} sa ${location}. ${p.status||'For Sale'}.
+
+${specsStr?specsStr+'\n':''}${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
+
+💰 ${a}/month
+🔑 Reservation: ${p.reservation||'—'}
+📋 DP Terms: ${p.dp||'—'}
+🏦 ${(p.financing||[]).join(' & ')} financing
+
+I-message mo kami para sa libreng computation at full details. 👇`
+  };
+
+  const mcpCap=`${hook}
+
+Hindi ito basta lupa. Ito ay legado — 1,000 sqm ng sariling bukid sa bundok ng Cavite, 9 minuto lang mula Tagaytay.
+
+📍 ${location}
+🌄 ${m}${pos} · Min. ${p.lot||'1,000 sqm'}
+${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
+
+💰 ${p.tcp||'—'} · ${p.sellingPrice||'—'}
+🔑 Reservation: ${p.reservation||'—'}
+💳 Payment: ${p.dp||'—'}
+
+Mount Talamitam views. Cool climate. Airbnb / staycation potential. River-adjacent options available.
+
+${persona==='Investor'?'Ang lupa ay hindi nagbabawas ng halaga. Mag-invest ngayon bago maging mas mahal.':'Para sa naghahanap ng sariling espasyo sa kalikasan — ito ang tamang desisyon.'}
+
+I-message mo kami para sa full pricing at site visit schedule. 👇`;
+
+  if(page==='MCP' && !captions.MCP) captions.MCP=mcpCap;
+
+  // Page-specific captions for new pages
+  const ricCap=`${hook}
+
+Richdale West Residences sa General Trias, Cavite — hindi lang ganda ng komunidad, kundi kalidad ng buhay. Flood-free. Cool climate. Natural spring sa loob ng subdivision.
+
+📍 ${location}
+🏡 ${m}${pos}${specs.lot?` · Lot: ${specs.lot}`:''}${specs.floor?` · Floor: ${specs.floor}`:''}
+${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
+
+💰 ${a}/month via Pag-IBIG 30 years
+🔑 Reservation: ${p.reservation||'—'} · DP: ${p.dp||'—'}
+
+Malapit sa Tagaytay, CALAX, at Metro Manila. Ang uri ng pamumuhay na iniisip mo — mura pa.
+
+I-message mo kami para sa tripping at computation. 👇`;
+
+  const lioCap=`${hook}
+
+Liora Homes Naic — ang unang eco-townhouse sa Cavite na nagbibigay ng solar panels at rainwater harvesting system libre sa bawat buyer.
+
+📍 ${location}
+🏠 ${m}${pos}${specs.lot?` · Lot: ${specs.lot}`:''}${specs.floor?` · Floor: ${specs.floor}`:''}${specs.beds?` · ${specs.beds}`:''}
+${nearbyItems.map(h=>`✅ ${h}`).join('\n')}
+
+💰 ${a}/month via Pag-IBIG
+🔑 Reservation: ${p.reservation||'—'} · DP: ${p.dp||'—'}
+
+3-star PHILGBC green certified. Sangley Airport at Cavite-Bataan Bridge — proposed sa Naic area. Mag-invest ngayon.
+
+I-message mo kami para sa full computation at tripping. 👇`;
+
+  const pacCap=`${hook}
+
+Naic Prime sa Naic, Cavite — ₱5,000 reservation lang ang simula. Pag-IBIG, in-house, at rent-to-own options — ikaw ang pipili ng mas komportable para sa iyo.
+
+📍 ${location}
+🏠 ${m}${pos}${specs.lot?` · Lot: ${specs.lot}`:''}${specs.floor?` · Floor: ${specs.floor}`:''}${specs.beds?` · ${specs.beds}`:''}
+
+💰 ${a}/month via Pag-IBIG
+🔑 Reservation: ${p.reservation||'—'} · DP: ${p.dp||'—'}
+
+Para sa mga first-timer at young families — ito ang pinaka-accessible na entry point sa sariling bahay ngayon.
+
+I-message mo kami. Libre ang tanong. 👇`;
+
+  if(page==='RIC' && !captions.RIC) captions.RIC=ricCap;
+  if(page==='LIO' && !captions.LIO) captions.LIO=lioCap;
+  if(page==='PAC' && !captions.PAC) captions.PAC=pacCap;
+
+  // Hashtags — Andromeda-aligned: geo-specific, buyer-intent, 6-8 only
+  const hashtags={
+    MCP:'#MidlandValleyCavite #FarmLotCavite #MagallanesCavite #ZonalRealty #InvestInCavite #LandBanking #TagaytayArea #FarmLotForSale',
+    NEW:'#NewtowneDasmarinas #CondoInCavite #DasmarinasCavite #InvestInCavite #ZonalRealty #OFWInvestment #CaviteRealEstate #UrbanLivingCavite',
+    ANA:'#AntelAnyana #TanzaCavite #AnyanaTanza #ZonalRealty #CaviteRealEstate #PremiumHomesPhilippines #HouseAndLotCavite #InvestInCavite',
+    PAG:'#PagIBIGHousing #AffordableHousesCavite #ZonalRealty #CaviteRealEstate #FirstHomeBuyersPH #HouseAndLot #OwnYourHome #SariliingBahay',
+    RIC:'#RichdaleWestResidences #GeneralTriasCavite #EcoCommunity #ZonalRealty #PagIBIGHousing #CaviteRealEstate #HouseAndLot #FloodFreeHomes',
+    LIO:'#LioraHomesNaic #EcoTownhouse #NaicCavite #ZonalRealty #GreenHomes #PagIBIGHousing #SolarPanels #CaviteRealEstate',
+    PAC:'#NaicPrime #NaicCavite #AffordableHomes #ZonalRealty #PagIBIGHousing #CaviteRealEstate #HouseAndLot #OwnYourHome',
+    BAT:'#BatangasRealEstate #LhoopaHomes #AffordableHomesBatangas #ZonalRealty #RealEstatePH #HouseAndLotBatangas #PagIBIGHousing #OwnYourHome',
+    DEFAULT:'#CaviteRealEstate #ZonalRealty #HouseAndLot #RealEstatePH #OwnYourHome #AffordableHomes #CaviteProperties #HomeBuyersPH'
+  };
+
+  // Merge dynamic captions into the map
+  const allCaps={...captions,MCP:mcpCap,RIC:ricCap,LIO:lioCap,PAC:pacCap};
+  const cap=allCaps[page]||captions.DEFAULT;
+  return cap+'\n\n'+(hashtags[page]||hashtags.DEFAULT);
+}
+
+// ── MESSENGER CARD — COMPUTATION SHEET FORMAT ─────────────────
+function buildMessengerCard(p,amort,specs,location,contact,agentName,position,highlights){
+  const pos=position!=='Inner'?` (${position} Unit)`:'';
+  const nearbyTop=highlights.filter(h=>/km|m\b|minute/i.test(h)).slice(0,2);
+  const fin=(p.financing||[]).join(' & ');
+
+  // Build house specs list
+  const specsList=[
+    specs.beds?`• ${specs.beds}`:null,
+    specs.toilet?`• ${specs.toilet}`:null,
+    specs.floor?`• Floor Area: ${specs.floor}`:null,
+    specs.lot?`• Lot Area: ${specs.lot}`:null,
+    p.type?`• Type: ${p.type}`:null,
+    p.status?`• Status: ${p.status}`:null,
+  ].filter(Boolean).join('\n');
+
+  // Additional house features from highlights (non-distance items)
+  const houseFeatures=highlights.filter(h=>!/km|m\b|minute/i.test(h)).slice(0,6).map(h=>`• ${h}`).join('\n');
+
+  // Full Pag-IBIG computation table if available
+  const pagibig30Y=p.notes?p.notes.match(/30Y[^₱]*₱[\s]*([\d,]+\.?\d*)/i):null;
+  const pagibam=pagibig30Y?`₱ ${pagibig30Y[1]}`:amort.split('/')[0].trim();
+
+  const compRows=[];
+  if(p.tcp) compRows.push(['Total Contract Price', p.tcp]);
+  if(p.loanable) compRows.push(['Loan Value', p.loanable]);
+  if(p.reservation) compRows.push(['Reservation Fee', p.reservation]);
+  if(p.dp) compRows.push(['Cash Outlay / DP', p.dp]);
+  if(p.monthlyDp&&p.monthlyDp!=='Not shown'&&p.dpMonths)
+    compRows.push(['Monthly Cash Outlay', `${p.monthlyDp} @ ${p.dpMonths} months`]);
+  const moAmort=p.term30||pagibam;
+  compRows.push(['Monthly Amortization', `${moAmort} @ 30 years`]);
+  if(p.income30) compRows.push(['Net Disposable Income Req.', p.income30]);
+
+  const compTable=compRows.map(([k,v])=>`${k.padEnd(28)}${v}`).join('\n');
+
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ZONAL REALTY — MESSENGER COMPUTATION CARD
+FOR DM / MESSENGER ONLY · NOT FOR POSTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ROLE: Create a professional property computation sheet — like a developer's official DM card. This is sent to buyers who inquire via Messenger. Pure information, no marketing text, no hooks.
+
+DESIGN STYLE: Clean light background (white or off-white). Dark text. Gold accent for section headers. Structured table/list layout. Mobile-readable. Like a formal computation sheet from a developer's office — not a social media post.
+
+PHOTO UPLOAD INSTRUCTIONS:
+📷 Upload 1 — UNIT PHOTO → small, top section, slightly rounded corners (like a thumbnail beside specs)
+🧑 Upload 2 — AGENT PHOTO → actual half-body photo · NOT circular · show full figure
+🔷 Upload 3 — ZONAL REALTY LOGO → top-left header, full color version preferred
+
+═══════════════════════════════════════
+CARD LAYOUT (top to bottom, single column):
+═══════════════════════════════════════
+
+SECTION 1 — HEADER (dark bg, gold text)
+• Zonal Realty logo — top-left
+• Project name: ${p.name}
+• Location: ${location}
+• Unit: ${p.model||(p.type||'—')}${pos}
+
+SECTION 2 — UNIT PHOTO (small, top-right or full-width thumbnail)
+Caption below photo: "${p.model||(p.type||'—')} · ${p.status||'For Sale'}"
+
+SECTION 3 — HOUSE SPECIFICATIONS (labeled list, left-aligned)
+Section header: "HOUSE SPECIFICATIONS"
+${specsList||'• Specs not confirmed — leave blank'}
+${houseFeatures?`\nADDITIONAL FEATURES:\n${houseFeatures}`:''}
+
+SECTION 4 — ${fin.includes('Pag-IBIG')?'PAG-IBIG':'BANK'} SAMPLE COMPUTATION
+Section header: "${fin.includes('Pag-IBIG')?'PAG-IBIG SAMPLE COMPUTATION':'BANK FINANCING COMPUTATION'}"
+Style: Two-column table (Label | Value) — bold labels, bold values
+
+${compTable}
+
+${p.term20&&p.term10?`BANK FINANCING OPTIONS:
+• 10-year term: ${p.term10||'—'} / mo
+• 15-year term: ${p.term15||'—'} / mo
+• 20-year term: ${p.term20||'—'} / mo`:''}
+
+SECTION 5 — NEARBY ESTABLISHMENTS (if available)
+Section header: "NEARBY ESTABLISHMENTS"
+${nearbyTop.length?nearbyTop.map(h=>`📍 ${h}`).join('\n'):'(Add nearby areas in Extra Notes field)'}
+
+SECTION 6 — AGENT INFO (bottom section)
+• Agent photo — circular, left side
+• Name: ${agentName||'Flo Alvarez'}
+• Title: Real Estate Consultant · Zonal Realty
+• "Message me for tripping schedule and full computation"
+• DO NOT show contact number here
+
+SECTION 7 — FOOTER
+Dark background bar:
+"📞 For inquiries: ${contact}"
+
+═══════════════════════════════════════
+STRICT RULES:
+• NO hooks, NO taglines, NO marketing text
+• NO "Limited slots", NO "Call now", NO urgency
+• Contact number: FOOTER ONLY — not in agent section, nowhere else
+• Project name: appears in header ONLY — nowhere else
+• Background: light/white — this is a document, not a social post
+• Zonal logo: full color, top-left
+• All numbers must match exactly as written above
+• If a value is "—" or blank — omit that row entirely, do not show dashes
+═══════════════════════════════════════`;
+}
+
+// ── QUICK DM — plain text, copy-paste ready ────────────────────
+function buildQuickDm(p, amort, specs, location, agentName, position) {
+  const pos = position && position !== 'Inner' ? ` (${position} Unit)` : '';
+  const model = p.model || p.type || '';
+  const fin = (p.financing || []).join(' / ');
+
+  let lines = [];
+
+  // Header block
+  lines.push(p.name + (pos ? pos : ''));
+  if (location) lines.push(`Location: ${location}`);
+  if (model)    lines.push(model);
+
+  // Specs
+  const specBits = [];
+  if (specs.floor)  specBits.push(`FA: ${specs.floor}`);
+  if (specs.lot)    specBits.push(`LA: ${specs.lot}`);
+  if (specs.beds)   specBits.push(specs.beds);
+  if (specs.toilet) specBits.push(specs.toilet);
+  if (p.status)     specBits.push(p.status);
+  if (specBits.length) lines.push(specBits.join(' · '));
+
+  // Blank line
+  lines.push('');
+  lines.push(`${fin} Financing:`);
+
+  // Core financial fields
+  if (p.tcp)         lines.push(`TCP: ${p.tcp}`);
+
+  // Misc fee and Total Package Price — only if found in notes, placed right after TCP
+  if (p.notes) {
+    const miscMatch = p.notes.match(/misc[^₱]*₱\s*([\d,]+\.?\d*)/i);
+    if (miscMatch) lines.push(`Miscellaneous Fee: ₱ ${miscMatch[1]}`);
+    const tppMatch = p.notes.match(/total package price[^₱]*₱\s*([\d,]+\.?\d*)/i);
+    if (tppMatch) lines.push(`Total Package Price: ₱ ${tppMatch[1]}`);
+  }
+
+  if (p.loanable)    lines.push(`Loanable Amount: ${p.loanable}`);
+  if (p.reservation) lines.push(`Reservation Fee: ${p.reservation}`);
+
+  // DP block
+  if (p.dp) lines.push(`Down Payment: ${p.dp}`);
+  if (p.monthlyDp && p.dpMonths) {
+    const rawTerms = String(p.dpMonths)
+      .split(/\s*(?:or|to|\/)\s*|-(?=\d)/i)
+      .map(s => s.trim())
+      .filter(s => /^\d+$/.test(s));
+
+    if (rawTerms.length > 1) {
+      // Multiple DP term options — try to extract each amount from notes
+      // Notes pattern: "12-month DP option: ₱102,587.31/mo" or "24-month DP option: ₱51,293.65/mo"
+      rawTerms.forEach(t => {
+        const noteMatch = p.notes && p.notes.match(
+          new RegExp(`${t}[-\\s]*month[^₱]*₱[\\s]*([\\d,]+\\.?\\d*)`, 'i')
+        );
+        if (noteMatch) {
+          lines.push(`Monthly DP (${t} mos): ₱ ${noteMatch[1]}`);
+        } else {
+          // Fallback — use the stored monthlyDp (same amount for both terms)
+          lines.push(`Monthly DP (${t} mos): ${p.monthlyDp}`);
+        }
+      });
+    } else {
+      lines.push(`Monthly DP: ${p.monthlyDp} × ${p.dpMonths} mos`);
+    }
+  } else if (p.monthlyDp) {
+    lines.push(`Monthly DP: ${p.monthlyDp}`);
+  }
+
+  // All amortization terms — use financeGroups if available, else flat terms
+  if (p.financeGroups && p.financeGroups.length) {
+    p.financeGroups.forEach(group => {
+      lines.push('');
+      lines.push(`${group.label}:`);
+      if (group.loanable) lines.push(`  Loanable Amount: ${group.loanable}`);
+      if (group.misc)     lines.push(`  Miscellaneous Fee: ${group.misc}`);
+      group.terms.forEach(t => {
+        const incomePart = t.income ? ` · Min. Income: ${t.income}` : '';
+        lines.push(`  Monthly Amort (${t.label}): ${t.amort}${incomePart}`);
+      });
+    });
+  } else {
+    const termLabels = [
+      ['term30', 'Monthly Amort (30Y)'],
+      ['term25', 'Monthly Amort (25Y)'],
+      ['term20', 'Monthly Amort (20Y)'],
+      ['term15', 'Monthly Amort (15Y)'],
+      ['term10', 'Monthly Amort (10Y)'],
+      ['term5',  'Monthly Amort (5Y)'],
+    ];
+    const hasTerms = termLabels.some(([key]) => p[key]);
+    if (hasTerms) {
+      lines.push('');
+      lines.push('Monthly Amortization Options:');
+      termLabels.forEach(([key, label]) => {
+        if (p[key]) {
+          const incomePart = key === 'term30' && p.income30 ? ` · Min. Income: ${p.income30}` : '';
+          lines.push(`  ${label}: ${p[key]}${incomePart}`);
+        }
+      });
+    }
+
+    // Income on its own line only if no financeGroups and not already shown inline
+    if (p.income30 && !termLabels.some(([key]) => key === 'term30' && p[key])) {
+      lines.push('');
+      lines.push(`Min. Net Disposable Income: ${p.income30}`);
+    }
+  }
+
+  // CTA
+  lines.push('');
+  lines.push('Message me for tripping schedule.');
+
+  return lines.join('\n');
+}
+
+// ── PROMPT BUILDERS ────────────────────────────────────────────
+function buildCGPT({p,dna,page,hook,amort,specs,specsLine,top6,location,contact,persona,quote,extraNotes,agentName,position,fmt,inProv,inCity,inBrgy,selColor,selBg,colorName,layoutStyle}){
+  const nearbyHighlights=top6.split('\n').filter(h=>/km|m\b/i.test(h)).slice(0,2).join('\n');
+  const otherHighlights=top6.split('\n').filter(h=>!/km|m\b/i.test(h)).join('\n');
+  const pos=position!=='Inner'?` (${position} Unit)`:'';
+  const fmtLine=fmt?`• Canvas Size: ${fmt.label} · ${fmt.ar} · ${fmt.note}`:'• Canvas Size: 1080×1920 px · Vertical 9:16 · Ideal for Reels';
+  const accentColor=selColor||'#C9960F';
+  const bgColor=selBg||dna.bg||'#1A1A1A';
+  const layoutDesc=layoutStyle?layoutStyle.desc:'Photo fills top 65% · dark info panel bottom 35%';
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EMPRESS PROPERTY DATABASE — CHATGPT LISTING CARD PROMPT
+${p.name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ROLE: Professional real estate graphic designer. Create a dark-themed Facebook listing card for ${p.name}. Follow the layout style and brand color exactly as specified below.
+
+PHOTO UPLOAD INSTRUCTIONS — FOLLOW EXACTLY:
+📷 Upload 1 — PROPERTY PHOTO → USE THIS EXACT PHOTO AS-IS. DO NOT alter, enhance, regenerate, or replace it. Do not add people, families, cars, or any elements to the property photo. The photo must appear exactly as uploaded.
+🧑 Upload 2 — AGENT PHOTO → USE THIS EXACT PHOTO AS-IS. DO NOT regenerate the face, beautify, or alter the agent in any way. Show the uploaded photo exactly — half-body, no circular crop, positioned bottom-right, minimum 200px wide.
+🔷 Upload 3 — ZONAL REALTY LOGO → top-left only, max 90px wide
+
+CRITICAL RULES — NO EXCEPTIONS:
+• Use the EXACT uploaded property photo — no AI-generated exterior, no added people on lawn
+• Use the EXACT uploaded agent photo — no AI face regeneration, no beautification
+• Dark theme ONLY — background #1A1A1A or brand bg color throughout
+• NO headline text / hook on the card — the property photo speaks for itself
+• NO taglines, slogans, or marketing phrases anywhere
+• Text covers maximum 30% of card — property photo dominates at least 70%
+
+BRAND DNA:
+• Selected Accent Color: ${accentColor} (${colorName}) — use for all callout numbers, badges, dividers, bottom bar, hook text
+• Selected Background: ${bgColor} — use throughout all dark panels and info zones
+• Base Colors: ${dna.colors}
+• Fonts: ${dna.fonts}
+• Tone: ${dna.tone}
+• Emotional anchors: ${dna.anchor}
+
+LAYOUT STYLE: ${layoutStyle?layoutStyle.label:'Clean Card'}
+${layoutDesc}
+
+SHORT HOOK (place above financial callout — small, punchy, English, max 6 words):
+"${hook}"
+Style: script or serif font · accent color or white · NOT large — it is a secondary element, not a headline
+
+PROPERTY:
+• Project: ${p.name}
+• Model: ${p.model||(p.type||'—')}${pos}
+• Barangay: ${inBrgy||'—'}
+• Municipality / City: ${inCity||'—'}
+• Province: ${inProv||'—'}
+• Full Location: ${location}
+• Status: ${p.status||'—'}
+• Financing: ${(p.financing||[]).join(', ')||'—'}
+[DO NOT include developer/company name anywhere on the card]
+
+LOCATION LINE ON CARD (show as: "Municipality, Province"):
+"${[inCity,inProv].filter(Boolean).join(', ')}"
+
+HOUSE SPECS (show only confirmed specs as pills):
+${specs.beds?`• Bedrooms: ${specs.beds}`:'• Bedrooms: [not confirmed — omit]'}
+${specs.toilet?`• Toilet & Bath: ${specs.toilet}`:'• T&B: [not confirmed — omit]'}
+${specs.lot?`• Lot Area: ${specs.lot}`:'• Lot Area: [not confirmed — omit]'}
+${specs.floor?`• Floor Area: ${specs.floor}`:'• Floor Area: [not confirmed — omit]'}
+
+FINANCIAL (NEVER include Total Contract Price):
+• Cheapest Monthly Amort: ${amort}
+• Reservation: ${p.reservation||'—'}
+• DP Terms: ${p.dp||'—'}
+
+HEADLINE (hook — ONLY large text on the card):
+"${hook}"
+
+QUOTE (small italic, one line only):
+"${quote.q}" — ${quote.a}
+
+LEFT PANEL — NEARBY LOCATIONS (2 closest only — no more):
+${nearbyHighlights||top6.split('\n').slice(0,2).join('\n')}
+
+OTHER HIGHLIGHTS (icon badges — non-distance items only, max 3):
+${otherHighlights||''}
+${extraNotes?`\nADDITIONAL: ${extraNotes}`:''}
+
+CANVAS FORMAT:
+${fmtLine}
+
+DESIGN LAYOUT — STYLE: ${layoutStyle?layoutStyle.label:'Clean Card'}
+Follow this layout structure: ${layoutDesc}
+
+STYLE 1 (Top Badge) rules:
+- Project name in decorative badge/pill at top center
+- Property photo fills middle 55% of card
+- Agent photo on left · financial info on right
+- Info zone: dark panel bottom 30%
+
+STYLE 2 (Side Panel) rules:
+- Vertical sidebar left: rotated project name in bold · location pill at bottom
+- Property photo fills right side top 60%
+- Financial + specs in bottom section
+- Agent photo bottom-right · half-body
+
+STYLE 3 (Clean Card) rules:
+- Property photo fills top 65% — no text overlay in photo zone
+- Dark gradient info zone bottom 35%
+- Left: nearby list · Right: financial callout
+- Agent photo bottom-right · specs pills in middle row
+
+UNIVERSAL RULES (apply to all styles):
+• Accent color ${accentColor} for all numbers, badges, dividers, CTA elements, bottom bar, hook text
+• Dark background ${bgColor} everywhere — no white or light panels
+• Short hook "${hook}" — above financial callout · small script/serif font · accent color
+• Property photo: EXACT uploaded image only — no AI exterior, no added people
+• Agent photo: EXACT uploaded half-body — NOT circular, NOT AI-regenerated, minimum 180px wide
+• Bottom bar: "${(p.name||'').toUpperCase()} · ${contact}" — ONE LINE only
+• Contact number: bottom bar ONLY
+• Project name: bottom bar ONLY (and sidebar for Style 2)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;}
+
+function buildCanva({p,dna,page,hook,amort,specs,specsLine,highlights,location,contact,quote,extraNotes,agentName,position,fmt,inProv,inCity,inBrgy}){
+  const c=dna.colors.split('·').map(x=>x.trim());
+  const pos=position!=='Inner'?` (${position} Unit)`:'';
+  const nearby=highlights.filter(h=>/km|m\b/i.test(h)).slice(0,3);
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EMPRESS PROPERTY DATABASE — CANVA DESIGN PROMPT
+${p.name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CANVAS: ${fmt?fmt.label+' px':' 1080×1920 px'} · ${fmt?fmt.ar:'9:16'} · Export PNG · Keep design UNCLUTTERED — max 3 text zones
+${fmt?fmt.note:'Vertical format — ideal for Reels and Stories'}
+[DO NOT include developer/company name anywhere on the card]
+
+PHOTO LAYERS — UPLOAD IN CANVA:
+📷 PROPERTY PHOTO → bottom of Layers panel → "Set as background" → full bleed
+🧑 AGENT PHOTO → bottom-right · actual half-body photo · NOT circular · show full figure
+   If agent faces right but property is left — flip horizontally (Edit → Flip Horizontal)
+   Agent name "${agentName||'Flo Alvarez'}" in small text below photo — NO contact number
+🔷 ZONAL REALTY LOGO → top-left ONLY · max 90px wide
+
+PROPERTY DETAILS:
+• Project: ${p.name}
+• Model: ${p.model||(p.type||'—')}${pos}
+• Barangay: ${inBrgy||'—'}
+• Municipality / City: ${inCity||'—'}
+• Province: ${inProv||'—'}
+• Full Location: ${location}
+• Status: ${p.status||'—'}
+
+LOCATION LINE ON CARD (small text, above headline):
+"${[inCity,inProv].filter(Boolean).join(', ')}"
+
+LAYER ORDER (bottom → top):
+1. Property photo (background, full bleed)
+2. Dark gradient rect (${c[0]}, 70%→0%, bottom 55% of frame)
+3. Divider line (1px, ${c[1]}, full width, at y=580px)
+4. ZONE A — Financial callout box (left-center):
+   Large: ${amort}
+   Sub: "Cheapest monthly via ${(p.financing||['Pag-IBIG']).join('/')}"
+5. ZONE B — Specs pills row (below financial):
+   ${specsLine||'[Floor area · Model · Status]'}
+6. ZONE C — Nearby list (right column, 3 items max):
+   ${nearby.map(h=>`📍 ${h}`).join('\n   ')||'[Top 3 nearby]'}
+7. Location line: "${p.city||''}, ${p.prov||''}" — small text, above headline
+8. Headline: "${hook}"
+   Font: ${dna.fonts.split('/')[0].trim()} · ${c[1]} · 2px black stroke
+9. Quote (italic, smaller): "${quote.q}"
+10. Bottom bar (one line): "${(p.name||'').toUpperCase()}  ·  ${contact}"
+    ⚠️ Contact and project name appear ONLY here. Nowhere else.
+12. Agent photo (circular) + name — bottom-right corner
+
+SPACING RULE: If it feels crowded — remove lowest priority element first (quote, then extras). Clean > Complete.
+${extraNotes?`\nNOTE: ${extraNotes}`:''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;}
+
+function buildGFlow({p,dna,page,hook,amort,specs,specsLine,highlights,location,contact,quote,extraNotes,agentName,position,fmt,inProv,inCity,inBrgy},caption){
+  const pos=position!=='Inner'?` (${position} Unit)`:'';
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EMPRESS PROPERTY DATABASE — GOOGLE FLOW / GEMINI PROMPT
+${p.name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SYSTEM: Real estate listing card generator for Zonal Realty PH. Return JSON. Never include TCP. Contact and project name appear EXACTLY ONCE each — in bottom bar only.
+
+USER PROMPT:
+{
+  "project": "${p.name}",
+  "model": "${(p.model||(p.type||''))}${pos}",
+  "barangay": "${inBrgy||''}",
+  "municipality": "${inCity||''}",
+  "province": "${inProv||''}",
+  "location_line_on_card": "${[inCity,inProv].filter(Boolean).join(', ')}",
+  "full_location": "${location}",
+  "status": "${p.status||''}",
+  "unit_position": "${position}",
+  "canvas_format": "${fmt?fmt.label+' · '+fmt.ar:'1080×1920 · 9:16'}",
+  "canvas_note": "${fmt?fmt.note:'Vertical format for Reels and Stories'}",
+  "include_developer_name": false,
+  "financing": ${JSON.stringify(p.financing||[])},
+  "specs": {
+    "beds": "${specs.beds||'not confirmed'}",
+    "toilet": "${specs.toilet||'not confirmed'}",
+    "lot_area": "${specs.lot||'not confirmed'}",
+    "floor_area": "${specs.floor||'not confirmed'}"
+  },
+  "financial": {
+    "reservation": "${p.reservation||''}",
+    "dp_terms": "${p.dp||''}",
+    "cheapest_monthly": "${amort}",
+    "include_tcp": false
+  },
+  "hook": "${hook}",
+  "quote": "${quote.q}",
+  "quote_attr": "${quote.a}",
+  "nearby_highlights": ${JSON.stringify(highlights.filter(h=>/km|m\b/i.test(h)).slice(0,2))},
+  "other_highlights": ${JSON.stringify(highlights.filter(h=>!/km|m\b/i.test(h)).slice(0,3))},
+  "agent_name": "${agentName||'Flo Alvarez'}",
+  "contact": "${contact}",
+  "contact_placement": "BOTTOM BAR ONLY — do not repeat contact anywhere else on the card",
+  "project_name_placement": "BOTTOM BAR ONLY — do not repeat project name anywhere else",
+  "agent_photo": "circular bottom-right — mirror horizontally if agent faces away from property",
+  "brand_dna": {
+    "colors": "${dna.colors}",
+    "fonts": "${dna.fonts}",
+    "tone": "${dna.tone}",
+    "taglish": "${dna.taglish}",
+    "emotional_anchors": "${dna.anchor}"
+  },
+  "photo_slots": {
+    "slot_1": "PROPERTY_PHOTO — full-bleed background",
+    "slot_2": "AGENT_PHOTO — bottom-right circular, mirror if needed",
+    "slot_3": "ZONAL_LOGO — top-left only, max 90px"
+  },
+  "layout": "left column = nearby locations with distances · right = financial callout · bottom = headline + CTA + bottom bar"
+}
+
+RETURN JSON: headline, cta_on_card, nearby_list (array 5), specs_pills, amort_callout, quote_block, bottom_bar, design_notes
+${extraNotes?`\nNOTES: ${extraNotes}`:''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;}
+
+// ── GENERATE ──────────────────────────────────────────────────
+function generate(){
+  const p=ST.unit;if(!p)return;
+  const contact=document.getElementById('contact').value.trim()||'0977-3032-007';
+  const persona=document.getElementById('persona').value;
+  const customHook=document.getElementById('hookLine').value.trim();
+  const selColor=document.getElementById('selColor').value||'#C9960F';
+  const selBg=document.getElementById('selBg').value||'#1A1A1A';
+  const selLayout=document.getElementById('selLayout').value||'1';
+  const colorName=BRAND_COLORS.find(c=>c.hex===selColor)?.name||'Antique Gold';
+  const layoutStyle=LAYOUT_STYLES.find(l=>l.id===selLayout);
+  const fmtVal=document.querySelector('input[name="fmt"]:checked')?.value||'1080x1920';
+  const fmtMap={'1080x1080':{label:'1080×1080 px',ar:'Square 1:1',note:'Square format — ideal for Feed post'},'1080x1350':{label:'1080×1350 px',ar:'Portrait 4:5',note:'Portrait format — ideal for Feed post, highest organic reach'},'1080x1920':{label:'1080×1920 px',ar:'Vertical 9:16',note:'Vertical format — ideal for Reels and Stories'}};
+  const fmt=fmtMap[fmtVal]||fmtMap['1080x1920'];
+  const extraNotes=document.getElementById('extraNotes').value.trim();
+  const position=getPosition();
+  const amort=cheapest(p);
+  const specs=getSpecs(p);
+  const highlights=getHighlights(p);
+  const hook=customHook||getHook(p,amort);
+  const quote=getQuote(p,highlights);
+  const page=p.page||'DEFAULT';
+  const dna=DNA[page]||DNA.DEFAULT;
+  buildHookSuggestions(page);
+  // Read from editable location fields (auto-filled but overrideable)
+  const inProv=document.getElementById('inProvince').value.trim()||p.prov||'';
+  const inCity=document.getElementById('inCity').value.trim()||p.city||'';
+  const inBrgy=document.getElementById('inBrgy').value.trim()||p.brgy||'';
+  const location=[inBrgy,inCity,inProv].filter(Boolean).join(', ');
+  const specsLine=[specs.beds,specs.toilet,specs.lot?`Lot ${specs.lot}`:null,specs.floor?`Floor ${specs.floor}`:null].filter(Boolean).join(' · ');
+  const top6=highlights.slice(0,6).map(h=>`• ${h}`).join('\n');
+  const agentName=document.getElementById('agentName').value.trim();
+  const caption=buildCaption(p,hook,amort,specs,location,page,persona,position,highlights);
+  const messenger=buildMessengerCard(p,amort,specs,location,contact,agentName,position,highlights);
+  const quickDm=buildQuickDm(p,amort,specs,location,agentName,position);
+
+  let prompt='';
+  const d={p,dna,page,hook,amort,specs,specsLine,top6,highlights,location,contact,persona,quote,extraNotes,agentName,position,inProv,inCity,inBrgy,fmt,selColor,selBg,colorName,layoutStyle};
+  if(ST.outType==='chatgpt') prompt=buildCGPT(d);
+  else if(ST.outType==='canva') prompt=buildCanva(d);
+  else prompt=buildGFlow(d,caption);
+
+  ST.lastPrompt=prompt;
+  ST.lastCaption=caption;
+  ST.lastMessenger=messenger;
+  ST.lastAll=`${prompt}\n\n${'─'.repeat(60)}\nCAPTION + HASHTAGS\n${'─'.repeat(60)}\n${caption}\n\n${'─'.repeat(60)}\nMESSENGER CARD PROMPT\n${'─'.repeat(60)}\n${messenger}`;
+
+  // Show outputs
+  document.getElementById('outArea').textContent=prompt;
+  document.getElementById('qtext').textContent=`"${quote.q}"`;
+  document.getElementById('qattr').textContent=`— ${quote.a}`;
+  document.getElementById('qbox').style.display='block';
+  document.getElementById('capText').textContent=caption;
+  document.getElementById('messengerCard').textContent=messenger;
+  document.getElementById('quickDmBox').textContent=quickDm;
+  document.getElementById('outputTabs').style.display='flex';
+  switchTab('listing',document.querySelector('.otab'));
+  setStep(4);
+  document.getElementById('saveStatus').classList.remove('vis');
+}
+
+// ── TABS ───────────────────────────────────────────────────────
+function switchTab(name,btn){
+  document.querySelectorAll('.out-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.otab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+// ── SAVE TO DRIVE ──────────────────────────────────────────────
+async function savePrompt(){
+  const p=ST.unit;if(!p||!ST.lastAll)return;
+  const btn=document.getElementById('bSave');
+  const status=document.getElementById('saveStatus');
+  btn.textContent='⏳ Saving…';btn.classList.add('saving');
+  status.classList.remove('vis');
+
+  // Map page to Drive folder IDs (Zonal property DB root)
+  const folderMap={
+    MCP:'1th60itJX4KY6Q5X4WCjEU01HtUjjtvHE',   // Midland Valley
+    ANA:'1OUn58-JudY-wxGfb1_l_WUX6NWby-hDj',   // Anyana by Antel Land
+    NEW:'1f5853b3mH6zSXxHqo3m1eD9pTGlHkEMf',   // Newtowne Dasmariñas
+    RIC:'1UCS-hGTuAuUYdMv-aUP46f5DEvg86IF2',   // Richdale West Residences
+    LIO:'1HQJYdDSAXo_dO4hTahZmjGkHA6-M1jwY',   // Liora Homes Naic
+    PAC:'1oaS6dbbR1PPjOgpEfoC9lEMuSu7sAAhh',   // Pacifictown Naic
+    PAG:'1Am82nLLyYYIAfgtTPBY7IBJCb66E38o5',   // Mapletree (PAG page)
+    DEFAULT:'1pmrZgPQNHWrDP8wjP4oSMx0xhLTNdoRt' // Root
+  };
+  const folderId=folderMap[p.page]||folderMap.DEFAULT;
+  const ts=new Date().toISOString().slice(0,10);
+  const model=(p.model||(p.type||'unit')).replace(/\s+/g,'-').replace(/[^a-zA-Z0-9-]/g,'');
+  const outType=ST.outType.toUpperCase();
+  const filename=`PROMPT-${p.page||'DB'}-${model}-${outType}-${ts}.txt`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:500,
+        mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}],
+        messages:[{role:'user',content:`Create a new text file in Google Drive folder ID ${folderId} with filename "${filename}" and this content:\n\n${ST.lastAll}\n\nReply with the file ID only.`}]
+      })
+    });
+    const data=await res.json();
+    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    if(text&&text.length<100){
+      btn.textContent='✓ Saved';btn.classList.remove('saving');btn.classList.add('saved');
+      status.textContent=`✓ Saved as "${filename}" in the project's Drive folder.`;
+      status.className='save-st vis ok';
+    } else {
+      throw new Error('Unexpected response');
+    }
+  }catch(e){
+    btn.textContent='💾 Save to Drive';btn.classList.remove('saving');
+    status.textContent='⚠️ Save failed — you may need to be logged into Claude with Drive connected. Use Copy All instead.';
+    status.className='save-st vis err';
+  }
+}
+
+// ── UPDATE DATA ────────────────────────────────────────────────
+function updateData(){
+  const raw=document.getElementById('jsonPaste').value.trim();
+  if(!raw){alert('Paste your JSON first.');return;}
+  try{
+    let data=JSON.parse(raw);
+    if(!Array.isArray(data)) data=[data];
+
+    // MERGE — add new entries, update existing ones by id, never wipe
+    let added=0, updated=0, skipped=0;
+    data.forEach(newP=>{
+      if(!newP.id&&!newP.name){skipped++;return;}
+      // Auto-fix missing prov/city using project name lookup
+      if(!newP.prov||newP.prov===''||newP.prov==='TBD'||newP.prov==='Unknown'){
+        const n=(newP.name||'').toLowerCase();
+        if(n.includes('anyana')||n.includes('antel')){newP.prov='Cavite';newP.city='Tanza';}
+        else if(n.includes('newtowne')){newP.prov='Cavite';newP.city='Dasmariñas';}
+        else if(n.includes('richdale')){newP.prov='Cavite';newP.city='General Trias';}
+        else if(n.includes('liora')){newP.prov='Cavite';newP.city='Naic';}
+        else if(n.includes('mapletree')){newP.prov='Cavite';newP.city='Naic';}
+        else if(n.includes('naic prime')){newP.prov='Cavite';newP.city='Naic';}
+        else if(n.includes('masaito')||n.includes('mosaito')){newP.prov='Cavite';newP.city='Imus';}
+        else if(n.includes('midland valley')){newP.prov='Cavite';newP.city='Magallanes';}
+        else if(n.includes('valle verde')){newP.prov='Cavite';newP.city='Dasmariñas';}
+        else if(n.includes('presidio')||n.includes('enduraland')||n.includes('woodside')||n.includes('montara')){newP.prov='Cavite';newP.city='Tanza';}
+        else if(n.includes('menarra')){newP.prov='Cavite';newP.city='Dasmariñas';}
+        else if(n.includes('southpoint')){newP.prov='Laguna';newP.city='Alaminos';}
+        else if(n.includes('westholme')){newP.prov='Cavite';newP.city='Tanza';}
+        else if(n.includes('metrogate dasmar')){newP.prov='Cavite';newP.city='Dasmariñas';}
+        else if(n.includes('metrogate indang')){newP.prov='Cavite';newP.city='Indang';}
+        else if(n.includes('reginarosa')){newP.prov='Batangas';newP.city='Santo Tomas';}
+      }
+      // Normalize city spelling on all incoming entries
+      if(newP.city) newP.city = normCity(newP.city);
+      const existing=PROPS.findIndex(p=>p.id===newP.id||(p.name===newP.name&&p.model===newP.model&&p.financing?.join()===newP.financing?.join()));
+      if(existing>=0){PROPS[existing]={...PROPS[existing],...newP};updated++;}
+      else{PROPS.push(newP);added++;}
+    });
+
+    // Rebuild browse — preserve current selections and re-trigger cascade
+    PROPS.forEach(p=>{if(!p.db)p.db='zonal';});
+
+    // Snapshot current selections before rebuild
+    const snapZonalProv  = document.getElementById('selProv').value;
+    const snapZonalMuni  = document.getElementById('selMuni').value;
+    const snapZonalProj  = document.getElementById('selProj').value;
+    const snapZonalModel = document.getElementById('selModel').value;
+    const snapLhProv     = document.getElementById('selLhProv').value;
+    const snapLhMuni     = document.getElementById('selLhMuni').value;
+
+    // Rebuild province lists
+    initBrowse('zonal');
+    initBrowse('lhoopa');
+
+    // Re-apply zonal cascade
+    if(snapZonalProv){
+      document.getElementById('selProv').value = snapZonalProv;
+      onProv('zonal');
+      if(snapZonalMuni){
+        document.getElementById('selMuni').value = snapZonalMuni;
+        onMuni('zonal');
+        if(snapZonalProj){
+          document.getElementById('selProj').value = snapZonalProj;
+          onProject();
+          if(snapZonalModel){
+            document.getElementById('selModel').value = snapZonalModel;
+            onModel();
+          }
+        }
+      }
+    }
+
+    // Re-apply lhoopa cascade
+    if(snapLhProv){
+      document.getElementById('selLhProv').value = snapLhProv;
+      onProv('lhoopa');
+      if(snapLhMuni){
+        document.getElementById('selLhMuni').value = snapLhMuni;
+        onMuni('lhoopa');
+      }
+    }
+
+    document.getElementById('jsonPaste').value='';
+    const msg=`✓ Done — ${added} added · ${updated} updated${skipped?' · '+skipped+' skipped (no id/name)':''}`;
+    document.getElementById('updNotice').textContent=msg;
+    document.getElementById('updNotice').classList.add('vis');
+    setTimeout(()=>document.getElementById('updNotice').classList.remove('vis'),4000);
+  }catch(e){alert('Invalid JSON:\n\n'+e.message);}
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function setOut(t,btn){ST.outType=t;document.querySelectorAll('.ob').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function setStep(n){for(let i=1;i<=4;i++){const s=document.getElementById(`s${i}`);s.classList.remove('active','done');if(i<n)s.classList.add('done');else if(i===n)s.classList.add('active');}}
+function hideProp(){
+  ['propCard','flagBox','lhPropCard','lhFlagBox'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.remove('vis');
+  });
+}
+function resetOutput(){
+  document.getElementById('genBtn').disabled=true;
+  document.getElementById('genBtn').textContent='Select a unit first';
+  document.getElementById('outputTabs').style.display='none';
+  document.getElementById('fLocation').style.display='none';
+  ST.unit=null;
+}
+function cp(srcId,btnId){
+  const el=document.getElementById(srcId);
+  navigator.clipboard.writeText(el.textContent||el.innerText).then(()=>{
+    const btn=document.getElementById(btnId);const orig=btn.textContent;
+    btn.textContent='✓ Copied!';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('ok');},2000);
+  });
+}
+function cpAll(){
+  navigator.clipboard.writeText(ST.lastAll).then(()=>{
+    const btn=document.getElementById('b3');btn.textContent='✓ Copied!';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Copy All';btn.classList.remove('ok');},2000);
+  });
+}
+
+// ── PER-AGENT ACCESS CODES ───────────────────────
+// Add or remove agents here. Each agent has a unique code.
+// To revoke access: remove their code and share the updated file.
+const AGENT_CODES = {
+  'EmpFLO':  'Florence Christine Alvarez',
+  'Emp01':   'Jennifer Casem',
+  'Emp0101': 'Pia Roldan',
+};
+
+const SESSION_KEY = 'empress_unlocked'; // unused on published pages — kept for reference
+
+function tryUnlock(){
+  const input = document.getElementById('lockInput');
+  const errEl = document.getElementById('lockErr');
+  const val = input.value.trim();
+  // Case-insensitive lookup
+  const matchKey = Object.keys(AGENT_CODES).find(k => k.toLowerCase() === val.toLowerCase());
+  const agentName = matchKey ? AGENT_CODES[matchKey] : null;
+  if(agentName){
+    doUnlock(agentName);
+  } else {
+    input.classList.add('err');
+    errEl.classList.add('vis');
+    input.value = '';
+    setTimeout(()=>input.classList.remove('err'), 400);
+    setTimeout(()=>errEl.classList.remove('vis'), 3000);
+  }
+}
+
+function doUnlock(agentName){
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('mainContent').classList.add('unlocked');
+  const nameField = document.getElementById('agentName');
+  if(nameField && !nameField.value) nameField.value = agentName==='General Team Access' ? '' : agentName;
+  PROPS.forEach(p=>{ if(!p.db) p.db='zonal'; });
+  initBrowse('zonal');
+  initBrowse('lhoopa');
+  buildColorGrid();
+  buildLayoutGrid();
+}
+
+// Auto-unlock check removed — localStorage not available on published pages
+(function(){
+  const f = document.getElementById('lockInput');
+  if(f) setTimeout(()=>f.focus(), 300);
+})();
+
+// ── END ───────────────────────────────────────────
+</script>
+</div><!-- end mainContent -->
+</body>
+</html>
