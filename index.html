@@ -113,8 +113,8 @@
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:60px}
 header{background:var(--s1);border-bottom:1px solid var(--b1);padding:14px 24px;display:flex;align-items:center;gap:12px}
 .hm{width:32px;height:32px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--gold);font-style:italic;font-family:Georgia,serif;flex-shrink:0}
-header h1{font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--text);text-transform:uppercase}
-header p{font-size:10px;color:var(--td);letter-spacing:.04em;margin-top:2px}
+header h1{font-size:15px;font-weight:600;letter-spacing:.1em;color:var(--text);text-transform:uppercase}
+header p{font-size:12px;color:var(--td);letter-spacing:.04em;margin-top:2px}
 .tag{font-size:8px;background:var(--gd);border:1px solid var(--gold);color:var(--gold);padding:2px 7px;border-radius:10px;margin-left:8px;letter-spacing:.06em}
 .wrap{max-width:1060px;margin:0 auto;padding:22px 18px 0}
 .grid{display:grid;grid-template-columns:330px 1fr;gap:18px}
@@ -123,7 +123,7 @@ header p{font-size:10px;color:var(--td);letter-spacing:.04em;margin-top:2px}
 .panel{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
 .ph{padding:10px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:7px}
 .ph .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
-.ph span{font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.ph span{font-size:11px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
 .pb{padding:15px}
 .steps{display:flex;margin-bottom:20px;border:1px solid var(--b1);border-radius:var(--r);overflow:hidden}
 .step{flex:1;padding:8px 6px;font-size:8px;text-align:center;color:var(--tm);letter-spacing:.04em;border-right:1px solid var(--b1);text-transform:uppercase}
@@ -135,8 +135,8 @@ header p{font-size:10px;color:var(--td);letter-spacing:.04em;margin-top:2px}
 .step.done .sn{color:var(--green)}
 .field{margin-bottom:12px}
 .field:last-child{margin-bottom:0}
-label{display:block;font-size:9px;letter-spacing:.1em;color:var(--td);text-transform:uppercase;margin-bottom:5px}
-select,input,textarea{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:4px;color:var(--text);font-size:12px;padding:7px 10px;outline:none;transition:border-color .18s;appearance:none;-webkit-appearance:none;font-family:inherit}
+label{display:block;font-size:11px;letter-spacing:.1em;color:var(--td);text-transform:uppercase;margin-bottom:5px}
+select,input,textarea{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:4px;color:var(--text);font-size:14px;padding:8px 10px;outline:none;transition:border-color .18s;appearance:none;-webkit-appearance:none;font-family:inherit}
 select:focus,input:focus,textarea:focus{border-color:var(--gold)}
 textarea{resize:vertical;min-height:52px;line-height:1.6}
 .sw{position:relative}
@@ -146,13 +146,13 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
 .pc.vis{display:block}
 #lhPropCard{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:12px;margin-top:10px;display:none}
 #lhPropCard.vis{display:block}
-#lhFlagBox{background:var(--rd);border:1px solid var(--red);border-radius:4px;padding:8px 11px;font-size:11px;color:#e74c3c;line-height:1.6;margin-top:8px;display:none}
+#lhFlagBox{background:var(--rd);border:1px solid var(--red);border-radius:4px;padding:8px 11px;font-size:13px;color:#e74c3c;line-height:1.6;margin-top:8px;display:none}
 #lhFlagBox.vis{display:block}
-.pr{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid var(--b1)}
+.pr{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px solid var(--b1)}
 .pr:last-child{border-bottom:none}
 .pr .k{color:var(--td)}
 .pr .v{font-weight:600;text-align:right;max-width:65%}
-.pr .v.gold{color:var(--gold);font-size:12px}
+.pr .v.gold{color:var(--gold);font-size:14px}
 .flag{background:var(--rd);border:1px solid var(--red);border-radius:4px;padding:8px 11px;font-size:11px;color:#e74c3c;line-height:1.6;margin-top:8px;display:none}
 .flag.vis{display:block}
 /* position toggle */
@@ -178,22 +178,22 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
 .hi:has(input:checked) .ck{background:var(--gold);border-color:var(--gold);color:#111}
 /* output tabs */
 .otabs{display:flex;border-bottom:1px solid var(--b1);margin:-15px -15px 15px}
-.otab{flex:1;padding:10px;text-align:center;font-size:10px;color:var(--td);cursor:pointer;border-right:1px solid var(--b1);letter-spacing:.04em;transition:all .15s}
+.otab{flex:1;padding:10px;text-align:center;font-size:12px;color:var(--td);cursor:pointer;border-right:1px solid var(--b1);letter-spacing:.04em;transition:all .15s}
 .otab:last-child{border-right:none}
 .otab.active{background:var(--gd);color:var(--gold);border-bottom:2px solid var(--gold)}
 /* output type toggle */
 .otog{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.ob{padding:6px 13px;border-radius:20px;border:1px solid var(--b1);background:transparent;color:var(--td);font-size:10px;cursor:pointer;transition:all .15s}
+.ob{padding:6px 13px;border-radius:20px;border:1px solid var(--b1);background:transparent;color:var(--td);font-size:12px;cursor:pointer;transition:all .15s}
 .ob.active{border-color:var(--gold);color:var(--gold);background:var(--gd)}
 /* buttons */
-.gbtn{width:100%;padding:12px;background:var(--gold);color:#111;border:none;border-radius:var(--r);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+.gbtn{width:100%;padding:12px;background:var(--gold);color:#111;border:none;border-radius:var(--r);font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .15s}
 .gbtn:hover{background:var(--gl)}
 .gbtn:disabled{background:var(--tm);cursor:not-allowed;color:var(--td)}
 /* output areas */
 .out-panel{display:none}
 .out-panel.active{display:block}
-.oa{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:15px;font-size:11px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto;font-family:'Courier New',monospace}
-.ca{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:13px;font-size:12px;line-height:1.75;color:var(--text);white-space:pre-wrap}
+.oa{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:15px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto;font-family:'Courier New',monospace}
+.ca{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:13px;font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap}
 .cl{font-size:9px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:7px;display:block}
 .qb{background:var(--s2);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;font-size:12px;font-style:italic;color:var(--text);line-height:1.65;margin-top:10px}
 .qa{font-size:10px;font-style:normal;color:var(--gold);margin-top:5px}
@@ -222,13 +222,28 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
 .save-st.ok{color:var(--green)}
 .save-st.err{color:var(--red)}
 .divider{height:1px;background:var(--b1);margin:14px 0}
-/* ── CAPTION VERSION CARDS ──────────────────────── */
+#csvPreviewTable th{padding:6px 8px;text-align:left;font-size:9px;letter-spacing:.06em;white-space:nowrap;border-right:1px solid rgba(201,150,15,.2);}
+#csvPreviewTable td{padding:5px 8px;font-size:10px;border-top:1px solid var(--b1);border-right:1px solid var(--b1);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:top;}
+#csvPreviewTable tr:hover td{background:var(--gd);}
+/* ── HISTORY PANEL ──────────────────────────────── */
+#historyPanel{margin-top:16px;}
+.hist-entry{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:10px 13px;margin-bottom:8px;position:relative;}
+.hist-entry:first-child{border-color:rgba(201,150,15,0.4);}
+.hist-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.hist-num{font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--gold);background:var(--gd);border:1px solid var(--gold);border-radius:3px;padding:2px 6px;}
+.hist-time{font-size:9px;color:var(--tm);}
+.hist-prop{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.hist-detail{font-size:10px;color:var(--td);line-height:1.6;}
+.hist-badge{display:inline-block;font-size:8px;padding:1px 6px;border-radius:10px;background:var(--gd);border:1px solid var(--gold);color:var(--gold);margin-right:4px;margin-top:3px;}
+.hist-empty{font-size:11px;color:var(--tm);text-align:center;padding:16px 0;font-style:italic;}
+.hist-clear{font-size:9px;color:var(--tm);cursor:pointer;padding:4px 8px;border:1px solid var(--b2);border-radius:4px;background:transparent;float:right;}
+.hist-clear:hover{color:var(--red);border-color:var(--red);}
 #capVersions{display:flex;flex-direction:column;gap:14px;}
 .cap-ver{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:13px 14px;}
 .cv-label{display:flex;align-items:center;gap:8px;margin-bottom:10px;border-bottom:1px solid var(--b1);padding-bottom:8px;}
 .cv-num{font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--gold);background:var(--gd);border:1px solid var(--gold);border-radius:3px;padding:2px 6px;}
 .cv-title{font-size:9px;letter-spacing:.1em;color:var(--td);text-transform:uppercase;}
-.cv-body{font-size:12px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word;}
+.cv-body{font-size:14px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word;}
 /* financial figure — big text in caption */
 .cv-body .fin-fig{font-size:16px;font-weight:700;color:var(--gold);display:inline;}
 </style>
@@ -354,11 +369,11 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
         <div class="pb">
           <div class="field">
             <label>Your Name</label>
-            <input type="text" id="agentName" placeholder="e.g. Flo Alvarez">
+            <input type="text" id="agentName" placeholder="e.g. Flo Alvarez" oninput="saveAgent()">
           </div>
           <div class="field">
             <label>Contact Number</label>
-            <input type="tel" id="contact" value="0977-3032-007">
+            <input type="tel" id="contact" placeholder="e.g. 0977-3032-007" oninput="saveAgent()">
           </div>
           <div class="field">
             <label>Buyer Persona</label>
@@ -381,7 +396,18 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
           <!-- BRAND COLOR -->
           <div class="field">
             <label>Brand Accent Color</label>
-            <div class="color-grid" id="colorGrid"></div>
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+              <label style="display:flex;align-items:center;gap:5px;font-size:11px;text-transform:none;letter-spacing:0;color:var(--td);cursor:pointer;">
+                <input type="radio" name="colorMode" value="manual" id="cmManual" checked onchange="onColorMode()"> Manual
+              </label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:11px;text-transform:none;letter-spacing:0;color:var(--td);cursor:pointer;">
+                <input type="radio" name="colorMode" value="previous" id="cmPrev" onchange="onColorMode()"> 🔁 Previous
+              </label>
+            </div>
+            <div id="colorPickerWrap">
+              <div class="color-grid" id="colorGrid"></div>
+            </div>
+            <div id="colorModeNote" style="font-size:11px;color:var(--tm);margin-top:6px;line-height:1.6;display:none;"></div>
             <input type="hidden" id="selColor" value="#C9960F">
             <input type="hidden" id="selBg" value="#1A1A1A">
           </div>
@@ -404,33 +430,27 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
             <input type="text" id="hookLine" placeholder="Leave blank for auto-generated">
             <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap" id="hookSuggestions"></div>
           </div>
-          <div class="field" style="margin-top:10px">
-            <label>Extra Highlights</label>
-            <div class="hg">
-              <label class="hi"><input type="checkbox" value="Gated community"><span class="ck">✓</span>Gated</label>
-              <label class="hi"><input type="checkbox" value="Pag-IBIG eligible"><span class="ck">✓</span>Pag-IBIG</label>
-              <label class="hi"><input type="checkbox" value="RFO available"><span class="ck">✓</span>RFO</label>
-              <label class="hi"><input type="checkbox" value="Pre-selling"><span class="ck">✓</span>Pre-selling</label>
-              <label class="hi"><input type="checkbox" value="Expandable unit"><span class="ck">✓</span>Expandable</label>
-              <label class="hi"><input type="checkbox" value="Corner lot"><span class="ck">✓</span>Corner lot</label>
-              <label class="hi"><input type="checkbox" value="CALAX access"><span class="ck">✓</span>CALAX</label>
-              <label class="hi"><input type="checkbox" value="Near hospital"><span class="ck">✓</span>Hospital</label>
-            </div>
-          </div>
-          <div class="field" style="margin-top:8px">
-            <label>Extra Notes <span style="color:var(--tm);text-transform:none;letter-spacing:0;font-size:9px">(optional)</span></label>
-            <textarea id="extraNotes" placeholder="e.g. last 3 units, panoramic view, near gate"></textarea>
-          </div>
         </div>
       </div>
 
       <div class="panel">
         <div class="ph"><div class="dot"></div><span>Photo Note</span></div>
         <div class="pb" style="font-size:11px;color:var(--td);line-height:1.75">
-          Upload these when you use the prompt:<br><br>
-          📷 <strong style="color:var(--gold)">Property photo</strong> — background layer<br>
-          🧑 <strong style="color:var(--gold)">Your photo</strong> — half-body, exact photo<br>
-          🔷 <strong style="color:var(--gold)">Zonal logo</strong> — top-left corner
+          Upload these when you use the prompt in ChatGPT:<br><br>
+          📷 <strong style="color:var(--gold)">1 — Property photo</strong><br>
+          🧑 <strong style="color:var(--gold)">2 — Your photo</strong> — half-body<br>
+          🔷 <strong style="color:var(--gold)">3 — Zonal Realty logo</strong> — header top-left<br>
+          👑 <strong style="color:var(--gold)">4 — Team Empress logo</strong> — bottom bar left side<br><br>
+          <span style="color:var(--gold);font-weight:600">Header:</span> Zonal logo left · Project name right<br>
+          <span style="color:var(--gold);font-weight:600">Bottom bar:</span> Empress logo left · Contact right
+        </div>
+      </div>
+
+      <!-- HISTORY PANEL -->
+      <div class="panel">
+        <div class="ph"><div class="dot"></div><span>Generation History</span><button class="hist-clear" onclick="clearHistory()">Clear</button></div>
+        <div class="pb" style="padding-top:10px;">
+          <div id="historyPanel"><div class="hist-empty">No generations yet — history will appear here.</div></div>
         </div>
       </div>
 
@@ -465,6 +485,7 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
               <div class="otab active" onclick="switchTab('listing',this)">📋 Listing Card Prompt</div>
               <div class="otab" onclick="switchTab('caption',this)">✍️ Caption + Hashtags</div>
               <div class="otab" onclick="switchTab('messenger',this)">💬 Messenger Card</div>
+              <div class="otab" onclick="switchTab('bulkcsv',this)">📊 Bulk CSV</div>
             </div>
 
             <!-- LISTING CARD TAB -->
@@ -530,6 +551,92 @@ textarea{resize:vertical;min-height:52px;line-height:1.6}
                 <button class="cbtn" id="b4" onclick="cp('messengerCard','b4')">Copy Messenger Prompt</button>
               </div>
             </div>
+
+            <!-- BULK CSV EXPORT TAB -->
+            <div class="out-panel" id="tab-bulkcsv">
+              <div style="font-size:11px;color:var(--td);line-height:1.7;margin-bottom:14px;">
+                Export a Canva Bulk Create CSV — one row per property. Each CSV covers one page code. Upload directly to Canva → Bulk Create → connect to your listing card template.
+              </div>
+
+              <!-- Page selector -->
+              <div class="field" style="margin-bottom:12px;">
+                <label>Page Code to Export</label>
+                <div class="sw">
+                  <select id="csvPageSel">
+                    <option value="">— Select page —</option>
+                    <option value="PAG">PAG — Pag-IBIG Homes in Cavite</option>
+                    <option value="ANA">ANA — Antel Anyana</option>
+                    <option value="NEW">NEW — Newtowne Dasmariñas</option>
+                    <option value="MCP">MCP — MetroCavite / Midland Valley</option>
+                    <option value="RIC">RIC — Richdale West Residences</option>
+                    <option value="LIO">LIO — Liora Homes Naic</option>
+                    <option value="PAC">PAC — Pacifictown Naic</option>
+                    <option value="SUL">SUL — Sulit Homes (≤₱2.3M)</option>
+                    <option value="KAI">KAI — KAIA Homes Tarlac</option>
+                    <option value="BUL">BUL — Pag-IBIG Homes Bulacan</option>
+                    <option value="CAV">CAV — Cavite Homes by Flo</option>
+                    <option value="BAT">BAT — Batangas Property Hub</option>
+                    <option value="LAG">LAG — Laguna Property Hub</option>
+                    <option value="FOR">FOR — Foreclosed Properties PH</option>
+                    <option value="LOT">LOT — Lots of LOTS</option>
+                    <option value="LFS">LFS — Lot For Sale PH</option>
+                    <option value="EMP">EMP — Empress Careers</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Caption version selector -->
+              <div class="field" style="margin-bottom:12px;">
+                <label>Caption Version to Include</label>
+                <div class="sw">
+                  <select id="csvCapVer">
+                    <option value="0">Version 1 — Emotional Hook</option>
+                    <option value="1">Version 2 — Mirror / Reality Check</option>
+                    <option value="2">Version 3 — OFW Angle</option>
+                    <option value="3">Version 4 — Young Professional</option>
+                    <option value="4">Version 5 — Investment / Practical</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Preview count -->
+              <div id="csvPreviewNote" style="font-size:11px;color:var(--tm);margin-bottom:12px;min-height:18px;"></div>
+
+              <!-- Actions -->
+              <div class="brow" style="margin-bottom:14px;">
+                <button class="cbtn" onclick="previewCsv()">👁 Preview</button>
+                <button class="cbtn2" onclick="exportCsv()">⬇ Download CSV</button>
+              </div>
+
+              <!-- Preview table -->
+              <div id="csvPreviewWrap" style="display:none;">
+                <div style="font-size:10px;color:var(--td);margin-bottom:8px;letter-spacing:.06em;">PREVIEW — first 5 rows</div>
+                <div style="overflow-x:auto;border:1px solid var(--b1);border-radius:6px;">
+                  <table id="csvPreviewTable" style="width:100%;border-collapse:collapse;font-size:10px;color:var(--text);">
+                    <thead id="csvThead" style="background:var(--gd);color:var(--gold);"></thead>
+                    <tbody id="csvTbody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Canva template instructions -->
+              <div style="margin-top:18px;padding:12px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);">
+                <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:8px;">HOW TO USE IN CANVA</div>
+                <div style="font-size:11px;color:var(--td);line-height:1.9;">
+                  1. Open your Canva listing card template<br>
+                  2. Click <strong style="color:var(--text)">Apps → Bulk Create</strong><br>
+                  3. Upload this CSV file<br>
+                  4. Connect columns to text layers:<br>
+                  &nbsp;&nbsp;• <code style="color:var(--gold)">{{project_name}}</code> → Project name layer<br>
+                  &nbsp;&nbsp;• <code style="color:var(--gold)">{{cheapest_monthly}}</code> → Financial callout layer<br>
+                  &nbsp;&nbsp;• <code style="color:var(--gold)">{{location}}</code> → Location line<br>
+                  &nbsp;&nbsp;• <code style="color:var(--gold)">{{hook}}</code> → Hook text layer<br>
+                  &nbsp;&nbsp;• <code style="color:var(--gold)">{{caption}}</code> → Caption text layer<br>
+                  5. Click <strong style="color:var(--text)">Generate X pages</strong>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -1014,25 +1121,43 @@ function buildGeoIndex(db){
 
 // ── BRAND COLORS ─────────────────────────────────
 const BRAND_COLORS=[
-  {name:'Antique Gold',    hex:'#C9960F', bg:'#1A1A1A', desc:'ANA · MCP · Premium'},
-  {name:'Royal Gold',      hex:'#D4AF37', bg:'#0D1B2A', desc:'Navy + Gold · Trust'},
-  {name:'Warm Gold',       hex:'#C9A96E', bg:'#1C3A2B', desc:'LIO · Eco · Forest'},
-  {name:'Stone Brown',     hex:'#8B6848', bg:'#2A3540', desc:'RIC · Slate · Nature'},
-  {name:'Copper',          hex:'#B87333', bg:'#111111', desc:'Midnight · Dramatic'},
-  {name:'Champagne',       hex:'#C8A96A', bg:'#0E3040', desc:'Dark Teal · Coastal'},
-  {name:'Deep Crimson',    hex:'#8B1A1A', bg:'#1E1E1E', desc:'Bold · Foreclosed'},
-  {name:'Amber',           hex:'#E8A020', bg:'#2C1A0E', desc:'LOT · Farm · Earthy'},
-  {name:'Electric Blue',   hex:'#3A7BD5', bg:'#0A0F1E', desc:'OFW · Urban · Condo'},
-  {name:'Terracotta',      hex:'#C4795A', bg:'#2D2D2D', desc:'PAC · Starter homes'},
-  {name:'Rose Gold',       hex:'#B76E79', bg:'#1A1A1A', desc:'EMP · Women buyers'},
-  {name:'Sage Green',      hex:'#7BA05B', bg:'#232B25', desc:'Eco · Sustainable'},
+  {name:'Antique Gold',    hex:'#C9960F', bg:'#1A1A1A', desc:'ANA · MCP · Premium · Dark bg'},
+  {name:'Royal Gold',      hex:'#D4AF37', bg:'#0D1B2A', desc:'Navy + Gold · Trust · Dark bg'},
+  {name:'Warm Gold',       hex:'#C9A96E', bg:'#1C3A2B', desc:'LIO · Eco · Forest · Dark bg'},
+  {name:'Stone Brown',     hex:'#8B6848', bg:'#2A3540', desc:'RIC · Slate · Nature · Dark bg'},
+  {name:'Copper',          hex:'#B87333', bg:'#111111', desc:'Midnight · Dramatic · Dark bg'},
+  {name:'Champagne',       hex:'#C8A96A', bg:'#0E3040', desc:'Dark Teal · Coastal · Dark bg'},
+  {name:'Deep Crimson',    hex:'#8B1A1A', bg:'#1E1E1E', desc:'Bold · Foreclosed · Dark bg'},
+  {name:'Amber',           hex:'#E8A020', bg:'#2C1A0E', desc:'LOT · Farm · Earthy · Dark bg'},
+  {name:'Electric Blue',   hex:'#3A7BD5', bg:'#0A0F1E', desc:'OFW · Urban · Condo · Dark bg'},
+  {name:'Terracotta',      hex:'#C4795A', bg:'#2D2D2D', desc:'PAC · Starter homes · Dark bg'},
+  {name:'Rose Gold',       hex:'#B76E79', bg:'#1A1A1A', desc:'EMP · Women buyers · Dark bg'},
+  {name:'Sage Green',      hex:'#7BA05B', bg:'#232B25', desc:'Eco · Sustainable · Dark bg'},
+  // ── LIGHT THEME ACCENTS (white/off-white card bg) ──
+  {name:'Navy · Light',    hex:'#1A2744', bg:'#FFFFFF', desc:'All pages · Classic · Light card'},
+  {name:'Forest · Light',  hex:'#2D6A4F', bg:'#F8F5EE', desc:'LIO · Eco · Trust · Light card'},
+  {name:'Burgundy · Light',hex:'#7B2D3E', bg:'#FFFFFF', desc:'ANA · Premium · Luxury · Light card'},
+  {name:'Teal · Light',    hex:'#1B5E6E', bg:'#F8F5EE', desc:'BAT · NEW · Coastal · Light card'},
+  {name:'Terracotta · Light',hex:'#C4553A',bg:'#FFFFFF', desc:'PAC · SUL · Affordable · Light card'},
+  {name:'Slate Purple · Light',hex:'#4A3F6B',bg:'#F8F5EE', desc:'MCP · Investment · Light card'},
 ];
 function buildColorGrid(){
   const g=document.getElementById('colorGrid');
   if(!g)return;
   g.innerHTML='';
   const cur=document.getElementById('selColor').value;
-  BRAND_COLORS.forEach(c=>{
+  const darkColors=BRAND_COLORS.filter(c=>c.name.indexOf('Light')===-1);
+  const lightColors=BRAND_COLORS.filter(c=>c.name.indexOf('Light')>-1);
+
+  const addLabel=(txt)=>{
+    const lbl=document.createElement('div');
+    lbl.style.cssText='grid-column:1/-1;font-size:9px;letter-spacing:.1em;color:var(--tm);text-transform:uppercase;padding:4px 0 2px;';
+    lbl.textContent=txt;
+    g.appendChild(lbl);
+  };
+
+  addLabel('Dark Theme');
+  darkColors.forEach(c=>{
     const d=document.createElement('div');
     d.className='color-swatch'+(c.hex===cur?' picked':'');
     d.style.background=c.hex;
@@ -1040,6 +1165,24 @@ function buildColorGrid(){
     d.onclick=()=>{
       document.getElementById('selColor').value=c.hex;
       document.getElementById('selBg').value=c.bg;
+      previousColor={hex:c.hex,name:c.name,bg:c.bg};
+      try{localStorage.setItem('epd_prev_color',JSON.stringify(previousColor));}catch{}
+      buildColorGrid();
+    };
+    g.appendChild(d);
+  });
+
+  addLabel('Light Theme');
+  lightColors.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='color-swatch'+(c.hex===cur?' picked':'');
+    d.style.cssText=`background:${c.hex};border:1.5px solid rgba(255,255,255,0.15);`;
+    d.title=`${c.name} — ${c.desc}`;
+    d.onclick=()=>{
+      document.getElementById('selColor').value=c.hex;
+      document.getElementById('selBg').value=c.bg;
+      previousColor={hex:c.hex,name:c.name,bg:c.bg};
+      try{localStorage.setItem('epd_prev_color',JSON.stringify(previousColor));}catch{}
       buildColorGrid();
     };
     g.appendChild(d);
@@ -1078,6 +1221,15 @@ const LAYOUT_STYLES=[
   {id:'10',label:'Story Arc',      use:'Reels cover · emotional',
    desc:'Three horizontal zones — property photo clean top 40% · large centered hook phrase middle 35% in white and accent color · financial summary bottom 25% with amort and specs · agent photo straddling zones 2 and 3 right side · reads top to bottom like a story',
    preview:`<div class="lp-photo" style="top:0;left:0;right:0;height:20px;background:#2d3a2a;border-radius:4px 4px 0 0"></div><div class="lp-photo" style="top:20px;left:0;right:0;height:16px;background:#0a0a0a"></div><div class="lp-bar" style="top:22px;left:6px;width:24px;height:3px;border-radius:1px"></div><div class="lp-bar" style="top:27px;left:6px;width:18px;height:3px;border-radius:1px;opacity:.6"></div><div class="lp-photo" style="top:36px;left:0;right:0;bottom:0;background:#0f0f0f;border-radius:0 0 4px 4px"></div><div class="lp-bar" style="top:36px;left:0;right:0;height:1px;opacity:.5"></div><div class="lp-agent" style="top:16px;right:2px;width:10px;height:20px"></div>`},
+  {id:'11',label:'Hook + Agent Left', use:'BAT · PAG · Light theme',
+   desc:'Hook band in accent color at top below header · property photo full width · specs row · financial callout · nearby · agent photo on LEFT side with text on RIGHT beside photo · Team Empress lower-right · bottom bar',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;height:8px;background:#1A2744;border-radius:4px 4px 0 0"></div><div class="lp-bar" style="top:0;left:0;right:0;height:8px;border-radius:4px 4px 0 0;opacity:.9"></div><div class="lp-photo" style="top:8px;left:0;right:0;height:22px;background:#2d4a3a"></div><div class="lp-photo" style="top:30px;left:0;right:0;bottom:14px;background:#0f0f0f"></div><div class="lp-agent" style="bottom:16px;left:2px;width:10px;height:14px"></div><div class="lp-bar" style="bottom:0;left:0;right:0;height:10px;border-radius:0 0 4px 4px;opacity:.9"></div>`},
+  {id:'12',label:'Full Bleed + Agent Left', use:'FOR · RIC · Bold',
+   desc:'Property photo full-bleed fills top 55% · project name overlays bottom of photo as dark strip · specs row · financial callout · nearby · agent photo on LEFT side text RIGHT · bottom bar with Team Empress left and contact right',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;height:26px;background:#2d4a3a;border-radius:4px 4px 0 0"></div><div class="lp-photo" style="top:20px;left:0;right:0;height:6px;background:#0a0a0a;opacity:.85"></div><div class="lp-photo" style="top:26px;left:0;right:0;bottom:14px;background:#111"></div><div class="lp-agent" style="bottom:16px;left:2px;width:10px;height:14px"></div><div class="lp-bar" style="bottom:0;left:0;right:0;height:10px;border-radius:0 0 4px 4px;opacity:.9"></div>`},
+  {id:'13',label:'Amort Hero + Agent Left', use:'All pages · Maximum impact',
+   desc:'Property photo top 40% · project name + location small caption · large centered amort number on white/light bg — BIGGEST TEXT on card — with gold reservation badge below · specs row · agent photo LEFT text RIGHT · bottom bar Team Empress left contact right',
+   preview:`<div class="lp-photo" style="top:0;left:0;right:0;height:18px;background:#2d3a4a;border-radius:4px 4px 0 0"></div><div class="lp-photo" style="top:18px;left:0;right:0;height:8px;background:#F8F5EE"></div><div class="lp-bar" style="top:20px;left:4px;width:32px;height:4px;border-radius:2px;opacity:.9"></div><div class="lp-photo" style="top:26px;left:0;right:0;height:6px;background:#1A2744;opacity:.85"></div><div class="lp-photo" style="top:32px;left:0;right:0;bottom:14px;background:#F8F5EE"></div><div class="lp-agent" style="bottom:16px;left:2px;width:10px;height:14px"></div><div class="lp-bar" style="bottom:0;left:0;right:0;height:10px;border-radius:0 0 4px 4px;opacity:.9"></div>`},
 ];
 function buildLayoutGrid(){
   const g=document.getElementById('layoutGrid');
@@ -1495,6 +1647,14 @@ function buildCaption(p,hook,amort,specs,location,page,persona,position,highligh
     LIO:`${propTag} ${cityTag} #LioraHomesNaic #EcoTownhouse #GreenHomes #PagIBIGHousing #CaviteRealEstate ${lhoopaTag}`,
     PAC:`${propTag} ${cityTag} #NaicPrime #NaicCavite #PagIBIGHousing #CaviteRealEstate #OwnYourHome ${lhoopaTag}`,
     BAT:`${propTag} ${cityTag} #BatangasRealEstate #HouseAndLotBatangas #PagIBIGHousing #OwnYourHome ${lhoopaTag}`,
+    SUL:`${propTag} ${cityTag} #SulitHomes #AffordableHousesCavite #Under2MCavite #PagIBIGHousing #CaviteRealEstate #OwnYourHome ${lhoopaTag}`,
+    KAI:`${propTag} ${cityTag} #KAIAHomes #TarlacCity #AffordableHousesTarlac #PagIBIGHousing #4PHHomes #OwnYourHome ${lhoopaTag}`,
+    BUL:`${propTag} ${cityTag} #PagIBIGHousing #AffordableHousesBulacan #BulacanRealEstate #FirstHomeBuyersPH #OwnYourHome ${lhoopaTag}`,
+    CAV:`${propTag} ${cityTag} #CaviteRealEstate #CaviteHomes #HouseAndLotCavite #AffordableHomes #OwnYourHome ${lhoopaTag}`,
+    LOT:`${propTag} ${cityTag} #LotForSale #FarmLot #LandBanking #RealEstatePH #InvestInLand ${lhoopaTag}`,
+    LFS:`${propTag} ${cityTag} #LotForSalePH #FarmLot #LandBanking #RealEstatePH #InvestInLand ${lhoopaTag}`,
+    FOR:`${propTag} ${cityTag} #ForeclosedProperty #AssumeBalance #AffordableHomes #RealEstatePH #ForeclosedPropertiesPH ${lhoopaTag}`,
+    EMP:`${propTag} ${cityTag} #RealEstateCareer #BeAnAgent #EmpressRealty #WorkFromHome #RealEstatePH`,
     DEFAULT:`${propTag} ${cityTag} #CaviteRealEstate #HouseAndLot #RealEstatePH #OwnYourHome #AffordableHomes ${lhoopaTag}`
   };
   const tags=(baseHashtags[page]||baseHashtags.DEFAULT).trim();
@@ -1591,6 +1751,62 @@ function buildCaption(p,hook,amort,specs,location,page,persona,position,highligh
       `Para sa mga OFW mula Batangas — pwede kang mag-reserve remotely. ${p.name} sa ${p.city||'Batangas City'} — ${amortFig} lang monthly via ${fin}.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime, kahit nasa abroad ka. 👇`,
       `Young professional ka sa Batangas at gusto mo na ng sarili mong space? ${resFig} lang ang simula. ${amortFig} monthly via Pag-IBIG.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
       `${p.name} sa ${p.city||'Batangas City'}, Batangas — ${amortFig} lang monthly via ${fin}. Reservation, ${resFig} lang.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+
+  if(page==='SUL'){
+    return v5(
+      `May bahay sa Cavite na under ₱ 2M — totoo ba?\n\nOo. At hindi joke ang numbers. ${p.name} sa ${p.city||'Cavite'} — sulit na sulit, Pag-IBIG ang paraan.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Ilang taon ka na naghahanap ng bahay na kaya ng budget mo sa Cavite?\n\nHindi mo na kailangang mag-compromise. ${amortFig} lang monthly — sarili mong bahay na.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `OFW ka at gusto mong may maibuwis sa Cavite na hindi magastos? ${p.name} — under ₱ 2M, Pag-IBIG accredited, ${amortFig} monthly lang.\n\nPwede kang mag-reserve kahit nasa abroad ka. 👇\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime. 👇`,
+      `First job mo, first bahay mo — kaya sa Cavite.\n\n${p.name} sa ${p.city||'Cavite'} — ${resFig} lang ang simula. ${amortFig} monthly via Pag-IBIG.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `${p.name} sa ${p.city||'Cavite'} — under ₱ 2M. ${amortFig} monthly. ${resFig} reservation.\n\nPinaka-sulit na entry point sa sariling bahay sa Cavite ngayon.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+  if(page==='KAI'){
+    return v5(
+      `4PH na bahay sa Tarlac City — ${amortFig} lang monthly via Pag-IBIG.\n\nHindi kailangang malayo sa probinsya para magkaroon ng sariling bahay. KAIA Homes — affordable, solid, at move-in ready.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Nagre-rent ka pa rin sa Tarlac? Tingnan mo ang numbers — baka ang bayad mo sa renta ay katumbas na ng monthly amortization ng sarili mong bahay.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Para sa mga OFW mula Tarlac — pwede kang mag-invest sa KAIA Homes kahit nasa abroad ka. ${amortFig} monthly, ${resFig} reservation lang ang simula.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime. 👇`,
+      `Young professional ka sa Tarlac at gusto mo na ng sariling space? KAIA Homes — 4PH, affordable, Pag-IBIG accredited. ${resFig} lang ang simula mo.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `${p.name} sa Tarlac City — ${amortFig} monthly via Pag-IBIG. 4PH na bahay na kaya ng simpleng sweldo.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+  if(page==='BUL'){
+    return v5(
+      `May bahay ka na sa Bulacan — at hindi mo pa alam.\n\nPag-IBIG accredited. ${amortFig} lang monthly. ${resFig} para magsimula.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Nagre-rent ka pa rin sa Bulacan ngayon? Ang bayad mo buwan-buwan — pwede na yan para sa sarili mong bahay.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `OFW ka mula Bulacan? Pwede kang mag-reserve ng ${p.name} remotely — ${amortFig} lang monthly via Pag-IBIG. Ang bahay, nagtatrabaho para sa pamilya mo.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime. 👇`,
+      `First home sa Bulacan — ${resFig} lang ang simula. Young professional ka man o breadwinner, kaya mo 'to.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `${p.name} sa ${p.city||'Bulacan'}, Bulacan — ${amortFig} lang monthly via ${fin}. Reservation, ${resFig} lang.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+  if(page==='CAV'){
+    return v5(
+      `Cavite pa rin ang pinaka-sulit na lugar para mag-invest ngayon — expressway, Tagaytay, airport, lahat malapit.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `Ilan na ang nagtanong sa akin — "saan ba talaga maganda mag-bahay sa Cavite?" Depende sa budget mo. Sagutin natin.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami — libre ang consultation. 👇`,
+      `Para sa mga OFW na naghahanap ng bahay sa Cavite — ito ang tamang address para sa pamilya mo. ${amortFig} lang monthly, ${resFig} reservation.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami anytime. 👇`,
+      `Young professional sa Metro Manila ka pero gusto mo ng sariling tahanan na malapit pa rin sa trabaho? Cavite — ang tamang desisyon.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `${p.name} sa ${p.city||'Cavite'} — ${amortFig} lang monthly. ${resFig} reservation.\n\nCavite ang pinakamagandang investment corridor ngayon — CALAX, LRT extension, Sangley Airport.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
+    );
+  }
+  if(page==='LOT'||page==='LFS'){
+    const lotLabel=page==='LFS'?'buong Pilipinas':'Cavite';
+    return v5(
+      `Ang lupa ay hindi nagbabawas ng halaga. Ang tanong lang — kailan ka mag-iinvest?\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig}\n🔑 Reservation: ${resFig}\n\nI-message mo kami para sa full details at site visit. 👇`,
+      `May nabibili kang lupa ngayon na tatanda ang halaga habang tumatagal. Hindi lahat ng tao nakakaalam nito — ngayon alam mo na.\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig} · Reservation ${resFig}\n\n${softCta}`,
+      `OFW ka at gusto mong mag-iwan ng legacy para sa pamilya mo? Lupa ang pinaka-solid na asset. Hindi nag-depreciate. Hindi nasira ng baha.\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig}\n🔑 Reservation: ${resFig}\n\nI-message mo kami anytime. 👇`,
+      `Young professional ka at gusto mong magsimula sa land banking? ${resFig} lang ang simula — ang lupa ang pinaka-passive na investment.\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig}\n\n${softCta}`,
+      `${p.name} sa ${p.city||lotLabel} — lot investment na may long-term appreciation potential.\n\n${specsBlock}\n${nearbyStr}\n\n💰 ${tcpFig}\n🔑 Reservation: ${resFig}\n\n${softCta}`
+    );
+  }
+  if(page==='FOR'){
+    return v5(
+      `Foreclosed property sa ${p.city||location} — totoo ang deal na ito.\n\nMas mababa sa market price. Pag-IBIG accredited. ${amortFig} lang monthly.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami para sa libreng computation at tripping. 👇`,
+      `Maingat na mag-isip bago mag-rent ng bahay na hindi mo pagmamay-ari.\n\nSa halagang ito — ${amortFig} monthly — pwede ka nang mag-assume ng sariling property.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `OFW ka at naghahanap ng below-market property na pwedeng i-assume o i-Pag-IBIG? Ito ang uri ng deal na hindi madalas makita.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\nI-message mo kami — libre ang lahat ng tanong. 👇`,
+      `Gusto mong mag-invest sa property pero limitado ang budget? Foreclosed properties ang pinaka-matalino mong entry point ngayon.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`,
+      `${p.name} sa ${p.city||location} — foreclosed, below market value. ${amortFig} monthly, ${resFig} reservation.\n\nLigtas, maingat, at totoo ang numbers.\n\n${specsBlock}\n${nearbyStr}\n\n${finBlock}\n\n${softCta}`
     );
   }
 
@@ -1830,119 +2046,117 @@ function buildQuickDm(p, amort, specs, location, agentName, position) {
 // ── PROMPT BUILDERS ────────────────────────────────────────────
 function buildCGPT({p,dna,page,hook,amort,specs,specsLine,top6,location,contact,persona,quote,extraNotes,agentName,position,fmt,inProv,inCity,inBrgy,selColor,selBg,colorName,layoutStyle}){
   const nearbyHighlights=top6.split('\n').filter(h=>/km|m\b/i.test(h)).slice(0,2).join('\n');
-  const otherHighlights=top6.split('\n').filter(h=>!/km|m\b/i.test(h)).join('\n');
   const pos=position!=='Inner'?` (${position} Unit)`:'';
   const fmtLine=fmt?`• Canvas Size: ${fmt.label} · ${fmt.ar} · ${fmt.note}`:'• Canvas Size: 1080×1920 px · Vertical 9:16 · Ideal for Reels';
-  const accentColor=selColor||'#C9960F';
+  const accentColor=selColor||dna.accent||'#C9960F';
   const bgColor=selBg||dna.bg||'#1A1A1A';
   const layoutDesc=layoutStyle?layoutStyle.desc:'Photo fills top 65% · dark info panel bottom 35%';
+  const fin=(p.financing||[]).join(' / ');
+
   return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EMPRESS PROPERTY DATABASE — CHATGPT LISTING CARD PROMPT
 ${p.name}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-ROLE: Professional real estate graphic designer. Create a dark-themed Facebook listing card for ${p.name}. Follow the layout style and brand color exactly as specified below.
+ROLE: Professional real estate graphic designer. Create a Facebook listing card for ${p.name}. Follow the layout style and brand color exactly as specified below.
 
 PHOTO UPLOAD INSTRUCTIONS — FOLLOW EXACTLY:
-📷 Upload 1 — PROPERTY PHOTO → USE THIS EXACT PHOTO AS-IS. DO NOT alter, enhance, regenerate, or replace it. Do not add people, families, cars, or any elements to the property photo. The photo must appear exactly as uploaded.
-🧑 Upload 2 — AGENT PHOTO → USE THIS EXACT PHOTO AS-IS. DO NOT regenerate the face, beautify, or alter the agent in any way. Show the uploaded photo exactly — half-body, no circular crop, positioned bottom-right, minimum 200px wide.
-🔷 Upload 3 — ZONAL REALTY LOGO → top-left only, max 90px wide
+📷 Upload 1 — PROPERTY PHOTO → USE THIS EXACT PHOTO AS-IS. DO NOT alter, enhance, regenerate, or replace it. Do not add people, families, cars, or any elements to the property photo.
+🧑 Upload 2 — AGENT PHOTO → USE THIS EXACT PHOTO AS-IS. DO NOT regenerate, beautify, or alter the agent. Half-body, no circular crop, positioned lower-right, minimum 200px wide.
+🔷 Upload 3 — ZONAL REALTY LOGO → top-left header ONLY. Full color. Max 90px wide.
+👑 Upload 4 — TEAM EMPRESS LOGO → LOWER-LEFT of bottom bar. Full color. Max 60px wide. Placed inside the bottom bar on the left side.
 
 CRITICAL RULES — NO EXCEPTIONS:
-• Use the EXACT uploaded property photo — no AI-generated exterior, no added people on lawn
+• Use the EXACT uploaded property photo — no AI-generated exterior, no added people
 • Use the EXACT uploaded agent photo — no AI face regeneration, no beautification
-• Dark theme ONLY — background #1A1A1A or brand bg color throughout
-• NO headline text / hook on the card — the property photo speaks for itself
-• NO taglines, slogans, or marketing phrases anywhere
-• Text covers maximum 30% of card — property photo dominates at least 70%
+• Text covers MAXIMUM 30% of card — property photo dominates at least 70%
+• NO urgency phrases ("Limited slots", "Call now", "Hurry")
+• DO NOT include developer or company name anywhere on the card
+• Contact number: BOTTOM BAR ONLY — never anywhere else
+• No quote or tagline with "— Zonal Realty" anywhere on the card
+${p.foreclosed||p.page==='FOR'||/foreclos/i.test(p.status||'')?`• FORECLOSED PROPERTY BADGE: Place a bold RED diagonal ribbon/badge that says "FORECLOSED PROPERTY" — top-right corner of the property photo, angled 45°, red background (#CC2200), white bold text, prominent and unmissable. This is mandatory for foreclosed properties.`:''}
 
 BRAND DNA:
-• Selected Accent Color: ${accentColor} (${colorName}) — use for all callout numbers, badges, dividers, bottom bar, hook text
-• Selected Background: ${bgColor} — use throughout all dark panels and info zones
+• Accent Color: ${accentColor} (${colorName}) — use for all callout numbers, badges, dividers, hook text, agent name
+• Background: ${bgColor} — use throughout all dark panels and info zones
 • Base Colors: ${dna.colors}
 • Fonts: ${dna.fonts}
 • Tone: ${dna.tone}
-• Emotional anchors: ${dna.anchor}
 
 LAYOUT STYLE: ${layoutStyle?layoutStyle.label:'Clean Card'}
 ${layoutDesc}
 
-SHORT HOOK (place above financial callout — small, punchy, English, max 6 words):
+SHORT HOOK (small, punchy, max 6 words — above financial callout):
 "${hook}"
-Style: script or serif font · accent color or white · NOT large — it is a secondary element, not a headline
+Style: script or serif font · accent color · secondary element only, NOT a headline
 
 PROPERTY:
 • Project: ${p.name}
 • Model: ${p.model||(p.type||'—')}${pos}
-• Barangay: ${inBrgy||'—'}
-• Municipality / City: ${inCity||'—'}
-• Province: ${inProv||'—'}
-• Full Location: ${location}
+• Location: ${[inCity,inProv].filter(Boolean).join(', ')||location}
 • Status: ${p.status||'—'}
-• Financing: ${(p.financing||[]).join(', ')||'—'}
+• Financing: ${fin||'—'}
 [DO NOT include developer/company name anywhere on the card]
 
-LOCATION LINE ON CARD (show as: "Municipality, Province"):
-"${[inCity,inProv].filter(Boolean).join(', ')}"
+HOUSE SPECS (show only confirmed specs as icon pills):
+${specs.beds?`• Bedrooms: ${specs.beds}`:'• Bedrooms: [omit if not confirmed]'}
+${specs.toilet?`• Toilet & Bath: ${specs.toilet}`:'• T&B: [omit if not confirmed]'}
+${specs.lot?`• Lot Area: ${specs.lot}`:'• Lot Area: [omit if not confirmed]'}
+${specs.floor?`• Floor Area: ${specs.floor}`:'• Floor Area: [omit if not confirmed]'}
 
-HOUSE SPECS (show only confirmed specs as pills):
-${specs.beds?`• Bedrooms: ${specs.beds}`:'• Bedrooms: [not confirmed — omit]'}
-${specs.toilet?`• Toilet & Bath: ${specs.toilet}`:'• T&B: [not confirmed — omit]'}
-${specs.lot?`• Lot Area: ${specs.lot}`:'• Lot Area: [not confirmed — omit]'}
-${specs.floor?`• Floor Area: ${specs.floor}`:'• Floor Area: [not confirmed — omit]'}
+FINANCIAL (2 figures only — no other computation details):
+• Cheapest Monthly: ${amort}
+• ${p.monthlyDp&&p.monthlyDp!=='Not shown'?`Monthly DP: ${p.monthlyDp}${p.dpMonths?' × '+p.dpMonths+' mos':''}`:`Reservation: ${p.reservation||'—'}`}
 
-FINANCIAL (NEVER include Total Contract Price):
-• Cheapest Monthly Amort: ${amort}
-• Reservation: ${p.reservation||'—'}
-• DP Terms: ${p.dp||'—'}
-
-HEADLINE (hook — ONLY large text on the card):
-"${hook}"
-
-QUOTE (small italic, one line only):
-"${quote.q}" — ${quote.a}
-
-LEFT PANEL — NEARBY LOCATIONS (2 closest only — no more):
+NEARBY LOCATIONS (max 2 closest only — distances if available):
 ${nearbyHighlights||top6.split('\n').slice(0,2).join('\n')}
 
-OTHER HIGHLIGHTS (icon badges — non-distance items only, max 3):
-${otherHighlights||''}
-${extraNotes?`\nADDITIONAL: ${extraNotes}`:''}
+GOLD ACCENT DIVIDER:
+• Between the property photo and the info zone below it, place a thin horizontal line (2–3px) in the accent color ${accentColor}
+• This divider separates the photo from the financial/specs section — it should feel like a clean editorial border, not a heavy bar
+• Width: full card width
 
-CANVAS FORMAT:
+AGENT SECTION:
+• Agent photo: half-body, EXACT uploaded photo — NOT circular, NOT AI-regenerated
+• Agent photo position: RIGHT side for layouts 1–10 · LEFT side for layouts 11, 12, 13
+• Agent text block: DIRECTLY BESIDE the photo (opposite side), vertically centered
+• Agent name: "${agentName||'[Agent Name]'}" — bold, 16–20px, accent color ${accentColor} — NO white box, NO white background behind name — name sits directly on the dark panel background
+• Below name: "Real Estate Consultant · Zonal Realty" — small, light blue-white, no box
+• CTA: "Message me for tripping schedule." — italic, light, no box
+• CRITICAL: Do NOT place a white rectangle or any background box behind the agent name or any agent text — all agent text sits directly on the card background
+
+LOGO & NAME PLACEMENT — FOLLOW EXACTLY:
+• HEADER TOP-LEFT: Zonal Realty logo only
+• HEADER TOP-RIGHT: "${p.name}" — project name in bold, large text, prominent — this is the ONLY place the project name appears on the card (not in the bottom bar)
+• BOTTOM BAR LEFT: Team Empress logo — full color, max 60px wide, inside the bottom bar
+• BOTTOM BAR RIGHT: contact number bold white — "${contact||'[Contact Number]'}"
+• Project name: TOP-RIGHT HEADER ONLY — NEVER in bottom bar
+• Zonal logo: TOP-LEFT HEADER ONLY — do NOT repeat anywhere else
+• Team Empress logo: BOTTOM BAR LEFT ONLY — do NOT place in header
+${p.foreclosed||p.page==='FOR'||/foreclos/i.test(p.status||'')?`
+FORECLOSED BADGE (MANDATORY):
+• Diagonal ribbon badge — top-right corner of the property photo
+• Background: #CC2200 (bold red)
+• Text: "FORECLOSED PROPERTY" — white, bold, all-caps
+• Angle: 45° diagonal, like a stamp/seal across the corner
+• Size: large enough to be clearly visible on mobile
+• Do NOT omit this badge for foreclosed properties`:''}
+
 ${fmtLine}
 
-DESIGN LAYOUT — STYLE: ${layoutStyle?layoutStyle.label:'Clean Card'}
-Follow this layout structure: ${layoutDesc}
-
-STYLE 1 (Top Badge) rules:
-- Project name in decorative badge/pill at top center
-- Property photo fills middle 55% of card
-- Agent photo on left · financial info on right
-- Info zone: dark panel bottom 30%
-
-STYLE 2 (Side Panel) rules:
-- Vertical sidebar left: rotated project name in bold · location pill at bottom
-- Property photo fills right side top 60%
-- Financial + specs in bottom section
-- Agent photo bottom-right · half-body
-
-STYLE 3 (Clean Card) rules:
-- Property photo fills top 65% — no text overlay in photo zone
-- Dark gradient info zone bottom 35%
-- Left: nearby list · Right: financial callout
-- Agent photo bottom-right · specs pills in middle row
-
-UNIVERSAL RULES (apply to all styles):
-• Accent color ${accentColor} for all numbers, badges, dividers, CTA elements, bottom bar, hook text
-• Dark background ${bgColor} everywhere — no white or light panels
-• Short hook "${hook}" — above financial callout · small script/serif font · accent color
-• Property photo: EXACT uploaded image only — no AI exterior, no added people
-• Agent photo: EXACT uploaded half-body — NOT circular, NOT AI-regenerated, minimum 180px wide
-• Bottom bar: "${(p.name||'').toUpperCase()} · ${contact}" — ONE LINE only
-• Contact number: bottom bar ONLY
-• Project name: bottom bar ONLY (and sidebar for Style 2)
+UNIVERSAL RULES:
+• Property photo = minimum 70% of card — text maximum 30%
+• Accent color ${accentColor} for numbers, hook, agent name, badges, dividers, gold divider line
+• Background ${bgColor} for all dark panels
+• No quote "— Zonal Realty" anywhere
+• Contact number: BOTTOM BAR ONLY
+• Project name: TOP-RIGHT HEADER ONLY
+• Team Empress logo: BOTTOM BAR LEFT ONLY
+• Agent name: NO white box, NO background rectangle — gold text directly on dark panel only
+• Gold divider line between photo and info zone — full width, 2–3px, accent color
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;}
+
+
 
 function buildCanva({p,dna,page,hook,amort,specs,specsLine,highlights,location,contact,quote,extraNotes,agentName,position,fmt,inProv,inCity,inBrgy}){
   const c=dna.colors.split('·').map(x=>x.trim());
@@ -1982,7 +2196,7 @@ LAYER ORDER (bottom → top):
 3. Divider line (1px, ${c[1]}, full width, at y=580px)
 4. ZONE A — Financial callout box (left-center):
    Large: ${amort}
-   Sub: "Cheapest monthly via ${(p.financing||['Pag-IBIG']).join('/')}"
+   Sub: ${p.monthlyDp&&p.monthlyDp!=='Not shown'?`"Monthly DP: ${p.monthlyDp}"`:`"via ${(p.financing||['Pag-IBIG']).join('/')}`}
 5. ZONE B — Specs pills row (below financial):
    ${specsLine||'[Floor area · Model · Status]'}
 6. ZONE C — Nearby list (right column, 3 items max):
@@ -2030,10 +2244,10 @@ USER PROMPT:
     "floor_area": "${specs.floor||'not confirmed'}"
   },
   "financial": {
-    "reservation": "${p.reservation||''}",
-    "dp_terms": "${p.dp||''}",
     "cheapest_monthly": "${amort}",
-    "include_tcp": false
+    "cheapest_dp": "${p.monthlyDp&&p.monthlyDp!=='Not shown'?p.monthlyDp+(p.dpMonths?' × '+p.dpMonths+' mos':''):(p.reservation||'—')}",
+    "include_tcp": false,
+    "include_full_computation": false
   },
   "hook": "${hook}",
   "quote": "${quote.q}",
@@ -2067,18 +2281,18 @@ ${extraNotes?`\nNOTES: ${extraNotes}`:''}
 // ── GENERATE ──────────────────────────────────────────────────
 function generate(){
   const p=ST.unit;if(!p)return;
-  const contact=document.getElementById('contact').value.trim()||'0977-3032-007';
-  const persona=document.getElementById('persona').value;
-  const customHook=document.getElementById('hookLine').value.trim();
-  const selColor=document.getElementById('selColor').value||'#C9960F';
-  const selBg=document.getElementById('selBg').value||'#1A1A1A';
-  const selLayout=document.getElementById('selLayout').value||'1';
-  const colorName=BRAND_COLORS.find(c=>c.hex===selColor)?.name||'Antique Gold';
-  const layoutStyle=LAYOUT_STYLES.find(l=>l.id===selLayout);
+  const contact=document.getElementById('contact')?.value.trim()||'';
+  const persona=document.getElementById('persona')?.value||'First-time buyer';
+  const customHook=document.getElementById('hookLine')?.value.trim()||'';
+  const selColor=document.getElementById('selColor')?.value||'AUTO';
+  const selBg=document.getElementById('selBg')?.value||'#1A1A1A';
+  const selLayout=document.getElementById('selLayout')?.value||'1';
+  const colorName=BRAND_COLORS.find(c=>c.hex===selColor)?.name||'Auto';
+  const layoutStyle=LAYOUT_STYLES.find(l=>l.id===selLayout)||LAYOUT_STYLES[0];
   const fmtVal=document.querySelector('input[name="fmt"]:checked')?.value||'1080x1920';
   const fmtMap={'1080x1080':{label:'1080×1080 px',ar:'Square 1:1',note:'Square format — ideal for Feed post'},'1080x1350':{label:'1080×1350 px',ar:'Portrait 4:5',note:'Portrait format — ideal for Feed post, highest organic reach'},'1080x1920':{label:'1080×1920 px',ar:'Vertical 9:16',note:'Vertical format — ideal for Reels and Stories'}};
   const fmt=fmtMap[fmtVal]||fmtMap['1080x1920'];
-  const extraNotes=document.getElementById('extraNotes').value.trim();
+  const extraNotes=document.getElementById('extraNotes')?.value.trim()||'';
   const position=getPosition();
   const amort=cheapest(p);
   const specs=getSpecs(p);
@@ -2088,14 +2302,13 @@ function generate(){
   const page=p.page||'DEFAULT';
   const dna=DNA[page]||DNA.DEFAULT;
   buildHookSuggestions(page);
-  // Read from editable location fields (auto-filled but overrideable)
-  const inProv=document.getElementById('inProvince').value.trim()||p.prov||'';
-  const inCity=document.getElementById('inCity').value.trim()||p.city||'';
-  const inBrgy=document.getElementById('inBrgy').value.trim()||p.brgy||'';
+  const inProv=document.getElementById('inProvince')?.value.trim()||p.prov||'';
+  const inCity=document.getElementById('inCity')?.value.trim()||p.city||'';
+  const inBrgy=document.getElementById('inBrgy')?.value.trim()||p.brgy||'';
   const location=[inBrgy,inCity,inProv].filter(Boolean).join(', ');
   const specsLine=[specs.beds,specs.toilet,specs.lot?`Lot ${specs.lot}`:null,specs.floor?`Floor ${specs.floor}`:null].filter(Boolean).join(' · ');
   const top6=highlights.slice(0,6).map(h=>`• ${h}`).join('\n');
-  const agentName=document.getElementById('agentName').value.trim();
+  const agentName=document.getElementById('agentName')?.value.trim()||'';
   const caption=buildCaption(p,hook,amort,specs,location,page,persona,position,highlights);
   const messenger=buildMessengerCard(p,amort,specs,location,contact,agentName,position,highlights);
   const quickDm=buildQuickDm(p,amort,specs,location,agentName,position);
@@ -2133,6 +2346,7 @@ function generate(){
   switchTab('listing',document.querySelector('.otab'));
   setStep(4);
   document.getElementById('saveStatus').classList.remove('vis');
+  addHistory(p,ST.outType,amort,position);
 }
 
 // ── TABS ───────────────────────────────────────────────────────
@@ -2324,7 +2538,310 @@ function cpVer(srcId,btnId){
   });
 }
 
-// ── PER-AGENT ACCESS CODES ───────────────────────
+// ── GENERATION HISTORY — 10 entries max ───────────────────────
+const HIST_KEY='epd_history';
+function loadHistory(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]');}catch{return[];}}
+function saveHistory(h){try{localStorage.setItem(HIST_KEY,JSON.stringify(h));}catch{}}
+function addHistory(p,outType,amort,position){
+  const h=loadHistory();
+  // Snapshot all regenerable settings
+  const entry={
+    ts:Date.now(),
+    id:p.id||null,
+    db:p.db||'zonal',
+    name:p.name,
+    model:p.model||(p.type||'—'),
+    city:p.city||'',
+    prov:p.prov||'',
+    page:p.page||'',
+    outType:outType.toUpperCase(),
+    amort:amort,
+    position:position,
+    status:p.status||'',
+    // UI settings snapshot
+    persona:document.getElementById('persona')?.value||'',
+    contact:document.getElementById('contact')?.value||'',
+    hook:document.getElementById('hookLine')?.value||'',
+    extraNotes:document.getElementById('extraNotes')?.value||'',
+    selColor:document.getElementById('selColor')?.value||'',
+    selBg:document.getElementById('selBg')?.value||'',
+    selLayout:document.getElementById('selLayout')?.value||'1',
+    fmt:document.querySelector('input[name="fmt"]:checked')?.value||'1080x1920',
+    checks:[...document.querySelectorAll('.hg input:checked')].map(i=>i.value),
+    inProv:document.getElementById('inProvince')?.value||'',
+    inCity:document.getElementById('inCity')?.value||'',
+    inBrgy:document.getElementById('inBrgy')?.value||''
+  };
+  h.unshift(entry);
+  if(h.length>10) h.length=10;
+  saveHistory(h);
+  renderHistory(h);
+}
+function renderHistory(h){
+  const panel=document.getElementById('historyPanel');
+  if(!panel)return;
+  if(!h||!h.length){panel.innerHTML='<div class="hist-empty">No generations yet — history will appear here.</div>';return;}
+  panel.innerHTML=h.map((e,i)=>{
+    const d=new Date(e.ts);
+    const timeStr=d.toLocaleDateString('en-PH',{month:'short',day:'numeric'})+' · '+d.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="hist-entry">
+      <div class="hist-meta">
+        <span class="hist-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="hist-time">${timeStr}</span>
+      </div>
+      <div class="hist-prop">${e.name}</div>
+      <div class="hist-detail">${e.model}${e.position&&e.position!=='Inner'?' · '+e.position:''} · ${[e.city,e.prov].filter(Boolean).join(', ')}</div>
+      <div class="hist-detail" style="margin-top:3px;">${e.amort||''}</div>
+      <div style="margin-top:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+        <div>
+          <span class="hist-badge">${e.page||'—'}</span>
+          <span class="hist-badge">${e.outType}</span>
+          ${e.status?`<span class="hist-badge">${e.status}</span>`:''}
+        </div>
+        <button class="cbtn" style="font-size:9px;padding:4px 10px;" onclick="regenFrom(${i})">↺ Re-generate</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function regenFrom(idx){
+  const h=loadHistory();
+  const e=h[idx];
+  if(!e)return;
+  // Find the property in PROPS
+  let p=null;
+  if(e.id) p=PROPS.find(x=>x.id===e.id)||null;
+  if(!p) p=PROPS.find(x=>x.name===e.name&&(x.model||x.type||x.name)===(e.model==='—'?x.model||x.type||x.name:e.model))||null;
+  if(!p){alert('Property not found in database — it may have been updated.');return;}
+  // Restore ST.unit
+  ST.unit=p;
+  // Restore output type
+  ST.outType=e.outType.toLowerCase();
+  document.querySelectorAll('.ob').forEach(b=>{
+    b.classList.toggle('active',b.dataset.type===ST.outType);
+  });
+  // Restore persona
+  const personaSel=document.getElementById('persona');
+  if(personaSel&&e.persona) personaSel.value=e.persona;
+  // Restore contact
+  const contactEl=document.getElementById('contact');
+  if(contactEl&&e.contact) contactEl.value=e.contact;
+  // Restore hook
+  const hookEl=document.getElementById('hookLine');
+  if(hookEl) hookEl.value=e.hook||'';
+  // Restore extra notes
+  const notesEl=document.getElementById('extraNotes');
+  if(notesEl) notesEl.value=e.extraNotes||'';
+  // Restore color + bg
+  const colorEl=document.getElementById('selColor');
+  if(colorEl&&e.selColor) colorEl.value=e.selColor;
+  const bgEl=document.getElementById('selBg');
+  if(bgEl&&e.selBg) bgEl.value=e.selBg;
+  // Restore layout
+  const layoutEl=document.getElementById('selLayout');
+  if(layoutEl&&e.selLayout) layoutEl.value=e.selLayout;
+  // Restore canvas format
+  if(e.fmt){
+    const fmtRadio=document.querySelector(`input[name="fmt"][value="${e.fmt}"]`);
+    if(fmtRadio) fmtRadio.checked=true;
+  }
+  // Restore position
+  if(e.position){
+    const posRadio=document.querySelector(`input[name="pos"][value="${e.position}"]`);
+    if(posRadio) posRadio.checked=true;
+  }
+  // Restore highlight checkboxes
+  document.querySelectorAll('.hg input[type="checkbox"]').forEach(cb=>{
+    cb.checked=Array.isArray(e.checks)&&e.checks.includes(cb.value);
+  });
+  // Restore location fields
+  const inProvEl=document.getElementById('inProvince');
+  const inCityEl=document.getElementById('inCity');
+  const inBrgyEl=document.getElementById('inBrgy');
+  if(inProvEl) inProvEl.value=e.inProv||p.prov||'';
+  if(inCityEl) inCityEl.value=e.inCity||p.city||'';
+  if(inBrgyEl) inBrgyEl.value=e.inBrgy||p.brgy||'';
+  // Show location + position fields
+  document.getElementById('fLocation').style.display='block';
+  document.getElementById('fPos').style.display='block';
+  // Show prop card
+  if(p.db==='lhoopa') renderLhProp(p);
+  else renderProp(p);
+  // Scroll to generate and run
+  setTimeout(()=>{
+    document.querySelector('.gbtn')?.scrollIntoView({behavior:'smooth',block:'center'});
+    generate();
+  },120);
+}
+function clearHistory(){
+  try{localStorage.removeItem(HIST_KEY);}catch{}
+  renderHistory([]);
+}
+
+// ── BULK CSV EXPORT ─────────────────────────────────────────────
+const SUL_PRICE_CAP = 2300000;
+
+function parsePeso(str){
+  if(!str||str==='—'||str==='Not shown') return Infinity;
+  const n=parseFloat(String(str).replace(/[^0-9.]/g,''));
+  return isNaN(n)?Infinity:n;
+}
+
+function csvEscape(val){
+  const s=String(val||'').replace(/@@FIN@@|@@\/FIN@@/g,'').replace(/\r?\n/g,' ').trim();
+  return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s.replace(/"/g,'""')}"`:s;
+}
+
+function getCsvProps(pageCode){
+  const all=PROPS.filter(p=>{
+    const pg=p.page||'DEFAULT';
+    const inPage=pg===pageCode||(p.pageOverlap&&p.pageOverlap.includes(pageCode));
+    if(!inPage) return false;
+    // SUL price ceiling filter
+    if(pageCode==='SUL'){
+      const tcp=parsePeso(p.tcp||p.sellingPrice||'');
+      if(tcp>SUL_PRICE_CAP) return false;
+    }
+    return true;
+  });
+  return all;
+}
+
+function buildCsvRows(pageCode, capVerIdx){
+  const props=getCsvProps(pageCode);
+  if(!props.length) return {headers:[],rows:[],props:[]};
+
+  const headers=[
+    'project_name','model','location','city','province',
+    'cheapest_monthly','reservation','lot_area','floor_area',
+    'beds','toilet','status','financing','hook',
+    'caption_v1','caption_v2','caption_v3','caption_v4','caption_v5',
+    'caption','page_code','flagged','flag_note'
+  ];
+
+  const rows=props.map(p=>{
+    const amort=cheapest(p);
+    const specs=getSpecs(p);
+    const highlights=getHighlights_static(p);
+    const location=[p.brgy,p.city,p.prov].filter(Boolean).join(', ');
+    const hook=getHook(p,amort);
+    const page=p.page||pageCode;
+    // Build all 5 captions
+    const caps=buildCaption(p,hook,amort,specs,location,page,'General',p.position||'Inner',highlights);
+    const capArr=Array.isArray(caps)?caps:[caps];
+    // Strip @@FIN@@ markers for CSV
+    const cleanCap=(c)=>String(c||'').replace(/@@FIN@@(.*?)@@\/FIN@@/g,'$1').replace(/\r?\n/g,' ').trim();
+    return [
+      p.name, p.model||(p.type||''), location, p.city||'', p.prov||'',
+      amort.replace(/@@FIN@@|@@\/FIN@@/g,''),
+      p.reservation||'—',
+      specs.lot||'—', specs.floor||'—',
+      specs.beds||'—', specs.toilet||'—',
+      p.status||'—',
+      (p.financing||[]).join(' / '),
+      hook,
+      cleanCap(capArr[0]||''),
+      cleanCap(capArr[1]||''),
+      cleanCap(capArr[2]||''),
+      cleanCap(capArr[3]||''),
+      cleanCap(capArr[4]||''),
+      cleanCap(capArr[capVerIdx]||capArr[0]||''),
+      p.page||pageCode,
+      p.flagged?'YES':'',
+      p.flagNote||''
+    ].map(csvEscape);
+  });
+
+  return{headers,rows,props};
+}
+
+function getHighlights_static(p){
+  // Static version — no DOM checkbox reading, uses base highlights only
+  const base=(p.highlights||'').split('\n').map(s=>s.trim()).filter(Boolean);
+  return base;
+}
+
+function previewCsv(){
+  const pageCode=document.getElementById('csvPageSel').value;
+  const capVerIdx=parseInt(document.getElementById('csvCapVer').value)||0;
+  if(!pageCode){alert('Select a page code first.');return;}
+
+  const{headers,rows,props}=buildCsvRows(pageCode,capVerIdx);
+  const note=document.getElementById('csvPreviewNote');
+
+  if(!rows.length){
+    note.textContent=`⚠️ No properties found for page ${pageCode}.`;
+    document.getElementById('csvPreviewWrap').style.display='none';
+    return;
+  }
+
+  note.textContent=`✅ ${rows.length} propert${rows.length===1?'y':'ies'} found for ${pageCode}${pageCode==='SUL'?' (filtered: ≤₱2.3M)':''} · ${rows.length} rows in CSV`;
+
+  // Render preview — first 5 rows, first 8 cols
+  const previewCols=headers.slice(0,8);
+  const thead=document.getElementById('csvThead');
+  const tbody=document.getElementById('csvTbody');
+  thead.innerHTML=`<tr>${previewCols.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  tbody.innerHTML=rows.slice(0,5).map(r=>`<tr>${r.slice(0,8).map(c=>`<td title="${c.replace(/"/g,'&quot;')}">${c}</td>`).join('')}</tr>`).join('');
+  document.getElementById('csvPreviewWrap').style.display='block';
+}
+
+function exportCsv(){
+  const pageCode=document.getElementById('csvPageSel').value;
+  const capVerIdx=parseInt(document.getElementById('csvCapVer').value)||0;
+  if(!pageCode){alert('Select a page code first.');return;}
+
+  const{headers,rows}=buildCsvRows(pageCode,capVerIdx);
+  if(!rows.length){alert(`No properties found for page ${pageCode}.`);return;}
+
+  const csv=[headers.join(','),...rows.map(r=>r.join(','))].join('\r\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const ts=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  a.download=`EPD_BulkCreate_${pageCode}_V${capVerIdx+1}_${ts}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── COLOR MODE ────────────────────────────────────────────────────
+let previousColor={hex:'#C9960F',name:'Antique Gold'};
+function onColorMode(){
+  const mode=document.querySelector('input[name="colorMode"]:checked')?.value||'manual';
+  const pickerWrap=document.getElementById('colorPickerWrap');
+  const note=document.getElementById('colorModeNote');
+  if(mode==='previous'){
+    if(pickerWrap) pickerWrap.style.display='none';
+    if(note){note.style.display='block';note.textContent=`Using last color: ${previousColor.name} (${previousColor.hex})`;}
+    document.getElementById('selColor').value=previousColor.hex;
+    document.getElementById('selBg').value=previousColor.bg||'#1A1A1A';
+  } else {
+    if(pickerWrap) pickerWrap.style.display='block';
+    if(note) note.style.display='none';
+    // Keep whatever color is currently selected in the grid
+  }
+}
+
+// ── AGENT REMEMBER ME ────────────────────────────────────────────
+function saveAgent(){
+  try{
+    const n=document.getElementById('agentName')?.value||'';
+    const c=document.getElementById('contact')?.value||'';
+    if(n||c) localStorage.setItem('epd_agent',JSON.stringify({name:n,contact:c}));
+  }catch{}
+}
+function loadAgent(){
+  try{
+    const d=JSON.parse(localStorage.getItem('epd_agent')||'{}');
+    // Clear any previously saved 'Florence Alvarez' or 'Florence Christine Alvarez'
+    const savedName=d.name||'';
+    const isOldDefault=/florence (christine )?alvarez/i.test(savedName);
+    if(d.name&&!isOldDefault){const el=document.getElementById('agentName');if(el&&!el.value)el.value=d.name;}
+    if(d.contact){const el=document.getElementById('contact');if(el&&!el.value)el.value=d.contact;}
+  }catch{}
+}
+
+// ── COPY FUNCTIONS ───────────────────────────────────────────────
 // Add or remove agents here. Each agent has a unique code.
 // To revoke access: remove their code and share the updated file.
 const AGENT_CODES = {
@@ -2357,12 +2874,15 @@ function doUnlock(agentName){
   document.getElementById('lockScreen').style.display = 'none';
   document.getElementById('mainContent').classList.add('unlocked');
   const nameField = document.getElementById('agentName');
-  if(nameField && !nameField.value) nameField.value = agentName==='General Team Access' ? '' : agentName;
+  if(nameField && !nameField.value && agentName!=='General Team Access') nameField.value = agentName;
   PROPS.forEach(p=>{ if(!p.db) p.db='zonal'; });
   initBrowse('zonal');
   initBrowse('lhoopa');
   buildColorGrid();
   buildLayoutGrid();
+  renderHistory(loadHistory());
+  loadAgent();
+  try{const pc=JSON.parse(localStorage.getItem('epd_prev_color')||'{}');if(pc.hex)previousColor=pc;}catch{}
 }
 
 // Auto-unlock check removed — localStorage not available on published pages
