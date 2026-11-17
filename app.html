@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B1426">
+<title>EPD · Empress Property</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0B1426;--navy2:#13203A;--card:#182742;--gold:#C9960F;--gold2:#E7C26A;--txt:#EEF2F8;--mut:#8D9AB3;--line:#243556;--r:18px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--navy);color:var(--txt);font:14px/1.45 Poppins,system-ui,sans-serif}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:84px;position:relative}
+/* splash */
+#splash{position:fixed;inset:0;background:radial-gradient(circle at 50% 35%,#1d3157,#0B1426 70%);z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s}
+#splash .crown{width:92px;height:92px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font:700 40px 'Playfair Display';color:var(--gold);box-shadow:0 0 40px #c9960f55}
+#splash h1{font:700 22px 'Playfair Display';margin:18px 0 2px;letter-spacing:.04em}#splash p{color:var(--mut);margin:0;font-size:12px;letter-spacing:.2em}
+/* top bar */
+.top{position:sticky;top:0;z-index:10;background:linear-gradient(var(--navy) 70%,#0B142600);padding:14px 18px 10px;display:flex;align-items:center;gap:12px}
+.top .av{width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;overflow:hidden;flex:none}
+.top .av img{width:100%;height:100%;object-fit:cover}
+.top h2{margin:0;font-size:12px;color:var(--mut);font-weight:500}.top b{display:block;font-size:17px;color:var(--txt)}
+.top .bell{margin-left:auto;width:40px;height:40px;border-radius:12px;background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:18px}
+.pad{padding:0 18px}
+.hero{background:linear-gradient(135deg,#1f3a6b,#0f1f3d);border:1px solid var(--line);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;margin-bottom:18px}
+.hero:after{content:'';position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:#c9960f22}
+.hero small{color:var(--gold2);font-weight:600;letter-spacing:.08em;font-size:11px}.hero h3{margin:4px 0 6px;font:700 22px 'Playfair Display'}.hero p{margin:0;color:var(--mut);font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;position:relative;z-index:1}
+.stats div{background:#0b142699;border-radius:12px;padding:10px;text-align:center}.stats b{display:block;font-size:18px;color:var(--gold2)}.stats span{font-size:10px;color:var(--mut)}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:6px 0 12px}.sec h4{margin:0;font-size:16px}.sec a{color:var(--gold2);font-size:12px;text-decoration:none}
+/* today cards carousel */
+.rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 18px 6px;margin:0 -18px}
+.rail::-webkit-scrollbar{display:none}
+.tc{flex:0 0 78%;scroll-snap-align:center;background:var(--card);border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.tc img{width:100%;display:block;aspect-ratio:4/5;object-fit:cover;background:#0f1a30}
+.tc .b{padding:12px}.tc h5{margin:0 0 8px;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row{display:flex;gap:8px}.btn{flex:1;border:0;border-radius:12px;padding:11px 10px;font:600 12px Poppins;cursor:pointer;color:var(--txt);background:var(--navy2)}
+.btn.g{background:var(--gold);color:var(--navy)}
+/* chips */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 18px 4px;margin:0 -18px 14px}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 14px;border-radius:999px;background:var(--navy2);border:1px solid var(--line);color:var(--mut);font-size:12px;font-weight:500}
+.chip.on{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:700}
+.search{display:flex;align-items:center;gap:10px;background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.search input{flex:1;background:none;border:0;color:var(--txt);font:14px Poppins;outline:none}
+/* property list */
+.pc{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:12px}
+.pc .ph{width:96px;height:96px;border-radius:12px;flex:none;background:#0f1a30 center/cover;position:relative}
+.pc .tag{position:absolute;left:6px;top:6px;background:#0B1426cc;color:var(--gold2);font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px}
+.pc .i{min-width:0;flex:1}.pc h6{margin:0;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc .m{color:var(--mut);font-size:11px;margin:1px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc .p{font-size:16px;font-weight:800;color:var(--gold2)}.pc .p small{font-size:10px;color:var(--mut);font-weight:500}
+.pc .inc{font-size:10px;color:var(--mut)}
+.pc .go{align-self:center;width:34px;height:34px;border-radius:10px;background:var(--gold);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+.soon{opacity:.55}
+/* me */
+.me{text-align:center;padding:10px 0 20px}.me .big{width:110px;height:110px;margin:0 auto 10px;border-radius:50%;border:3px solid var(--gold);background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}
+.me .big img{width:100%;height:100%;object-fit:cover}
+.fld{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;text-align:left}
+.fld label{font-size:11px;color:var(--mut)}.fld input{width:100%;background:none;border:0;color:var(--txt);font:600 15px Poppins;outline:none;margin-top:2px}
+.sw{display:flex;gap:10px;justify-content:center;margin:6px 0 14px}.sw i{width:34px;height:34px;border-radius:50%;cursor:pointer;border:3px solid transparent}.sw i.on{border-color:#fff}
+/* create */
+.big-cta{display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);border-radius:var(--r);padding:22px;font-weight:800;font-size:16px;margin-bottom:14px}
+.tile{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tile a{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;text-decoration:none;color:var(--txt)}
+.tile a b{display:block;font-size:22px;margin-bottom:6px}.tile a span{font-size:12px;color:var(--mut)}
+/* bottom nav */
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#0f1b33f2;backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:20}
+nav button{flex:1;background:none;border:0;color:var(--mut);font:500 10px Poppins;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0}
+nav button i{font-style:normal;font-size:20px;line-height:1;filter:grayscale(1) opacity(.7)}
+nav button.on{color:var(--gold2)}nav button.on i{filter:none}
+nav .fab{flex:none;width:58px;height:58px;margin-top:-26px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:26px;box-shadow:0 6px 18px #c9960f66;justify-content:center}
+nav .fab i{filter:none;font-size:26px}
+.view{display:none;animation:fade .25s}.view.on{display:block}@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#000d;padding:10px 16px;border-radius:12px;font-size:12px;opacity:0;transition:opacity .3s;z-index:30}
+.empty{color:var(--mut);text-align:center;padding:30px 10px;font-size:13px}
+</style></head><body>
+<div id="splash"><div class="crown">E</div><h1>Empress Property</h1><p>ZONAL REALTY · EPD</p></div>
+<div class="app">
+ <div class="top"><div class="av" id="topAv">E</div><div><h2 id="greet">Magandang araw</h2><b id="topName">Agent</b></div><div class="bell">🔔</div></div>
+
+ <!-- TODAY -->
+ <section class="view on" id="v-today"><div class="pad">
+  <div class="hero"><small>DAILY CONTENT</small><h3>Today's cards are ready ✨</h3><p id="heroDate">Fresh listings every 6 AM. Download, copy caption, post.</p>
+   <div class="stats"><div><b id="stCards">–</b><span>cards today</span></div><div><b id="stProj">–</b><span>projects</span></div><div><b id="stPhotos">–</b><span>with photos</span></div></div></div>
+  <div class="sec"><h4>📅 Today's cards</h4><a href="#" onclick="go('props');return false">See properties →</a></div>
+  <div class="rail" id="rail"><div class="empty">Loading…</div></div>
+  <div class="sec" style="margin-top:20px"><h4>🔥 Under ₱10k / month</h4><a href="#" onclick="setAmt('lo');return false">View all →</a></div>
+  <div id="cheap"></div>
+ </div></section>
+
+ <!-- PROPERTIES -->
+ <section class="view" id="v-props"><div class="pad">
+  <div class="search">🔍<input id="q" placeholder="Search project, model, town"></div>
+  <div class="chips" id="provChips"></div>
+  <div class="chips" id="amtChips"></div>
+  <div id="plist"></div>
+ </div></section>
+
+ <!-- CREATE -->
+ <section class="view" id="v-create"><div class="pad">
+  <a class="big-cta" href="epd2.html">✏️ Open Card Maker<br><span style="font-weight:500;font-size:12px">Full editor: layouts, colors, captions, video</span></a>
+  <div class="tile">
+   <a href="#" onclick="go('today');return false"><b>📅</b>Today's cards<br><span>Ready-to-post daily</span></a>
+   <a href="#" onclick="go('props');return false"><b>🏠</b>Pick a property<br><span>Then tap “Make card”</span></a>
+   <a href="epd2.html"><b>🎬</b>Make a video<br><span>8-second Reel</span></a>
+   <a href="#" onclick="go('me');return false"><b>👤</b>My branding<br><span>Photo, name, number</span></a>
+  </div>
+ </div></section>
+
+ <!-- ME -->
+ <section class="view" id="v-me"><div class="pad">
+  <div class="me"><div class="big" id="meAv">👤</div><button class="btn g" style="max-width:220px" onclick="document.getElementById('mePh').click()">📷 Upload my photo</button><input type="file" id="mePh" accept="image/*" hidden></div>
+  <div class="fld"><label>Name</label><input id="meName" placeholder="Your name"></div>
+  <div class="fld"><label>Cellphone #</label><input id="mePhone" placeholder="09XX XXX XXXX" inputmode="tel"></div>
+  <div class="fld" style="text-align:center"><label>My card color</label><div class="sw" id="sw"></div></div>
+  <button class="btn g" style="width:100%" onclick="saveMe()">💾 Save my branding</button>
+  <p class="empty">Saved on this phone. Used automatically in the Card Maker.</p>
+ </div></section>
+</div>
+
+<nav>
+ <button class="on" data-v="today" onclick="go('today')"><i>📅</i>Today</button>
+ <button data-v="props" onclick="go('props')"><i>🏠</i>Properties</button>
+ <button class="fab" onclick="location.href='epd2.html'"><i>＋</i></button>
+ <button data-v="create" onclick="go('create')"><i>✏️</i>Create</button>
+ <button data-v="me" onclick="go('me')"><i>👤</i>Me</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const COLORS=['#0D1B2A','#5A0F1C','#1C3A2B','#1E1A2E','#0E3040','#2C1A0E'];
+let P=[],DAY=null,amt='',prov='';
+setTimeout(()=>{$('splash').style.opacity=0;setTimeout(()=>$('splash').remove(),500)},900);
+function toast(t){const e=$('toast');e.textContent=t;e.style.opacity=1;setTimeout(()=>e.style.opacity=0,1600)}
+function go(v){document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));scrollTo(0,0)}
+const num=v=>{const m=String(v||'').replace(/,/g,'').match(/[\d.]+/);return m?+m[0]:0};
+const peso=v=>v?String(v).replace(/\.00(?!\d)/,''):'';
+const slug=t=>String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+const clean=m=>String(m||'').replace(/\s*\((?:[^)]*\b(?:blk|block|lot|ph)\b[^)]*)\)/ig,'').trim();
+const base=m=>clean(String(m||'').split(/\s+[—–-]\s+/)[0]).replace(/\s+(inner|end|corner)(\s+unit)?$/i,'');
+function kind(p){const t=(p.model+' '+(p.type||'')).toLowerCase();const k=/duplex|\bdx/.test(t)?'duplex':/single|\bsa\d/.test(t)?'single-attached':/townhouse|\bth\b|socialized/.test(t)?'townhouse':'';const n=(String(p.model).match(/(\d+(?:\.\d+)?)/)||[])[1];return k&&n?k+'-'+String(+n).replace('.','-'):''}
+const isApec=p=>!!p.apec;
+function thumbs(p){const a=[`photos/${slug(p.name)}/${slug(base(p.model))}/1.jpg`];if(isApec(p)&&kind(p))a.push(`photos/apec/${kind(p)}/1.jpg`);return a}
+function setThumb(el,p){const list=thumbs(p);let i=0;const im=new Image();im.onload=()=>{el.style.backgroundImage=`url(${im.src})`;el.dataset.ok=1};im.onerror=()=>{if(++i<list.length)im.src=list[i];else{el.style.background='linear-gradient(135deg,#1f3a6b,#0f1f3d)';el.innerHTML+='<div style="display:flex;height:100%;align-items:center;justify-content:center;font-size:28px">🏠</div>'}};im.src=list[0]}
+
+function card(p){const d=document.createElement('div');const ph=!!(p.term30||p.monthlyDp||p.tcp);d.className='pc'+(ph?'':' soon');
+ const price=p.term30?`${peso(p.term30)} <small>/mo</small>`:p.monthlyDp?`${peso(p.monthlyDp)} <small>DP/mo</small>`:p.tcp?`${peso(p.tcp)} <small>TCP</small>`:'<small style="font-size:12px">Pricing coming soon</small>';
+ d.innerHTML=`<div class="ph"><span class="tag">${(p.status||'').toUpperCase().slice(0,12)}</span></div><div class="i"><h6>${p.name}</h6><div class="m">${clean(p.model)}${p.position?' · '+p.position:''} · ${[p.city,p.prov].filter(Boolean).join(', ')}</div><div class="p">${price}</div>${p.income30?`<div class="inc">Required income ${peso(p.income30)}</div>`:''}</div><div class="go">›</div>`;
+ setThumb(d.querySelector('.ph'),p);d.onclick=()=>location.href='epd2.html?prop='+encodeURIComponent(p.id);return d}
+
+function renderList(){const q=$('q').value.toLowerCase();const L=$('plist');L.innerHTML='';
+ let R=P.filter(p=>(!prov||p.prov===prov)&&(!q||[p.name,p.model,p.city,p.prov].join(' ').toLowerCase().includes(q)));
+ const a=num;if(amt==='lo')R=R.filter(p=>p.term30&&a(p.term30)<10000);if(amt==='mid')R=R.filter(p=>p.term30&&a(p.term30)>=10000&&a(p.term30)<15000);if(amt==='hi')R=R.filter(p=>p.term30&&a(p.term30)>=15000);
+ R.sort((x,y)=>(!!(y.term30||y.tcp))-(!!(x.term30||x.tcp)));
+ R.slice(0,60).forEach(p=>L.appendChild(card(p)));if(!R.length)L.innerHTML='<div class="empty">No properties found</div>';if(R.length>60)L.insertAdjacentHTML('beforeend',`<div class="empty">Showing 60 of ${R.length}. Search to narrow down.</div>`)}
+function chips(){const pv=[...new Set(P.map(p=>p.prov).filter(x=>x&&x!=='To confirm'))].sort();
+ $('provChips').innerHTML=['',...pv].map(v=>`<span class="chip ${v===prov?'on':''}" data-p="${v}">${v||'All areas'}</span>`).join('');
+ $('provChips').onclick=e=>{if(e.target.dataset.p===undefined)return;prov=e.target.dataset.p;chips();renderList()};
+ $('amtChips').innerHTML=[['','Any price'],['lo','Under ₱10k/mo'],['mid','₱10k–15k'],['hi','₱15k+']].map(([k,t])=>`<span class="chip ${k===amt?'on':''}" data-a="${k}">${t}</span>`).join('');
+ $('amtChips').onclick=e=>{if(e.target.dataset.a===undefined)return;amt=e.target.dataset.a;chips();renderList()}}
+window.setAmt=k=>{amt=k;chips();renderList();go('props')};
+$('q').oninput=renderList;
+
+async function loadToday(){const R=$('rail');try{const d=await (await fetch('daily-cards/latest.json?'+Date.now())).json();DAY=d;$('stCards').textContent=d.cards.length;
+  $('heroDate').textContent='For '+new Date(d.day).toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric'})+' · Download, copy caption, post.';R.innerHTML='';
+  d.cards.forEach(c=>{const e=document.createElement('div');e.className='tc';e.innerHTML=`<img src="daily-cards/${c.png}" loading="lazy"><div class="b"><h5>${c.title}</h5><div class="row"><button class="btn g">⬇ Save</button><button class="btn">📋 Caption</button><button class="btn">✏️</button></div></div>`;
+   const [dl,cp,ed]=e.querySelectorAll('button');
+   dl.onclick=async()=>{const b=await (await fetch('daily-cards/'+c.png)).blob();const f=new File([b],c.png.split('/').pop(),{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){}}const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=f.name;a.click();toast('Saved ✓')};
+   cp.onclick=async()=>{const t=await (await fetch('daily-cards/'+c.txt)).text();await navigator.clipboard.writeText(t);toast('Caption copied ✓')};
+   ed.onclick=()=>location.href='epd2.html?today='+encodeURIComponent(c.png);R.appendChild(e)})}
+ catch(e){R.innerHTML='<div class="empty">No cards yet today</div>';$('stCards').textContent=0}}
+
+function loadMe(){let m={};try{m=JSON.parse(localStorage.getItem('epd2brand')||'{}')}catch(e){}
+ $('meName').value=m.agent||'';$('mePhone').value=m.phone||'';$('topName').textContent=m.agent||'Agent';$('topAv').textContent=(m.agent||'E')[0].toUpperCase();
+ let col=m.color||COLORS[0];$('sw').innerHTML=COLORS.map(c=>`<i style="background:${c}" data-c="${c}" class="${c===col?'on':''}"></i>`).join('');
+ $('sw').onclick=e=>{if(!e.target.dataset.c)return;col=e.target.dataset.c;[...$('sw').children].forEach(i=>i.classList.toggle('on',i.dataset.c===col))};
+ window.saveMe=()=>{try{localStorage.setItem('epd2brand',JSON.stringify({agent:$('meName').value,phone:$('mePhone').value,color:col}));toast('Branding saved ✓');loadMe()}catch(e){toast('Could not save on this browser')}};
+ try{const ph=localStorage.getItem('epd2agentPhoto');if(ph){$('meAv').innerHTML=`<img src="${ph}">`;$('topAv').innerHTML=`<img src="${ph}">`}}catch(e){}}
+$('mePh').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,700/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);try{localStorage.setItem('epd2agentPhoto',c.toDataURL('image/png'));toast('Photo saved ✓')}catch(x){}loadMe()};i.src=r.result};r.readAsDataURL(f)};
+
+const h=new Date().getHours();$('greet').textContent=h<12?'Magandang umaga 👋':h<18?'Magandang hapon 👋':'Magandang gabi 👋';
+fetch('data/props.json').then(r=>r.json()).then(d=>{P=d;$('stProj').textContent=new Set(P.map(p=>p.name)).size;
+ $('stPhotos').textContent=new Set(P.filter(p=>isApec(p)&&['duplex-45-5','duplex-50','townhouse-44','townhouse-33-6'].includes(kind(p))||/mapletree/i.test(p.name)).map(p=>p.name)).size;
+ chips();renderList();const ch=P.filter(p=>p.term30&&num(p.term30)<10000).slice(0,4);ch.forEach(p=>$('cheap').appendChild(card(p)))});
+loadToday();loadMe();
+</script></body></html>

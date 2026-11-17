@@ -546,5 +546,8 @@ $('rec').onclick=()=>{if(!c.captureStream||!window.MediaRecorder){alert('Video r
  $('rec').textContent='Recording…';rec.start();runAnim(8000,()=>setTimeout(()=>{rec.stop();$('rec').textContent='🎬 Make video (8s)'},300))};
 
 filterList();if(PROPS.length){$('prop').selectedIndex=0;loadProp(+$('prop').value)}
+(async()=>{const u=new URLSearchParams(location.search);const pid=u.get('prop'),td=u.get('today');
+ if(pid){const i=PROPS.findIndex(p=>p.id===pid);if(i>=0){const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+PROPS[i].model,i));s.value=i;loadProp(i);setTimeout(()=>$('cvWrap').scrollIntoView(),400)}}
+ if(td){try{const d=await (await fetch('daily-cards/latest.json?'+Date.now())).json();const c=d.cards.find(x=>x.png===td);if(c){await openToday();const b=[...document.querySelectorAll('#todayG button')].filter(x=>x.textContent.includes('Edit'))[d.cards.indexOf(c)];b&&b.click()}}catch(e){}}})();
 document.fonts.ready.then(draw);draw();
 </script></body></html>
