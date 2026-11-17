@@ -36,7 +36,7 @@ button:hover{border-color:var(--gold)}button.pri{background:var(--gold);color:#1
 input[type=file]{width:100%;min-width:0;font-size:11px;color:#bbb}
 .mini{flex:1;font-size:10px;color:#aaa}.mini input{width:100%}.mini span{display:block}
 .colors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.colors input{width:100%;height:30px;border:none;background:none;padding:0}
-#sec1{background:#1f4e8c;border-color:#1f4e8c}#sec1>summary{color:#fff;font-size:15px;padding:13px 14px}#sec1>summary::before{color:#fff}#sec1 .bd{background:#171717;border-radius:0 0 8px 8px;padding-top:8px}
+#sec1{background:#1f4e8c;border-color:#1f4e8c}#sec1>summary{color:#fff;font-size:15px;padding:13px 14px}#sec1>summary::before{color:#fff}#secProf>summary{font-size:15px}#sec1 .bd{background:#171717;border-radius:0 0 8px 8px;padding-top:8px}
 #styleBar{background:#171717;border:1px solid var(--line);border-radius:8px;padding:4px 10px 6px}#styleBar label{margin-top:4px}#styleBar .pal div{flex-basis:36px;height:36px}#styleBar .fset div{flex-basis:52px!important;height:42px!important;font-size:17px}#styleBar .muted{font-size:10px}
 @media(max-width:900px){.wrap{display:flex;flex-direction:column}main{order:-1;padding:10px}}
 </style></head><body>
@@ -62,9 +62,7 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <label>Long hook line (italic, for Story layout F)</label><input type="text" id="hook">
 <label>Figures to show</label><div class="grid2" id="figs"></div>
 <label>Extra note / promo line</label><input type="text" id="promo">
-<div class="row"><div><label>Contact number (bottom bar shows Location + number)</label><input type="tel" id="phone" placeholder="09XX XXX XXXX" value="0976-339-8960"></div></div>
-<label>Agent name (optional)</label><input type="text" id="agent" value="Florence Alvarez">
-<button id="saveBrand" style="margin-top:8px;width:100%">💾 Save my name &amp; number</button>
+
 </div></details>
 
 <details open><summary>3 · Layout &amp; size</summary><div class="bd">
@@ -82,7 +80,7 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <label>Property photo 1 (main, real photo only)</label><input type="file" id="ph1" accept="image/*">
 <div class="row" style="margin-top:4px"><div class="mini"><span>Zoom <b id="zv">100%</b></span><input type="range" id="pz" min="100" max="250" value="100"></div><div class="mini"><span>X</span><input type="range" id="px" min="0" max="100" value="50"></div><div class="mini"><span>Y</span><input type="range" id="py" min="0" max="100" value="50"></div></div>
 <label>Property photo 2 (for 2-frame layouts)</label><input type="file" id="ph2" accept="image/*">
-<label>Agent photo</label><div id="agLib" style="display:flex;gap:6px;margin:4px 0;flex-wrap:wrap"></div><input type="file" id="aph" accept="image/*">
+
 <div class="row"><div><label>Agent photo spot</label><select id="apos"><option value="br">Bottom right</option><option value="tr">Top right</option><option value="bl">Bottom left</option></select></div><div><label>Style</label><select id="ast"><option value="free">No frame (on top)</option><option value="circle">Circle</option></select></div><div><label>Agent photo size</label><input type="range" id="asz" min="100" max="700" value="270"></div></div>
 <div class="row"><div><label>Move my photo ↔ <span id="axv">0</span></label><input type="range" id="ax" min="-100" max="100" value="0"></div><div><label>Move my photo ↕ <span id="ayv">0</span></label><input type="range" id="ay" min="-100" max="100" value="0"></div></div>
 <label>3 small photos (amenities, rooms, facade)</label>
@@ -110,6 +108,15 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <div class="pinfo" id="pinfo"></div><div id="libInfo" class="muted" style="margin-top:6px"></div>
 </div></details>
 <button onclick="openToday()" style="width:100%;padding:14px;margin-bottom:10px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;font-size:15px">📅 Open Today's cards</button>
+<details id="secProf"><summary>👤 My profile</summary><div class="bd">
+<label>My photo (tap one, or upload a new one)</label><div id="agLib" style="display:flex;gap:6px;margin:4px 0;flex-wrap:wrap"></div><input type="file" id="aph" accept="image/*">
+<div class="row"><div><label>Contact number</label><input type="tel" id="phone" placeholder="09XX XXX XXXX" value="0976-339-8960"></div></div>
+<label>Agent name</label><input type="text" id="agent" value="Florence Alvarez">
+
+<label>Page name</label><input type="text" id="pageName" placeholder="e.g. Pag-IBIG Homes in Cavite">
+<label>Bottom bar shows</label><select id="barMode"><option value="loc">Location + number</option><option value="page">Page name + number</option></select>
+<button id="saveBrand" style="margin-top:8px;width:100%">💾 Save my profile</button>
+</div></details>
 <div id="styleBar"><label>Palette: <b id="palName" style="color:#f3e7c4"></b></label><div class="pal" id="pal"></div><input type="range" id="palS" min="0" max="19" value="0" step="1" style="width:100%"><label>Font set: <b id="fsetName" style="color:#f3e7c4">— custom —</b></label><div class="pal fset" id="fset"></div><input type="range" id="fsetS" min="0" max="19" value="0" step="1" style="width:100%"><div class="muted" style="margin:-2px 0 8px">Headline · Body. Ang Short hook ay laging script (Mr Dafoe), kulay accent ng palette. </div></div></div>
 <div id="cvWrap" style="position:relative;display:inline-block;max-width:100%"><canvas id="cv" width="1080" height="1350"></canvas><div id="ov" style="position:absolute;inset:0;pointer-events:none"></div></div>
 <div class="btns">
@@ -210,8 +217,9 @@ function applyFset(i){const f=FSETS[i];$('fh').value=f[1];$('fs').value=FS.inclu
 window.applyFset=applyFset;$('fset').onclick=e=>{const d=e.target.closest('[data-i]');if(d)applyFset(+d.dataset.i)};$('fsetS').oninput=e=>applyFset(+e.target.value);
 ['fh','fs','fb'].forEach(id=>$(id).addEventListener('change',()=>{const f=FSETS.findIndex(z=>z[1]===$('fh').value&&z[3]===$('fb').value);$('fsetName').textContent=f<0?'— custom —':(f+1)+'. '+FSETS[f][0];document.querySelectorAll('#fset div').forEach(d=>d.classList.toggle('on',+d.dataset.i===f))}));
 ['Panel','Head','Acc','Bar'].forEach(k=>$('c'+k).oninput=e=>{T[k==='Head'?'head':k.toLowerCase()]=e.target.value;draw()});
-try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.phone)$('phone').value=b.phone;if(b.agent)$('agent').value=b.agent}catch(e){}
-$('saveBrand').onclick=()=>{try{localStorage.setItem('epd2brand',JSON.stringify({phone:$('phone').value,agent:$('agent').value}));$('saveBrand').textContent='✓ Saved'}catch(e){$('saveBrand').textContent='Saving not available here'}setTimeout(()=>$('saveBrand').textContent='💾 Save my name & number',1500)};
+try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.phone)$('phone').value=b.phone;if(b.agent)$('agent').value=b.agent;if(b.page)$('pageName').value=b.page;if(b.bar)$('barMode').value=b.bar}catch(e){}
+['pageName','barMode','phone','agent'].forEach(id=>$(id).addEventListener('input',draw));$('barMode').addEventListener('change',draw);
+$('saveBrand').onclick=()=>{try{localStorage.setItem('epd2brand',JSON.stringify({phone:$('phone').value,agent:$('agent').value,page:$('pageName').value,bar:$('barMode').value}));$('saveBrand').textContent='✓ Saved'}catch(e){$('saveBrand').textContent='Saving not available here'}setTimeout(()=>$('saveBrand').textContent='💾 Save my profile',1500)};
 
 function filterList(){const q=$('q').value.toLowerCase().trim(),pg=$('fpage').value,fi=$('ffin').value;
  const am=$('famt').value.split('-').map(Number),sal=+$('fsal').value||0;const base=PROPS.map((p,i)=>[p,i]).filter(([p])=>(!sal||fits(p,sal))&&(!$('famt').value||(p.term30&&num(p.term30)>=am[0]&&num(p.term30)<=am[1]))&&(!pg||(pg.startsWith('prov:')?p.prov===pg.slice(5):(p.prov+'|'+p.city)===pg.slice(5)))&&(!$('fdev').value||p._dev===$('fdev').value)&&(!fi||(p.financing||[]).join(' ').toLowerCase().includes(fi.toLowerCase())));
@@ -311,7 +319,7 @@ function logos(top,darkL,darkR){const m=40*S,zw=Math.min(240*S,W*.24);
 function bar(){if(!$('showBar').checked)return 0;const h=Math.max(70,H*.055)*S/S*(W/1080);x.fillStyle=T.bar;x.fillRect(0,H-h,W,h);
  const dark=lum(T.bar)<150,col=dark?'#fff':'#111',ph_=$('phone').value.trim();
  x.save();x.fillStyle=col;x.textBaseline='middle';x.textAlign='center';x.font=F(800,26,$('fb').value);
- x.fillText(`${$('loc').value.toUpperCase()}   |   ${ph_?'Call us '+ph_:'⚠️ Add contact number'}`,W/2,H-h/2,W*.94);x.restore();return h}
+ x.fillText(`${($('barMode').value==='page'&&$('pageName').value.trim()?$('pageName').value.trim():$('loc').value).toUpperCase()}   |   ${ph_?'Call us '+ph_:'⚠️ Add contact number'}`,W/2,H-h/2,W*.94);x.restore();return h}
 function figBlock(X,Y,mw,o={}){const f=figsOn();if(!f.length)return 0;const{col=T.head,acc=T.acc,size=48,i0=4,cols=1}=o;let y=Y;
  if(cols>1){const cw=mw/cols;let k=0,rowH=0;f.forEach((g,j)=>{const cx=X+(j%cols)*cw;if(j%cols===0&&j){y+=rowH;rowH=0}
   const h1=tx(g[0],cx,y,{size:size*.5,w:600,col:hexA(col.length===7?col:'#ffffff',.75),i:i0+j,upper:true,ls:1.5,mw:cw-10});
