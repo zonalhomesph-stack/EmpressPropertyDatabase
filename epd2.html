@@ -288,7 +288,7 @@ function tx(t,X,Y,o){if(!t)return 0;if(o.it&&t===$('kicker').value&&$('fs').valu
  x.save();x.font=(it?'italic ':'')+F(w,size,fam);x.fillStyle=col;x.textAlign=al;x.textBaseline='top';if('letterSpacing'in x&&ls)x.letterSpacing=ls*S+'px';
  if(shadow){x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=14*S;x.shadowOffsetY=3*S}
  const a=av(i);x.globalAlpha*=a;const dy=(1-a)*30*S;
- const L=wrap(upper?String(t).toUpperCase():t,mw).slice(0,max);L.forEach((l,k)=>x.fillText(l,X,Y+dy+k*size*S*lh));x.restore();return L.length*size*S*lh}
+ let L=wrap(upper?String(t).toUpperCase():t,mw).slice(0,max),sz2=size;const mxw=Math.max(...L.map(l=>x.measureText(l).width));if(mxw>mw){sz2=size*mw/mxw*.98;x.font=(it?'italic ':'')+F(w,sz2,fam);L=wrap(upper?String(t).toUpperCase():t,mw).slice(0,max)}L.forEach((l,k)=>x.fillText(l,X,Y+dy+k*sz2*S*lh));x.restore();return L.length*sz2*S*lh}
 function enhF(){if(!$('enh')||!$('enh').checked)return 'none';const k=$('enhS').value/100;return `brightness(${(1+.08*k).toFixed(3)}) contrast(${(1+.14*k).toFixed(3)}) saturate(${(1+.35*k).toFixed(3)})`}
 function cover(img,dx,dy,dw,dh){const z=$('pz').value/100,ox=$('px').value/100,oy=$('py').value/100;
  let kb=1;if(ANIM.on)kb=1+.08*ANIM.t;const s=Math.max(dw/img.width,dh/img.height)*z*kb,iw=img.width*s,ih=img.height*s;
