@@ -1,0 +1,68 @@
+// Generates daily listing cards + captions from epd2.html (no Claude, runs on GitHub Actions)
+import { chromium } from 'playwright';
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const ROOT = process.cwd();
+const COUNT = +(process.env.CARD_COUNT || 5);
+const PHONE = process.env.CARD_PHONE || '';
+const AGENT = process.env.CARD_AGENT || '';
+const day = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10); // Manila date
+const OUT = path.join(ROOT, 'daily-cards', day);
+fs.mkdirSync(OUT, { recursive: true });
+
+const types = { '.html': 'text/html', '.jpg': 'image/jpeg', '.png': 'image/png', '.js': 'text/javascript' };
+const server = http.createServer((req, res) => {
+  const f = path.join(ROOT, decodeURIComponent(req.url.split('?')[0]));
+  if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
+  res.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' });
+  fs.createReadStream(f).pipe(res);
+}).listen(8765);
+
+const browser = await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{});
+const page = await browser.newPage({ viewport: { width: 1400, height: 1100 } });
+page.on('pageerror', e => console.error('page error:', e.message));
+await page.goto('http://localhost:8765/epd2.html');
+await page.waitForTimeout(1500);
+if (PHONE) await page.fill('#phone', PHONE);
+if (AGENT) await page.fill('#agent', AGENT);
+
+// candidates: real priced entries (not placeholders), order rotates daily
+const cands = await page.evaluate((seed) => {
+  const ix = PROPS.map((p, i) => [p, i]).filter(([p]) => !String(p.id || '').startsWith('p_APEC_PH') && (p.term30 || p.monthlyDp || p.tcp)).map(([, i]) => i);
+  let s = seed; const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  for (let i = ix.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [ix[i], ix[j]] = [ix[j], ix[i]]; }
+  return ix;
+}, Math.floor(Date.now() / 864e5));
+
+const made = [];
+const seen = new Set();
+for (const i of cands) {
+  if (made.length >= COUNT) break;
+  const ok = await page.evaluate(async (i) => {
+    const sel = document.getElementById('prop');
+    if (![...sel.options].some(o => o.value == i)) sel.add(new Option('x', i));
+    sel.value = String(i); sel.dispatchEvent(new Event('change'));
+    await new Promise(r => setTimeout(r, 2500));
+    return document.getElementById('libInfo').textContent.includes('📚');
+  }, i);
+  if (!ok) continue;
+  const key = await page.evaluate(i => PROPS[i].name + '|' + PROPS[i].model, i);
+  if (seen.has(key)) continue; seen.add(key);
+  await page.click('#autoBtn');
+  await page.waitForTimeout(1500);
+  const { png, cap, name } = await page.evaluate(i => {
+    const p = PROPS[i];
+    return { png: document.getElementById('cv').toDataURL('image/png'), cap: document.getElementById('cap').textContent,
+             name: (p.name + '-' + p.model).replace(/[^A-Za-z0-9]+/g, '-').replace(/-+$/, '').slice(0, 70) };
+  }, i);
+  const n = String(made.length + 1).padStart(2, '0');
+  fs.writeFileSync(path.join(OUT, `${n}-${name}.png`), Buffer.from(png.split(',')[1], 'base64'));
+  fs.writeFileSync(path.join(OUT, `${n}-${name}.txt`), cap);
+  made.push(`${n}-${name}`);
+  console.log('made', n, name);
+}
+fs.writeFileSync(path.join(OUT, 'README.md'), `# Daily cards — ${day}\n\n${made.map(m => `- ${m}.png + ${m}.txt (caption)`).join('\n')}\n`);
+await browser.close(); server.close();
+console.log(`Done: ${made.length} cards in daily-cards/${day}`);
