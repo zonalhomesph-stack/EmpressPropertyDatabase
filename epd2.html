@@ -620,7 +620,7 @@ async function libLoad(key){if(LIBIMG[key])return LIBIMG[key];let a=[];
 let rot=Math.floor(Date.now()/864e5);
 async function applyLib(step){const k=libKey(cur),p0=cur;$('libInfo').textContent='';
  const imgs=await libLoad(k);if(cur!==p0)return false;$('libInfo').textContent=imgs.length?`📚 Empress Library: ${imgs.length} photos auto-loaded for ${cleanModel(cur.model)}`:`📁 No library photos yet. Upload to photos/${slug(cur.name)}/${slug(baseModel(cur.model))}/1.jpg`;if(!imgs.length)return false;if(step)rot++;const o=rot%imgs.length;const ord=imgs.slice(o).concat(imgs.slice(0,o));
- ph[0]=ord[0];ph[1]=ord[1]||null;sm=[ord[1]||null,ord[2]||null,ord[3]||null];draw();return true}
+ ph[0]=ord[0];ph[1]=ord[1]||null;sm=[ord[1]||null,ord[2]||null,ord[3]||null];const ak='amen|'+slug(cur.name);if(!(ak in LIBIMG))LIBIMG[ak]=location.protocol.startsWith('http')?await ghLoad(cur,`photos/${slug(cur.name)}/amenities/`):[];const am=LIBIMG[ak];if(am&&am.length)sm[2]=am[rot%am.length];draw();return true}
 $('autoBtn').onclick=async()=>{if(!cur)return;await applyLib(true);
  const good=['A','B','C','G','I','J','K','M','N'];$('layout').value=good[Math.floor(Math.random()*good.length)];
  KORD=null;nextKick();ORD=null;capIdx=0;genText();draw()};
