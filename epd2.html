@@ -43,7 +43,13 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <header><b>EPD 2.0</b><button id="todayTop" onclick="openToday()" style="margin-left:auto;order:3;background:#1f4e8c;border-color:#1f4e8c;color:#fff;white-space:nowrap">📅 Today's cards</button><span>Listing card + caption maker · Empress Property Database · No ChatGPT needed</span></header>
 <div class="wrap"><aside><div id="amBar" style="display:none;background:#1b2a1b;border:1px solid #2e7d4f;color:#cfe8cf;padding:10px;border-radius:8px;margin-bottom:10px;font-size:12px">✏️ Editing a Today's card. Add your photo, then move (✥), resize (+ / −) or remove (✕) photos right on the card.<button onclick="document.getElementById('aph').click()" class="pri" style="margin-top:8px;width:100%">📷 Add / change my photo</button><button onclick="agentMode(false)" style="margin-top:6px;width:100%">⚙️ Show all settings</button></div><button onclick="openToday()" style="width:100%;padding:14px;margin-bottom:10px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;font-size:15px">📅 Open Today's cards</button>
 
-<details open id="sec1"><summary>1 · Property</summary><div class="bd">
+<details open id="secStyle"><summary>🎨 Colors &amp; fonts</summary><div class="bd">
+<label>Palette: <b id="palName" style="color:#f3e7c4"></b></label><div class="pal" id="pal"></div><input type="range" id="palS" min="0" max="19" value="0" step="1" style="width:100%">
+<label>Font set: <b id="fsetName" style="color:#f3e7c4">— custom —</b></label><div class="pal fset" id="fset"></div><input type="range" id="fsetS" min="0" max="19" value="0" step="1" style="width:100%"><div class="muted" style="margin:-2px 0 8px">Headline · Short hook · Body. Puwede pa ring baguhin isa-isa sa 3 · Layout &amp; size.</div><label>Fine-tune: Panel · Headline · Accent · Bar</label>
+<div class="colors"><input type="color" id="cPanel"><input type="color" id="cHead"><input type="color" id="cAcc"><input type="color" id="cBar"></div>
+</div></details>
+
+<details id="sec1"><summary>1 · Property</summary><div class="bd">
 <label>Search (project, model, city)</label><input type="text" id="q" placeholder="e.g. Anyana, Naic, duplex">
 <div class="row"><div><label>Location</label><select id="fpage"></select></div><div><label>Developer</label><select id="fdev"></select></div><div><label>Financing</label><select id="ffin"><option value="">All</option><option>Pag-IBIG</option><option>Bank</option><option>In-house</option><option>Cash</option></select></div></div>
 <div class="row"><div><label>Monthly amort</label><select id="famt"><option value="">All</option><option value="0-4999">Below 5k</option><option value="5000-10999">5k – 10k</option><option value="11000-14999">11k – 15k</option><option value="15000-1e9">15k &amp; above</option></select></div><div><label>Buyer basic salary / mo</label><input type="number" id="fsal" min="0" step="1000" placeholder="e.g. 35000"></div></div>
@@ -65,7 +71,7 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <button id="saveBrand" style="margin-top:8px;width:100%">💾 Save my name &amp; number</button>
 </div></details>
 
-<details open><summary>3 · Layout &amp; size</summary><div class="bd"><label>Font set: <b id="fsetName" style="color:#f3e7c4">— custom —</b></label><div class="pal fset" id="fset"></div><input type="range" id="fsetS" min="0" max="19" value="0" step="1" style="width:100%"><div class="muted" style="margin:-2px 0 8px">Headline · Short hook · Body. Puwede pa ring baguhin isa-isa sa ibaba.</div>
+<details open><summary>3 · Layout &amp; size</summary><div class="bd">
 <div class="row"><div><label>Layout</label><select id="layout"></select></div><div><label>Size</label><select id="size">
 <option value="1080x1350">Feed 4:5</option><option value="1080x1080">Square 1:1</option><option value="1080x1920">Story / Reel 9:16</option><option value="1920x1080">Landscape 16:9</option><option value="1240x1754">A4</option></select></div></div>
 <label>Headline font</label><select id="fh"></select>
@@ -73,11 +79,7 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <label>Headline size <span id="hsv">100%</span></label><input type="range" id="hs" min="70" max="130" value="100">
 </div></details>
 
-<details><summary>4 · Colors</summary><div class="bd">
-<label>Palette: <b id="palName" style="color:#f3e7c4"></b></label><div class="pal" id="pal"></div><input type="range" id="palS" min="0" max="19" value="0" step="1" style="width:100%">
-<label>Fine-tune: Panel · Headline · Accent · Bar</label>
-<div class="colors"><input type="color" id="cPanel"><input type="color" id="cHead"><input type="color" id="cAcc"><input type="color" id="cBar"></div>
-</div></details>
+
 
 <details id="sec5"><summary>5 · Photos &amp; logos</summary><div class="bd">
 <div class="row" style="align-items:center;gap:8px;margin:4px 0 8px"><label class="chk" style="flex:1"><input type="checkbox" id="enh" checked> ✨ Enhance photo</label><input type="range" id="enhS" min="0" max="100" value="100" style="flex:2" title="Enhance strength"><span id="enhV" style="width:36px;font-size:12px">100%</span></div>
