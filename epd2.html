@@ -613,7 +613,7 @@ function slug(t){return String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').r
 function apecKind(p){const t=(p.model+' '+(p.type||'')).toLowerCase();const k=/duplex|\bdx/.test(t)?'duplex':/single|\bsa\d/.test(t)?'single-attached':/townhouse|\bth\b|socialized/.test(t)?'townhouse':'';const n=(String(p.model).match(/(\d+(?:\.\d+)?)/)||[])[1];return k&&n?k+'-'+String(+n).replace('.','-'):''}
 const PHOTO_ALIAS={'liora-homes-naic/amora-ecolove':'liora-homes-naic/amora'};
 function ghLoad(p,base0){const k0=`${slug(p.name)}/${slug(baseModel(p.model))}`,base=base0||`photos/${PHOTO_ALIAS[k0]||k0}/`,out=[];
- return new Promise(res=>{(function nx(i){if(i>10)return res(out);const im=new Image();im.onload=()=>{out.push(im);nx(i+1)};im.onerror=()=>res(out);im.src=base+i+'.jpg'})(1)})}
+ return new Promise(res=>{(function nx(i){if(i>15)return res(out);const im=new Image();im.onload=()=>{out.push(im);nx(i+1)};im.onerror=()=>res(out);im.src=base+i+'.jpg'})(1)})}
 async function libLoad(key){if(LIBIMG[key])return LIBIMG[key];let a=[];
  if(PHOTO_LIB[key])a=(await Promise.all(PHOTO_LIB[key].map(src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})))).filter(Boolean);
  if(!a.length&&location.protocol.startsWith('http')&&cur){a=await ghLoad(cur);if(!a.length&&cur._dev==='APEC Homes'&&apecKind(cur))a=await ghLoad(cur,`photos/apec/${apecKind(cur)}/`)}return LIBIMG[key]=a}
