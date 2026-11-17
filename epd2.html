@@ -200,8 +200,8 @@ function filterList(){const q=$('q').value.toLowerCase().trim(),pg=$('fpage').va
  const byName=q?base.filter(([p])=>(p.name||'').toLowerCase().includes(q)):[];
  const proj=byName.length?[...new Set(byName.map(([p])=>p.name))]:[];
  let L,label;
- if(proj.length){L=byName;label=([p])=>`${proj.length>1?'['+p.name+'] ':''}${cleanModel(p.model)}${p.position?' — '+p.position:''}${p.term30?' · '+peso(p.term30)+'/mo'+(p.income30?' · REQUIRED INCOME '+peso(p.income30):''):p.monthlyDp?' · DP '+peso(p.monthlyDp)+'/mo':p.tcp?' · '+peso(p.tcp):''}`;$('cntl').textContent=(proj.length>1?proj.length+' projects':proj[0])+' · models'}
- else{L=q?base.filter(([p])=>[p.name,p.model,p.city,p.prov,p.type,p.brgy].join(' ').toLowerCase().includes(q)):base;label=([p])=>`${p.name} — ${cleanModel(p.model)}${p.position?' '+p.position:''} · ${p.city}${p.term30?' · '+peso(p.term30)+'/mo':''}${p.income30?' · REQUIRED INCOME '+peso(p.income30):''}`;$('cntl').textContent='Property'}
+ if(proj.length){L=byName;label=([p])=>`${proj.length>1?'['+p.name+'] ':''}${cleanModel(p.model)}${p.position&&!new RegExp(p.position.split(' ')[0],'i').test(p.model)?' — '+p.position:''}${p.term30?' · '+peso(p.term30)+'/mo'+(p.income30?' · REQUIRED INCOME '+peso(p.income30):''):p.monthlyDp?' · DP '+peso(p.monthlyDp)+'/mo':p.tcp?' · '+peso(p.tcp):''}`;$('cntl').textContent=(proj.length>1?proj.length+' projects':proj[0])+' · models'}
+ else{L=q?base.filter(([p])=>[p.name,p.model,p.city,p.prov,p.type,p.brgy].join(' ').toLowerCase().includes(q)):base;label=([p])=>`${p.name} — ${cleanModel(p.model)}${p.position&&!new RegExp(p.position.split(' ')[0],'i').test(p.model)?' '+p.position:''} · ${p.city}${p.term30?' · '+peso(p.term30)+'/mo':''}${p.income30?' · REQUIRED INCOME '+peso(p.income30):''}`;$('cntl').textContent='Property'}
  if(sal)L=L.slice().sort((a,b)=>reqInc(b[0])-reqInc(a[0]));salSuggest(base,sal);$('cnt').textContent=L.length;$('prop').innerHTML=L.map(e=>`<option value="${e[1]}">${label(e)}</option>`).join('');}
 ['q','fpage','fdev','ffin','famt','fsal'].forEach(id=>$(id).oninput=filterList);
 function reqInc(p){const i=p.income30&&num(p.income30);if(i)return i;const a=p.term30&&num(p.term30);return a?a/0.35:0}
@@ -229,7 +229,7 @@ function nextKick(){if(!KORD||kickIdx>=KORD.length){KORD=kickList();kickIdx=0}$(
 $('kickShuf').onclick=nextKick;$('persona').addEventListener('change',()=>{KORD=null;nextKick()});
 function cleanModel(m){return String(m||'').replace(/\s*\((?:[^)]*\b(?:blk|block|lot|ph)\b[^)]*)\)/ig,'').replace(/\s*[-–—,]?\s*\bblk\.?\s*\d+\w*\s*(?:lot\.?\s*\d+\w*)?/ig,'').replace(/\s*\blot\s*\d+\w*/ig,'').trim()}
 function loadProp(i){cur=PROPS[i];const p=cur,g=PG();
- $('title').value=p.name||'';$('sub').value=[cleanModel(p.model)+(p.position?' — '+p.position:''),p.type&&!String(p.model).includes(p.type)?p.type:''].filter(Boolean).join(' · ');
+ $('title').value=p.name||'';$('sub').value=[cleanModel(p.model)+(p.position&&!new RegExp(p.position.split(' ')[0],'i').test(p.model)?' — '+p.position:''),p.type&&!String(p.model).includes(p.type)?p.type:''].filter(Boolean).join(' · ');
  $('loc').value=[p.city,p.prov].filter(Boolean).join(', ');KORD=null;nextKick();
  $('promo').value='';$('hook').value='';
  const def=p.term30?['term30','reservation']:p.monthlyDp?['monthlyDp','reservation']:['tcp','reservation'];
@@ -473,14 +473,15 @@ $('resetPos').onclick=()=>{['ax','ay','sx','sy'].forEach(k=>$(k).value=0);posLbl
 const LIBIMG={};function libKey(p){return p?(p.name+'|'+p.model):''}
 function baseModel(m){return cleanModel(String(m||'').split(/\s+[—–-]\s+/)[0]).replace(/\s+(inner|end|corner)(\s+unit)?$/i,'')}
 function slug(t){return String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
-function ghLoad(p){const base=`photos/${slug(p.name)}/${slug(baseModel(p.model))}/`,out=[];
+function apecKind(p){const t=(p.model+' '+(p.type||'')).toLowerCase();const k=/duplex|\bdx/.test(t)?'duplex':/single|\bsa\d/.test(t)?'single-attached':/townhouse|\bth\b|socialized/.test(t)?'townhouse':'';const n=(String(p.model).match(/(\d+(?:\.\d+)?)/)||[])[1];return k&&n?k+'-'+String(+n).replace('.','-'):''}
+function ghLoad(p,base0){const base=base0||`photos/${slug(p.name)}/${slug(baseModel(p.model))}/`,out=[];
  return new Promise(res=>{(function nx(i){if(i>10)return res(out);const im=new Image();im.onload=()=>{out.push(im);nx(i+1)};im.onerror=()=>res(out);im.src=base+i+'.jpg'})(1)})}
 async function libLoad(key){if(LIBIMG[key])return LIBIMG[key];let a=[];
  if(PHOTO_LIB[key])a=(await Promise.all(PHOTO_LIB[key].map(src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})))).filter(Boolean);
- if(!a.length&&location.protocol.startsWith('http')&&cur)a=await ghLoad(cur);return LIBIMG[key]=a}
+ if(!a.length&&location.protocol.startsWith('http')&&cur){a=await ghLoad(cur);if(!a.length&&cur._dev==='APEC Homes'&&apecKind(cur))a=await ghLoad(cur,`photos/apec/${apecKind(cur)}/`)}return LIBIMG[key]=a}
 let rot=Math.floor(Date.now()/864e5);
 async function applyLib(step){const k=libKey(cur),p0=cur;$('libInfo').textContent='';
- const imgs=await libLoad(k);if(cur!==p0)return false;$('libInfo').textContent=imgs.length?`📚 Empress Library: ${imgs.length} photos auto-loaded for ${cur.model}`:`📁 No library photos yet. Upload to photos/${slug(cur.name)}/${slug(baseModel(cur.model))}/1.jpg`;if(!imgs.length)return false;if(step)rot++;const o=rot%imgs.length;const ord=imgs.slice(o).concat(imgs.slice(0,o));
+ const imgs=await libLoad(k);if(cur!==p0)return false;$('libInfo').textContent=imgs.length?`📚 Empress Library: ${imgs.length} photos auto-loaded for ${cleanModel(cur.model)}`:`📁 No library photos yet. Upload to photos/${slug(cur.name)}/${slug(baseModel(cur.model))}/1.jpg`;if(!imgs.length)return false;if(step)rot++;const o=rot%imgs.length;const ord=imgs.slice(o).concat(imgs.slice(0,o));
  ph[0]=ord[0];ph[1]=ord[1]||null;sm=[ord[1]||null,ord[2]||null,ord[3]||null];draw();return true}
 $('autoBtn').onclick=async()=>{if(!cur)return;await applyLib(true);
  const good=['A','B','C','G'];$('layout').value=good[Math.floor(Math.random()*good.length)];
