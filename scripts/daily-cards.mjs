@@ -36,7 +36,7 @@ const cands = await page.evaluate((seed) => {
   return ix;
 }, Math.floor(Date.now() / 864e5));
 
-const made = [];
+const made = [];const ids = [];
 const seen = new Set();
 for (const i of cands) {
   if (made.length >= COUNT) break;
@@ -60,10 +60,10 @@ for (const i of cands) {
   const n = String(made.length + 1).padStart(2, '0');
   fs.writeFileSync(path.join(OUT, `${n}-${name}.png`), Buffer.from(png.split(',')[1], 'base64'));
   fs.writeFileSync(path.join(OUT, `${n}-${name}.txt`), cap);
-  made.push(`${n}-${name}`);
+  made.push(`${n}-${name}`);ids.push(await page.evaluate(i=>PROPS[i].id,i));
   console.log('made', n, name);
 }
-const idx = { day, cards: made.map(m => ({ png: `${day}/${m}.png`, txt: `${day}/${m}.txt`, title: m.replace(/^\d+-/, '').replace(/-/g, ' ') })) };
+const idx = { day, cards: made.map((m, j) => ({ id: ids[j], png: `${day}/${m}.png`, txt: `${day}/${m}.txt`, title: m.replace(/^\d+-/, '').replace(/-/g, ' ') })) };
 fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(idx));
 fs.writeFileSync(path.join(ROOT, 'daily-cards', 'latest.json'), JSON.stringify(idx));
 fs.writeFileSync(path.join(OUT, 'README.md'), `# Daily cards — ${day}\n\n${made.map(m => `- ${m}.png + ${m}.txt (caption)`).join('\n')}\n`);

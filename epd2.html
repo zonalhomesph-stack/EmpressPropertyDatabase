@@ -36,7 +36,7 @@ input[type=file]{width:100%;min-width:0;font-size:11px;color:#bbb}
 .mini{flex:1;font-size:10px;color:#aaa}.mini input{width:100%}.mini span{display:block}
 .colors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.colors input{width:100%;height:30px;border:none;background:none;padding:0}
 </style></head><body>
-<header><b>EPD 2.0</b><span>Listing card + caption maker · Empress Property Database · No ChatGPT needed</span></header>
+<header><b>EPD 2.0</b><button id="todayTop" style="margin-left:auto;order:3;background:#1f4e8c;border-color:#1f4e8c;color:#fff;white-space:nowrap">📅 Today's cards</button><span>Listing card + caption maker · Empress Property Database · No ChatGPT needed</span></header>
 <div class="wrap"><aside>
 
 <details open><summary>1 · Property</summary><div class="bd">
@@ -98,7 +98,7 @@ input[type=file]{width:100%;min-width:0;font-size:11px;color:#bbb}
 </aside>
 
 <main>
-<canvas id="cv" width="1080" height="1350"></canvas>
+<div id="cvWrap" style="position:relative;display:inline-block;max-width:100%"><canvas id="cv" width="1080" height="1350"></canvas><div id="ov" style="position:absolute;inset:0;pointer-events:none"></div></div>
 <div class="btns">
 <button id="todayBtn" style="background:#1f4e8c;border-color:#1f4e8c;color:#fff">📅 Today's cards</button><button class="pri" id="autoBtn" style="background:#2e7d4f;border-color:#2e7d4f;color:#fff">⚡ Auto card</button><button class="pri" id="dlPng">⬇ Download PNG</button>
 <button id="anim">▶ Preview animation</button>
@@ -299,13 +299,13 @@ function headSz(base){return base*$('hs').value/100}
 
 function coverFit(img,dx,dy,dw,dh){const s=Math.max(dw/img.width,dh/img.height),iw=img.width*s,ih=img.height*s;x.drawImage(img,dx+(dw-iw)/2,dy+(dh-ih)/2,iw,ih)}
 const HIT={a:null,s:null};
-function smalls(L,bh,m){const imgs=sm.filter(Boolean);if(!imgs.length)return;let mode=$('spos').value;
+function smalls(L,bh,m){const imgs=sm.filter(Boolean),idx=sm.map((x,i)=>x?i:-1).filter(i=>i>=0);HIT.sm=[];if(!imgs.length)return;let mode=$('spos').value;
  if(mode==='auto')mode={A:'col',C:'col',F:'col',H:'row',B:'mid',G:'mid',D:'col',E:'row'}[L]||'row';
  const sz=$('ssz').value*S,gap=14*S;let pos=[];
  if(mode==='col'){const y0=L==='F'?H*.26:H*.16;imgs.forEach((im,k)=>pos.push([W-m-sz,y0+k*(sz+gap)]))}
  else if(mode==='row'){const tw=imgs.length*sz+(imgs.length-1)*gap;imgs.forEach((im,k)=>pos.push([W-m-tw+k*(sz+gap),H-bh-sz-m*.5]))}
  else{const y=(L==='G'?m*2.3+(H-bh)*.5:(H-bh)*.56)-sz-24*S,tw=imgs.length*sz+(imgs.length-1)*gap;imgs.forEach((im,k)=>pos.push([(W-tw)/2+k*(sz+gap),y]))}
- const ox=$('sx').value/100*W,oy=$('sy').value/100*H;HIT.s=null;imgs.forEach((im,k)=>{const px=pos[k][0]+ox,py=pos[k][1]+oy;const r=[px,py,sz,sz];HIT.s=HIT.s?[Math.min(HIT.s[0],px),Math.min(HIT.s[1],py),Math.max(HIT.s[0]+HIT.s[2],px+sz)-Math.min(HIT.s[0],px),Math.max(HIT.s[1]+HIT.s[3],py+sz)-Math.min(HIT.s[1],py)]:r;x.save();x.globalAlpha=av(5+k);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=18*S;x.fillStyle=T.acc;x.beginPath();x.roundRect(px-5*S,py-5*S,sz+10*S,sz+10*S,18*S);x.fill();x.shadowColor='transparent';
+ const ox=$('sx').value/100*W,oy=$('sy').value/100*H;HIT.s=null;imgs.forEach((im,k)=>{const px=pos[k][0]+ox,py=pos[k][1]+oy;const r=[px,py,sz,sz];HIT.sm.push([r,idx[k]]);HIT.s=HIT.s?[Math.min(HIT.s[0],px),Math.min(HIT.s[1],py),Math.max(HIT.s[0]+HIT.s[2],px+sz)-Math.min(HIT.s[0],px),Math.max(HIT.s[1]+HIT.s[3],py+sz)-Math.min(HIT.s[1],py)]:r;x.save();x.globalAlpha=av(5+k);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=18*S;x.fillStyle=T.acc;x.beginPath();x.roundRect(px-5*S,py-5*S,sz+10*S,sz+10*S,18*S);x.fill();x.shadowColor='transparent';
   x.beginPath();x.roundRect(px,py,sz,sz,14*S);x.clip();coverFit(im,px,py,sz,sz);x.restore()})}
 function agentPh(bh,m){const ag=$('agent').value.trim();HIT.a=null;if(!agImg){if(ag)tx(ag,W-m,H-bh-34*S,{size:20,w:600,col:'#ffffff',al:'right',i:7,mw:W*.4,shadow:true,max:1});return}
  const R=$('asz').value*S/2,p=$('apos').value,cx0=p==='bl'?m+R:W-m-R,cy0=p==='tr'?m*2.6+R+100*S:H-bh-R-(ag?58*S:30*S),cx=cx0+$('ax').value/100*W,cy=cy0+$('ay').value/100*H;HIT.a=[cx-R,cy-R,2*R,2*R];
@@ -370,7 +370,7 @@ function draw(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==
   if(promo)tx('★ '+promo,W/2,H-bh-56*S,{size:22,w:700,col:T.acc,al:'center',i:6,mw:W-2*m,max:2})}
 
  if(!ANIM.on||ANIM.t>.6)bar();else{x.save();x.globalAlpha=ANIM.t/.6;bar();x.restore()}
- smalls(L,bh,m);agentPh(bh,m)}
+ HIT.sm=[];HIT.ph=null;smalls(L,bh,m);agentPh(bh,m);if(ph[0]&&(L==='B'||L==='G'))HIT.ph=[ (L==='G'?60*S:0),(L==='G'?60*S*2.3:0),W-(L==='G'?120*S:0),(H-bh)*(L==='G'?.5:.56)];else if(ph[0])HIT.ph=[0,0,W,H*.45];setTimeout(ovUpd,0)}
 
 /* ---------- captions ---------- */
 function D(){const p=cur||{},g=PG();return{p,g,name:p.name||'',model:p.model||'',city:p.city||'',prov:p.prov||'',loc:[p.city,p.prov].filter(Boolean).join(', '),
@@ -500,8 +500,24 @@ $('todayBtn').onclick=async()=>{const M=$('todayM'),G=$('todayG');M.style.displa
    dl.onclick=async()=>{const b=await (await fetch(src)).blob();saveFile(b,c.png.split('/').pop())};
    const cp=document.createElement('button');cp.textContent='📋 Copy caption';cp.style.cssText='width:100%;margin-top:6px';
    cp.onclick=async e=>{const t=await (await fetch('daily-cards/'+c.txt)).text();copy(t,e.target)};
-   w.append(dl,cp);G.appendChild(w)}}
+   const ed=document.createElement('button');ed.textContent='✏️ Edit this card';ed.style.cssText='width:100%;margin-top:6px';ed.onclick=()=>{const i=PROPS.findIndex(p=>p.id===c.id);if(i<0){alert('Property not found');return}const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+PROPS[i].model,i));s.value=i;loadProp(i);$('todayM').style.display='none';$('cvWrap').scrollIntoView({behavior:'smooth'})};w.append(dl,cp);if(c.id)w.append(ed);G.appendChild(w)}}
  catch(e){G.innerHTML='<div class="muted">Today\'s cards are only available on the GitHub version of EPD 2.0.</div>'}};
+
+/* ---------- on-card ✕ delete / ✥ move icons ---------- */
+function ovUpd(){const o=$('ov');if(!o)return;if(ANIM.on){o.innerHTML='';return}const k=c.getBoundingClientRect().width/W;let h='';
+ const btn=(x,y,act,ic,ttl,move)=>`<div data-a="${act}" title="${ttl}" style="position:absolute;left:${x*k}px;top:${y*k}px;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:${move?'#1f4e8c':'#c0392b'};color:#fff;font:700 15px/28px sans-serif;text-align:center;pointer-events:auto;cursor:${move?'move':'pointer'};box-shadow:0 2px 6px #0008;touch-action:none">${ic}</div>`;
+ (HIT.sm||[]).forEach(([r,i])=>{h+=btn(r[0]+r[2],r[1],'s'+i,'✕','Remove photo')});
+ if(HIT.s)h+=btn(HIT.s[0],HIT.s[1],'ms','✥','Move small photos',1);
+ if(HIT.a){h+=btn(HIT.a[0]+HIT.a[2],HIT.a[1],'a','✕','Remove agent photo');h+=btn(HIT.a[0],HIT.a[1],'ma','✥','Move agent photo',1)}
+ if(HIT.ph)h+=btn(HIT.ph[0]+HIT.ph[2]/2,HIT.ph[1]+HIT.ph[3]/2,'p','✕','Remove main photo');
+ o.innerHTML=h;
+ o.querySelectorAll('[data-a]').forEach(d=>{const a=d.dataset.a;
+  if(a==='ma'||a==='ms'){d.onpointerdown=e=>{e.preventDefault();e.stopPropagation();const kk=a==='ma'?'a':'s';DRG={k:kk,p:cpt(e),x0:+$(kk+'x').value,y0:+$(kk+'y').value};
+    const mv=ev=>{const p=cpt(ev);$(kk+'x').value=Math.round(Math.max(-100,Math.min(100,DRG.x0+(p[0]-DRG.p[0])/W*100)));$(kk+'y').value=Math.round(Math.max(-100,Math.min(100,DRG.y0+(p[1]-DRG.p[1])/H*100)));posLbl();draw()};
+    const up=()=>{DRG=null;removeEventListener('pointermove',mv);removeEventListener('pointerup',up)};addEventListener('pointermove',mv);addEventListener('pointerup',up)}}
+  else d.onclick=e=>{e.stopPropagation();if(a==='a'){agImg=null;agOrig=null;$('aph').value=''}else if(a==='p'){ph[0]=null;$('ph1').value=''}else{sm[+a.slice(1)]=null;const f=$('s'+(+a.slice(1)+1));if(f)f.value=''}draw()}})}
+addEventListener('resize',()=>setTimeout(ovUpd,50));
+$('todayTop').onclick=()=>$('todayBtn').click();
 /* ---------- export ---------- */
 let DL=null;try{window.claude&&claude.use&&claude.use('downloads').then(d=>DL=d).catch(()=>{})}catch(e){}
 async function saveFile(blob,name){if(DL){try{await DL.save({filename:name,data:blob});return}catch(e){}}const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove()}
