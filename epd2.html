@@ -282,12 +282,18 @@ function fig(k){if(!cur)return'';const p=cur;
 function figsOn(){return [...document.querySelectorAll('[data-f]:checked')].map(cb=>[FIGLBL[cb.dataset.f],fig(cb.dataset.f),cb.dataset.f]).filter(f=>f[1])}
 
 /* ---------- photos ---------- */
-function readImg(f,cb){if(!f)return;const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>cb(i);i.src=r.result};r.readAsDataURL(f)}
+function readImg(f,cb){if(!f)return;const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>cb(i);i.onerror=()=>alert('Hindi mabasa ang photo na ito. Subukan ang JPG o PNG (hindi HEIC).');i.src=r.result};r.readAsDataURL(f)}
 $('enhS').oninput=()=>{$('enhV').textContent=$('enhS').value+'%';draw()};$('enh').onchange=draw;
 $('ph1').onchange=e=>readImg(e.target.files[0],i=>{ph[0]=i;draw()});
 $('ph2').onchange=e=>readImg(e.target.files[0],i=>{ph[1]=i;draw()});
 let agOrig=null;
-$('aph').onchange=e=>readImg(e.target.files[0],i=>{agOrig=i;procAgent();try{const k2=Math.min(1,700/Math.max(i.width,i.height)),cc=document.createElement('canvas');cc.width=i.width*k2;cc.height=i.height*k2;cc.getContext('2d').drawImage(i,0,0,cc.width,cc.height);localStorage.setItem('epd2agentPhoto',cc.toDataURL('image/png'))}catch(e){}});
+$('aph').onchange=e=>readImg(e.target.files[0],i=>{agOrig=i;procAgent();try{const k2=Math.min(1,800/Math.max(i.width,i.height)),cc=document.createElement('canvas');cc.width=i.width*k2;cc.height=i.height*k2;cc.getContext('2d').drawImage(i,0,0,cc.width,cc.height);const u=cc.toDataURL(/png/i.test(e.target.files[0].type)?'image/png':'image/jpeg',.9);localStorage.setItem('epd2agentPhoto',u);let L=[];try{L=JSON.parse(localStorage.getItem('epd2myPhotos')||'[]')}catch(_){}L.unshift(u);L=L.slice(0,6);try{localStorage.setItem('epd2myPhotos',JSON.stringify(L))}catch(_){L=L.slice(0,2);try{localStorage.setItem('epd2myPhotos',JSON.stringify(L))}catch(__){}}myThumbs()}catch(err){}e.target.value=''});
+function myThumbs(){document.querySelectorAll('#agLib .myp').forEach(t=>t.remove());let L=[];try{L=JSON.parse(localStorage.getItem('epd2myPhotos')||'[]')}catch(e){}const cur=(()=>{try{return localStorage.getItem('epd2agentPhoto')}catch(e){}})();
+ L.slice().reverse().forEach((u,k)=>{const w=document.createElement('span');w.className='myp';w.style.cssText='position:relative;display:inline-block';const t=document.createElement('img');t.src=u;t.title='My uploaded photo';t.style.cssText='width:54px;height:54px;object-fit:cover;object-position:top;border-radius:8px;background:#eee;cursor:pointer;outline:'+(u===cur?'3px solid #e8b04b':'none');
+  t.onclick=()=>{const i=new Image();i.onload=()=>{agOrig=i;agImg=i;draw();try{localStorage.setItem('epd2agentPhoto',u)}catch(e){}myThumbs();document.querySelectorAll('#agLib > img').forEach(x=>x.style.outline='none')};i.src=u};
+  const x2=document.createElement('b');x2.textContent='✕';x2.title='Remove';x2.style.cssText='position:absolute;top:-6px;right:-6px;background:#c0392b;color:#fff;border-radius:50%;width:18px;height:18px;font:700 11px/18px sans-serif;text-align:center;cursor:pointer';x2.onclick=ev=>{ev.stopPropagation();const M=JSON.parse(localStorage.getItem('epd2myPhotos')||'[]').filter(z=>z!==u);localStorage.setItem('epd2myPhotos',JSON.stringify(M));myThumbs()};
+  w.appendChild(t);w.appendChild(x2);$('agLib').insertBefore(w,$('agLib').firstChild)})}
+setTimeout(myThumbs,0);
 function procAgent(){agImg=agOrig;draw()}
 try{const sv=localStorage.getItem('epd2agentPhoto');if(sv){const i=new Image();i.onload=()=>{agOrig=i;agImg=i;draw()};i.src=sv}}catch(e){}
 const AGENT_PHOTOS=[1,2,3,4,5,6].map(n=>`photos/agents/${AGDIR}/${n}.png`);
