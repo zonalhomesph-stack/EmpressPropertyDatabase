@@ -284,7 +284,7 @@ function wrap(t,mw){const w=String(t).split(/\s+/),L=[];let l='';for(const s of 
 function ease(t){return 1-Math.pow(1-t,3)}
 function av(i){if(!ANIM.on)return 1;return ease(Math.max(0,Math.min(1,(ANIM.t*1.2-i*.12)/.35)))}
 // text: returns height used
-function tx(t,X,Y,o){if(!t)return 0;if(o.it&&t===$('kicker').value&&$('fs').value!=='_body'){const sc=FS.includes($('fs').value);o={...o,fam:$('fs').value,it:false,w:sc?400:o.w,size:(o.size||40)*(sc?($('fs').value==='Mr Dafoe'?1.75:1.45):1),lh:sc?1.0:o.lh,shadow:true}}const{size=40,w=700,fam=$('fb').value,col='#fff',mw=W*.8,al='left',lh=1.15,i=0,shadow=false,upper=false,ls=0,max=9,it=false}=o;
+function tx(t,X,Y,o){if(!t)return 0;if(o.it&&t===$('kicker').value&&$('fs').value!=='_body'){const sc=FS.includes($('fs').value);o={...o,fam:$('fs').value,it:false,w:sc?400:o.w,size:(o.size||40)*(sc?($('fs').value==='Mr Dafoe'?2.1:1.6):1),lh:sc?1.0:o.lh,shadow:true}}const{size=40,w=700,fam=$('fb').value,col='#fff',mw=W*.8,al='left',lh=1.15,i=0,shadow=false,upper=false,ls=0,max=9,it=false}=o;
  x.save();x.font=(it?'italic ':'')+F(w,size,fam);x.fillStyle=col;x.textAlign=al;x.textBaseline='top';if('letterSpacing'in x&&ls)x.letterSpacing=ls*S+'px';
  if(shadow){x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=14*S;x.shadowOffsetY=3*S}
  const a=av(i);x.globalAlpha*=a;const dy=(1-a)*30*S;
