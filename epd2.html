@@ -308,6 +308,8 @@ function headSz(base){return base*$('hs').value/100}
 
 function coverFit(img,dx,dy,dw,dh){const s=Math.max(dw/img.width,dh/img.height),iw=img.width*s,ih=img.height*s;x.drawImage(img,dx+(dw-iw)/2,dy+(dh-ih)/2,iw,ih)}
 const HIT={a:null,s:null};let PB=0;
+function namePill(t,cx,y){x.save();x.font=F(800,26,$('fb').value);const w=x.measureText(t).width+48*S,h=50*S;x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=16*S;x.shadowOffsetY=4*S;x.fillStyle=T.acc;x.beginPath();x.roundRect(cx-w/2,y,w,h,h/2);x.fill();x.restore();
+ tx(t,cx,y+12*S,{size:26,w:800,col:lum(T.acc)<150?'#fff':'#111',al:'center',i:7,mw:w,max:1})}
 function agW(){if(!agImg)return 0;const hh=$('asz').value*S*1.3;return $('ast').value==='free'?hh*agImg.width/agImg.height:$('asz').value*S}
 function measure(fn){x.save();x.globalAlpha=0;const h=fn(0);x.restore();return h}
 function smalls(L,bh,m){const imgs=sm.filter(Boolean),idx=sm.map((x,i)=>x?i:-1).filter(i=>i>=0);HIT.sm=[];if(!imgs.length)return;let mode=$('spos').value;
@@ -322,10 +324,10 @@ function smalls(L,bh,m){const imgs=sm.filter(Boolean),idx=sm.map((x,i)=>x?i:-1).
   x.beginPath();x.roundRect(px,py,zz,zz,14*S);x.clip();coverFit(im,px,py,zz,zz);x.restore()})}
 function agentPh(bh,m){const ag=$('agent').value.trim();HIT.a=null;if(!agImg){if(ag)tx(ag,W-m,H-bh-34*S,{size:20,w:600,col:'#ffffff',al:'right',i:7,mw:W*.4,shadow:true,max:1});return}
  const R=$('asz').value*S/2,p=$('layout').value==='M'?'bl':$('apos').value,cx0=p==='bl'?m+R:W-m-R,cy0=p==='tr'?m*2.6+R+100*S:H-bh-R-(ag?58*S:30*S),cx=cx0+$('ax').value/100*W,cy=cy0+$('ay').value/100*H;HIT.a=[cx-R,cy-R,2*R,2*R];
- if($('ast').value==='free'){const hh=R*2.6,ww=agImg.width*hh/agImg.height,bx=p==='bl'?cx-R:cx+R-ww,by=(p==='tr'?cy+R-hh:H-bh-hh)+$('ay').value/100*H;HIT.a=[bx,by,ww,hh];x.save();x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=24*S;x.drawImage(agImg,bx,by,ww,hh);x.restore();if(ag)tx(ag,bx+ww/2,by+hh-40*S,{size:22,w:700,col:'#ffffff',al:'center',i:7,mw:R*3,shadow:true,max:1});return}
+ if($('ast').value==='free'){const hh=R*2.6,ww=agImg.width*hh/agImg.height,bx=p==='bl'?cx-R:cx+R-ww,by=(p==='tr'?cy+R-hh:H-bh-hh)+$('ay').value/100*H;HIT.a=[bx,by,ww,hh];x.save();x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=24*S;x.drawImage(agImg,bx,by,ww,hh);x.restore();if(ag)namePill(ag,bx+ww/2,by+hh-62*S);return}
  x.save();x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=20*S;x.fillStyle=T.acc;x.beginPath();x.arc(cx,cy,R+6*S,0,7);x.fill();x.shadowColor='transparent';
  x.beginPath();x.arc(cx,cy,R,0,7);x.clip();coverFit(agImg,cx-R,cy-R*1.05,R*2,R*2.1);x.restore();
- if(ag)tx(ag,cx,cy+R+12*S,{size:22,w:700,col:'#ffffff',al:'center',i:7,mw:R*3,shadow:true,max:1})}
+ if(ag)namePill(ag,cx,cy+R-10*S)}
 function draw(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==w||c.height!==h){c.width=w;c.height=h}W=w;H=h;
  S=Math.min(W/1080,H/1350*1.15);if(H>W*1.5)S=W/1080;
  const L=$('layout').value,fh=$('fh').value,m=60*S,dark=lum(T.panel)<140;
