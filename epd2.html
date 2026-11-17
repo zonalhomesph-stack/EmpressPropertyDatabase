@@ -79,6 +79,7 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 </div></details>
 
 <details id="sec5"><summary>5 · Photos &amp; logos</summary><div class="bd">
+<div class="row" style="align-items:center;gap:8px;margin:4px 0 8px"><label class="chk" style="flex:1"><input type="checkbox" id="enh" checked> ✨ Enhance photo</label><input type="range" id="enhS" min="0" max="100" value="60" style="flex:2" title="Enhance strength"><span id="enhV" style="width:36px;font-size:12px">60%</span></div>
 <label>Property photo 1 (main, real photo only)</label><input type="file" id="ph1" accept="image/*">
 <div class="row" style="margin-top:4px"><div class="mini"><span>Zoom <b id="zv">100%</b></span><input type="range" id="pz" min="100" max="250" value="100"></div><div class="mini"><span>X</span><input type="range" id="px" min="0" max="100" value="50"></div><div class="mini"><span>Y</span><input type="range" id="py" min="0" max="100" value="50"></div></div>
 <label>Property photo 2 (for 2-frame layouts)</label><input type="file" id="ph2" accept="image/*">
@@ -248,6 +249,7 @@ function figsOn(){return [...document.querySelectorAll('[data-f]:checked')].map(
 
 /* ---------- photos ---------- */
 function readImg(f,cb){if(!f)return;const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>cb(i);i.src=r.result};r.readAsDataURL(f)}
+$('enhS').oninput=()=>{$('enhV').textContent=$('enhS').value+'%';draw()};$('enh').onchange=draw;
 $('ph1').onchange=e=>readImg(e.target.files[0],i=>{ph[0]=i;draw()});
 $('ph2').onchange=e=>readImg(e.target.files[0],i=>{ph[1]=i;draw()});
 let agOrig=null;
@@ -277,9 +279,10 @@ function tx(t,X,Y,o){if(!t)return 0;const{size=40,w=700,fam=$('fb').value,col='#
  if(shadow){x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=14*S;x.shadowOffsetY=3*S}
  const a=av(i);x.globalAlpha*=a;const dy=(1-a)*30*S;
  const L=wrap(upper?String(t).toUpperCase():t,mw).slice(0,max);L.forEach((l,k)=>x.fillText(l,X,Y+dy+k*size*S*lh));x.restore();return L.length*size*S*lh}
+function enhF(){if(!$('enh')||!$('enh').checked)return 'none';const k=$('enhS').value/100;return `brightness(${(1+.08*k).toFixed(3)}) contrast(${(1+.14*k).toFixed(3)}) saturate(${(1+.35*k).toFixed(3)})`}
 function cover(img,dx,dy,dw,dh){const z=$('pz').value/100,ox=$('px').value/100,oy=$('py').value/100;
  let kb=1;if(ANIM.on)kb=1+.08*ANIM.t;const s=Math.max(dw/img.width,dh/img.height)*z*kb,iw=img.width*s,ih=img.height*s;
- x.drawImage(img,dx+(dw-iw)*ox,dy+(dh-ih)*oy,iw,ih)}
+ x.save();x.filter=enhF();x.drawImage(img,dx+(dw-iw)*ox,dy+(dh-ih)*oy,iw,ih);x.restore()}
 function photo(n,dx,dy,dw,dh,r=0){x.save();x.beginPath();r?x.roundRect(dx,dy,dw,dh,r*S):x.rect(dx,dy,dw,dh);x.clip();
  const img=ph[n]||ph[0];if(img)cover(img,dx,dy,dw,dh);else{const g=x.createLinearGradient(dx,dy,dx,dy+dh);g.addColorStop(0,'#6b7a86');g.addColorStop(1,'#39434c');x.fillStyle=g;x.fillRect(dx,dy,dw,dh);
  x.fillStyle='rgba(255,255,255,.55)';x.font=F(600,26,'Inter');x.textAlign='center';x.fillText('⬆ Upload your real property photo',dx+dw/2,dy+dh/2)}x.restore()}
@@ -324,7 +327,7 @@ function smalls(L,bh,m){const imgs=sm.filter(Boolean),idx=sm.map((x,i)=>x?i:-1).
  else if(mode==='row'){const tw=imgs.length*sz+(imgs.length-1)*gap;imgs.forEach((im,k)=>pos.push([W-m-tw+k*(sz+gap),H-bh-sz-m*.5]))}
  else{const y=(L==='G'?m*2.3+(H-bh)*.5:(H-bh)*.56)-sz-24*S,tw=imgs.length*sz+(imgs.length-1)*gap;imgs.forEach((im,k)=>pos.push([(W-tw)/2+k*(sz+gap),y]))}
  const ox=$('sx').value/100*W,oy=$('sy').value/100*H;HIT.s=null;imgs.forEach((im,k)=>{const so=smOff[idx[k]],zz=sz*(smSc[idx[k]]||1);const px=pos[k][0]+ox+so.x*W,py=pos[k][1]+oy+so.y*H;const r=[px,py,zz,zz];HIT.sm.push([r,idx[k]]);HIT.s=HIT.s?[Math.min(HIT.s[0],px),Math.min(HIT.s[1],py),Math.max(HIT.s[0]+HIT.s[2],px+zz)-Math.min(HIT.s[0],px),Math.max(HIT.s[1]+HIT.s[3],py+zz)-Math.min(HIT.s[1],py)]:r;x.save();x.globalAlpha=av(5+k);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=18*S;x.fillStyle=T.acc;x.beginPath();x.roundRect(px-5*S,py-5*S,zz+10*S,zz+10*S,18*S);x.fill();x.shadowColor='transparent';
-  x.beginPath();x.roundRect(px,py,zz,zz,14*S);x.clip();coverFit(im,px,py,zz,zz);x.restore()})}
+  x.beginPath();x.roundRect(px,py,zz,zz,14*S);x.clip();x.filter=enhF();coverFit(im,px,py,zz,zz);x.restore()})}
 function agentPh(bh,m){const ag=$('agent').value.trim();HIT.a=null;if(!agImg){if(ag)tx(ag,W-m,H-bh-34*S,{size:20,w:600,col:'#ffffff',al:'right',i:7,mw:W*.4,shadow:true,max:1});return}
  const R=$('asz').value*S/2,p=$('layout').value==='M'?'bl':$('apos').value,cx0=p==='bl'?m+R:W-m-R,cy0=p==='tr'?m*2.6+R+100*S:H-bh-R-(ag?58*S:30*S),cx=cx0+$('ax').value/100*W,cy=cy0+$('ay').value/100*H;HIT.a=[cx-R,cy-R,2*R,2*R];
  if($('ast').value==='free'){const hh=R*2.6,ww=agImg.width*hh/agImg.height,bx=p==='bl'?cx-R:cx+R-ww,by=(p==='tr'?cy+R-hh:H-bh-hh)+$('ay').value/100*H;HIT.a=[bx,by,ww,hh];x.save();x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=24*S;x.drawImage(agImg,bx,by,ww,hh);x.restore();if(ag)namePill(ag,bx+ww/2,by+hh-62*S);return}
