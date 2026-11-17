@@ -36,27 +36,23 @@ button:hover{border-color:var(--gold)}button.pri{background:var(--gold);color:#1
 input[type=file]{width:100%;min-width:0;font-size:11px;color:#bbb}
 .mini{flex:1;font-size:10px;color:#aaa}.mini input{width:100%}.mini span{display:block}
 .colors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.colors input{width:100%;height:30px;border:none;background:none;padding:0}
+#sec1{background:#1f4e8c;border-color:#1f4e8c}#sec1>summary{color:#fff;font-size:15px;padding:13px 14px}#sec1>summary::before{color:#fff}#sec1 .bd{background:#171717;border-radius:0 0 8px 8px;padding-top:8px}
+#styleBar{background:#171717;border:1px solid var(--line);border-radius:8px;padding:4px 10px 6px}#styleBar label{margin-top:4px}#styleBar .pal div{flex-basis:36px;height:36px}#styleBar .fset div{flex-basis:52px!important;height:42px!important;font-size:17px}#styleBar .muted{font-size:10px}
+@media(max-width:900px){.wrap{display:flex;flex-direction:column}main{order:-1;padding:10px}}
 </style></head><body>
 <div id="pwGate" style="position:fixed;inset:0;z-index:99999;background:#0f1f3d;display:flex;align-items:center;justify-content:center;font-family:sans-serif"><form id="pwF" style="background:#fff;padding:28px;border-radius:14px;width:300px;text-align:center"><div style="font-size:20px;font-weight:700;margin-bottom:6px">EPD 2.0</div><div style="font-size:13px;color:#555;margin-bottom:14px">Enter team password</div><input id="pwI" type="password" autocomplete="current-password" style="width:100%;padding:10px;font-size:16px;border:1px solid #ccc;border-radius:8px;box-sizing:border-box"><div id="pwE" style="color:#c00;font-size:12px;height:16px;margin-top:6px"></div><button style="margin-top:6px;width:100%;padding:10px;background:#0f1f3d;color:#fff;border:0;border-radius:8px;font-size:15px">Enter</button></form></div>
 <script>(function(){var H="ad1fd506789e51eee00bbd62843a02e16f3f355686807e03e7bce814a4c3f361",g=document.getElementById("pwGate");try{if(localStorage.getItem("epd2ok")===H){g.remove();return}}catch(e){}
 document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var v=document.getElementById("pwI").value,b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v)),x=[...new Uint8Array(b)].map(function(c){return c.toString(16).padStart(2,"0")}).join("");if(x===H){try{localStorage.setItem("epd2ok",H)}catch(e){}g.remove()}else document.getElementById("pwE").textContent="Wrong password"};})();</script>
 <header><b>EPD 2.0</b><button id="todayTop" onclick="openToday()" style="margin-left:auto;order:3;background:#1f4e8c;border-color:#1f4e8c;color:#fff;white-space:nowrap">📅 Today's cards</button><span>Listing card + caption maker · Empress Property Database · No ChatGPT needed</span></header>
-<div class="wrap"><aside><div id="amBar" style="display:none;background:#1b2a1b;border:1px solid #2e7d4f;color:#cfe8cf;padding:10px;border-radius:8px;margin-bottom:10px;font-size:12px">✏️ Editing a Today's card. Add your photo, then move (✥), resize (+ / −) or remove (✕) photos right on the card.<button onclick="document.getElementById('aph').click()" class="pri" style="margin-top:8px;width:100%">📷 Add / change my photo</button><button onclick="agentMode(false)" style="margin-top:6px;width:100%">⚙️ Show all settings</button></div><button onclick="openToday()" style="width:100%;padding:14px;margin-bottom:10px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;font-size:15px">📅 Open Today's cards</button>
+<div class="wrap"><aside><div id="amBar" style="display:none;background:#1b2a1b;border:1px solid #2e7d4f;color:#cfe8cf;padding:10px;border-radius:8px;margin-bottom:10px;font-size:12px">✏️ Editing a Today's card. Add your photo, then move (✥), resize (+ / −) or remove (✕) photos right on the card.<button onclick="document.getElementById('aph').click()" class="pri" style="margin-top:8px;width:100%">📷 Add / change my photo</button><button onclick="agentMode(false)" style="margin-top:6px;width:100%">⚙️ Show all settings</button></div>
 
-<details open id="secStyle"><summary>🎨 Colors &amp; fonts</summary><div class="bd">
-<label>Palette: <b id="palName" style="color:#f3e7c4"></b></label><div class="pal" id="pal"></div><input type="range" id="palS" min="0" max="19" value="0" step="1" style="width:100%">
-<label>Font set: <b id="fsetName" style="color:#f3e7c4">— custom —</b></label><div class="pal fset" id="fset"></div><input type="range" id="fsetS" min="0" max="19" value="0" step="1" style="width:100%"><div class="muted" style="margin:-2px 0 8px">Headline · Body. Ang Short hook ay laging script (Mr Dafoe), kulay accent ng palette. Puwedeng palitan sa 3 · Layout &amp; size.</div><label>Fine-tune: Panel · Headline · Accent · Bar</label>
+<details id="secStyle"><summary>🎨 Fine-tune colors</summary><div class="bd">
+
+<label>Fine-tune: Panel · Headline · Accent · Bar</label>
 <div class="colors"><input type="color" id="cPanel"><input type="color" id="cHead"><input type="color" id="cAcc"><input type="color" id="cBar"></div>
 </div></details>
 
-<details id="sec1"><summary>1 · Property</summary><div class="bd">
-<label>Search (project, model, city)</label><input type="text" id="q" placeholder="e.g. Anyana, Naic, duplex">
-<div class="row"><div><label>Location</label><select id="fpage"></select></div><div><label>Developer</label><select id="fdev"></select></div><div><label>Financing</label><select id="ffin"><option value="">All</option><option>Pag-IBIG</option><option>Bank</option><option>In-house</option><option>Cash</option></select></div></div>
-<div class="row"><div><label>Monthly amort</label><select id="famt"><option value="">All</option><option value="0-4999">Below 5k</option><option value="5000-10999">5k – 10k</option><option value="11000-14999">11k – 15k</option><option value="15000-1e9">15k &amp; above</option></select></div><div><label>Buyer basic salary / mo</label><input type="number" id="fsal" min="0" step="1000" placeholder="e.g. 35000"></div></div>
-<div id="salbox" class="pinfo" style="display:none;white-space:normal"></div>
-<label><span id="cntl">Property</span> (<span id="cnt">0</span>)</label><select id="prop" size="7" style="height:150px"></select>
-<div class="pinfo" id="pinfo"></div><div id="libInfo" class="muted" style="margin-top:6px"></div>
-</div></details>
+
 
 <details open id="sec2"><summary>2 · Card text</summary><div class="bd">
 <label>Short hook line (italic, 3–4 words)</label><div class="row"><input type="text" id="kicker" style="flex:3"><button id="kickShuf" style="flex:1">🎲 Shuffle</button></div>
@@ -105,6 +101,16 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 </aside>
 
 <main>
+<div id="topStack" style="width:min(100%,560px)"><details id="sec1"><summary>🔍 Search a property</summary><div class="bd">
+<label>Search (project, model, city)</label><input type="text" id="q" placeholder="e.g. Anyana, Naic, duplex">
+<div class="row"><div><label>Location</label><select id="fpage"></select></div><div><label>Developer</label><select id="fdev"></select></div><div><label>Financing</label><select id="ffin"><option value="">All</option><option>Pag-IBIG</option><option>Bank</option><option>In-house</option><option>Cash</option></select></div></div>
+<div class="row"><div><label>Monthly amort</label><select id="famt"><option value="">All</option><option value="0-4999">Below 5k</option><option value="5000-10999">5k – 10k</option><option value="11000-14999">11k – 15k</option><option value="15000-1e9">15k &amp; above</option></select></div><div><label>Buyer basic salary / mo</label><input type="number" id="fsal" min="0" step="1000" placeholder="e.g. 35000"></div></div>
+<div id="salbox" class="pinfo" style="display:none;white-space:normal"></div>
+<label><span id="cntl">Property</span> (<span id="cnt">0</span>)</label><select id="prop" size="7" style="height:150px"></select>
+<div class="pinfo" id="pinfo"></div><div id="libInfo" class="muted" style="margin-top:6px"></div>
+</div></details>
+<button onclick="openToday()" style="width:100%;padding:14px;margin-bottom:10px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;font-size:15px">📅 Open Today's cards</button>
+<div id="styleBar"><label>Palette: <b id="palName" style="color:#f3e7c4"></b></label><div class="pal" id="pal"></div><input type="range" id="palS" min="0" max="19" value="0" step="1" style="width:100%"><label>Font set: <b id="fsetName" style="color:#f3e7c4">— custom —</b></label><div class="pal fset" id="fset"></div><input type="range" id="fsetS" min="0" max="19" value="0" step="1" style="width:100%"><div class="muted" style="margin:-2px 0 8px">Headline · Body. Ang Short hook ay laging script (Mr Dafoe), kulay accent ng palette. </div></div></div>
 <div id="cvWrap" style="position:relative;display:inline-block;max-width:100%"><canvas id="cv" width="1080" height="1350"></canvas><div id="ov" style="position:absolute;inset:0;pointer-events:none"></div></div>
 <div class="btns">
 <button id="todayBtn" style="background:#1f4e8c;border-color:#1f4e8c;color:#fff">📅 Today's cards</button><button class="pri" id="autoBtn" style="background:#2e7d4f;border-color:#2e7d4f;color:#fff">⚡ Auto card</button><button class="pri" id="dlPng">⬇ Download PNG</button>
