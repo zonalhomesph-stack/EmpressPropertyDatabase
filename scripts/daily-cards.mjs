@@ -63,6 +63,9 @@ for (const i of cands) {
   made.push(`${n}-${name}`);
   console.log('made', n, name);
 }
+const idx = { day, cards: made.map(m => ({ png: `${day}/${m}.png`, txt: `${day}/${m}.txt`, title: m.replace(/^\d+-/, '').replace(/-/g, ' ') })) };
+fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(idx));
+fs.writeFileSync(path.join(ROOT, 'daily-cards', 'latest.json'), JSON.stringify(idx));
 fs.writeFileSync(path.join(OUT, 'README.md'), `# Daily cards — ${day}\n\n${made.map(m => `- ${m}.png + ${m}.txt (caption)`).join('\n')}\n`);
 await browser.close(); server.close();
 console.log(`Done: ${made.length} cards in daily-cards/${day}`);
