@@ -113,8 +113,9 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <div class="row"><div><label>Contact number</label><input type="tel" id="phone" placeholder="09XX XXX XXXX" value="0976-339-8960"></div></div>
 <label>Agent name</label><input type="text" id="agent" value="Florence Alvarez">
 
-<label>Page name</label><input type="text" id="pageName" placeholder="e.g. Pag-IBIG Homes in Cavite">
-<label>Bottom bar shows</label><select id="barMode"><option value="loc">Location + number</option><option value="page">Page name + number</option></select>
+<label>My page (sets palette, font set, hashtags)</label><select id="pageName"><option value="">Auto: page ng property</option></select>
+<label>Bottom bar shows</label><select id="barMode"><option value="page" selected>Page name + number</option><option value="loc">Location + number</option></select>
+<button id="copyProf" type="button" style="margin-top:6px;width:100%">🔗 Copy profile link (for an agent)</button>
 <button id="saveBrand" style="margin-top:8px;width:100%">💾 Save my profile</button>
 </div></details>
 <div id="styleBar"><label>Palette: <b id="palName" style="color:#f3e7c4"></b></label><div class="pal" id="pal"></div><input type="range" id="palS" min="0" max="19" value="0" step="1" style="width:100%"><label>Font set: <b id="fsetName" style="color:#f3e7c4">— custom —</b></label><div class="pal fset" id="fset"></div><input type="range" id="fsetS" min="0" max="19" value="0" step="1" style="width:100%"><div class="muted" style="margin:-2px 0 8px">Headline · Body. Ang Short hook ay laging script (Mr Dafoe), kulay accent ng palette. </div></div></div>
@@ -177,6 +178,7 @@ const PALS=[
 ['Purple & Lilac','#3A1078','#FFFFFF','#D2B6FF','#6C2BD9'],['Teal & Peach','#064A55','#FFFFFF','#FF9E7A','#0E8A8A'],['Forest & Terracotta','#14381F','#FFF6EC','#E07A4F','#B5532E'],['Indigo & Turquoise','#1F1B5E','#FFFFFF','#2EE6D6','#3F37C9'],
 ['Classic Light','#FFFFFF','#1A2744','#C9960F','#1A2744'],['Cream & Forest','#F8F5EE','#1C3A2B','#B8892F','#2D6A4F'],['Light Burgundy','#FFFFFF','#7B2D3E','#C9960F','#7B2D3E'],['Light Teal','#F8F5EE','#1B5E6E','#E08A63','#1B5E6E']];
 let T={panel:'#0D1B2A',head:'#FFFFFF',acc:'#D4AF37',bar:'#C9960F'};
+const QP=new URLSearchParams(location.search);let AGDIR=(QP.get('ph')||(()=>{try{return JSON.parse(localStorage.getItem('epd2brand')||'{}').dir}catch(e){}})()||'flo').replace(/[^a-z0-9-]/gi,'').toLowerCase();
 const FH=['Montserrat','Playfair Display','Poppins','Bebas Neue','Oswald','Cormorant Garamond','DM Serif Display','Anton','Archivo Black','Lora','Inter','Raleway','Bodoni Moda','Cinzel','Plus Jakarta Sans','Outfit','Instrument Serif','Fraunces','League Spartan','Libre Baskerville','Italiana','Marcellus','Syne'];
 const FB=['Inter','Montserrat','Poppins','Open Sans','Lato','Nunito','Raleway','Lora','Manrope','DM Sans','Roboto','Space Mono','Plus Jakarta Sans','Roboto Mono','IBM Plex Mono','Josefin Sans','Nunito Sans','Source Sans 3'];
 const FSETS=[['Modern Luxury','Cormorant Garamond','Manrope','Montserrat'],['Classic Prestige','Playfair Display','Montserrat','Lato'],['Contemporary Elegance','DM Serif Display','DM Sans','Manrope'],['Boutique Luxury','Bodoni Moda','Poppins','Montserrat'],['Architectural Prestige','Cinzel','Raleway','Open Sans'],['Modern Corporate','Plus Jakarta Sans','Inter','DM Sans'],['Clean Minimalist','Outfit','Lato','Roboto'],['Editorial Modern','Instrument Serif','Inter','Space Mono'],['Friendly Professional','Poppins','Open Sans','Nunito'],['Warm Contemporary','Fraunces','DM Sans','Plus Jakarta Sans'],['Bold Real Estate','League Spartan','Lora','Montserrat'],['High-Impact Sales','Bebas Neue','Inter','Roboto Mono'],['Modern Sales Authority','Anton','DM Sans','IBM Plex Mono'],['Elegant Yet Affordable','Libre Baskerville','Raleway','Lato'],['Refined Modern Living','Italiana','Josefin Sans','Montserrat'],['Urban Modern','Oswald','Inter','Lato'],['Contemporary Classic','Marcellus','Montserrat','Open Sans'],['Sleek & Versatile','Montserrat','Nunito Sans','Source Sans 3'],['Real Estate Modern','Raleway','Poppins','Open Sans'],['Premium Contemporary','Syne','Manrope','DM Sans']];
@@ -192,7 +194,10 @@ const num=v=>{const m=String(v||'').replace(/,/g,'').match(/[\d.]+/);return m?pa
 const fmt=n=>'₱ '+Math.round(n).toLocaleString('en-US');
 const pick=(a,i)=>a[((i%a.length)+a.length)%a.length];
 function fillSel(id,arr,val){$(id).innerHTML=arr.map(a=>Array.isArray(a)?`<option value="${a[0]}">${a[1]}</option>`:`<option>${a}</option>`).join('');if(val)$(id).value=val}
-function PG(){return PAGES[cur&&cur.page]||PAGES.DEFAULT}
+function PG(){const sel=$('pageName')&&$('pageName').value;return (sel&&PAGES[sel])||PAGES[cur&&cur.page]||PAGES.DEFAULT}
+const FSET_BY_PAGE={PAG:8,ANA:0,NEW:5,MCP:2,RIC:18,LIO:9,PAC:8,FOR:13,LOT:4,KAI:3,SUL:10,CAV:18,BAT:14,LAG:6,BUL:8,RIZ:16,ULT:17,DEFAULT:18};
+function pageCode(){const sel=$('pageName')&&$('pageName').value;return sel||(cur&&PAGES[cur.page]?cur.page:'DEFAULT')}
+function applyPageStyle(){const g=PG(),pi=PALS.findIndex(a=>a[0]===g.pal);applyPal(pi<0?0:pi);const fi=FSET_BY_PAGE[pageCode()];if(fi!=null&&window.applyFset)applyFset(fi)}
 
 /* ---------- init UI ---------- */
 function devOf(p){const t=[p.dev,p.name,p.source,p.notes,p.promo,p.listingId?'lhoopa':''].join(' ').toLowerCase();
@@ -217,9 +222,14 @@ function applyFset(i){const f=FSETS[i];$('fh').value=f[1];$('fs').value=FS.inclu
 window.applyFset=applyFset;$('fset').onclick=e=>{const d=e.target.closest('[data-i]');if(d)applyFset(+d.dataset.i)};$('fsetS').oninput=e=>applyFset(+e.target.value);
 ['fh','fs','fb'].forEach(id=>$(id).addEventListener('change',()=>{const f=FSETS.findIndex(z=>z[1]===$('fh').value&&z[3]===$('fb').value);$('fsetName').textContent=f<0?'— custom —':(f+1)+'. '+FSETS[f][0];document.querySelectorAll('#fset div').forEach(d=>d.classList.toggle('on',+d.dataset.i===f))}));
 ['Panel','Head','Acc','Bar'].forEach(k=>$('c'+k).oninput=e=>{T[k==='Head'?'head':k.toLowerCase()]=e.target.value;draw()});
-try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.phone)$('phone').value=b.phone;if(b.agent)$('agent').value=b.agent;if(b.page)$('pageName').value=b.page;if(b.bar)$('barMode').value=b.bar}catch(e){}
+$('pageName').innerHTML+=Object.keys(PAGES).filter(k=>k!=='DEFAULT').map(k=>`<option value="${k}">${k} · ${PAGES[k].n}</option>`).join('');
+$('pageName').addEventListener('change',()=>{applyPageStyle();ORD=null;capIdx=0;try{genText()}catch(e){}draw()});
+try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.phone)$('phone').value=b.phone;if(b.agent)$('agent').value=b.agent;if(b.page&&PAGES[b.page])$('pageName').value=b.page;if(b.bar)$('barMode').value=b.bar}catch(e){}
+if(QP.get('a')||QP.get('p')||QP.get('pg')){if(QP.get('a'))$('agent').value=QP.get('a');if(QP.get('p'))$('phone').value=QP.get('p');if(QP.get('pg')&&PAGES[QP.get('pg')])$('pageName').value=QP.get('pg');try{localStorage.setItem('epd2brand',JSON.stringify({phone:$('phone').value,agent:$('agent').value,page:$('pageName').value,bar:$('barMode').value,dir:AGDIR}))}catch(e){}}
+if($('pageName').value)setTimeout(applyPageStyle,300);
+$('copyProf').onclick=()=>{const u=new URL(location.href.split('?')[0]);u.searchParams.set('a',$('agent').value);u.searchParams.set('p',$('phone').value);if($('pageName').value)u.searchParams.set('pg',$('pageName').value);u.searchParams.set('ph',AGDIR);const t=u.toString();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$('copyProf').textContent='✓ Link copied'},()=>prompt('Copy this link:',t));setTimeout(()=>$('copyProf').textContent='🔗 Copy profile link (for an agent)',1800)};
 ['pageName','barMode','phone','agent'].forEach(id=>$(id).addEventListener('input',draw));$('barMode').addEventListener('change',draw);
-$('saveBrand').onclick=()=>{try{localStorage.setItem('epd2brand',JSON.stringify({phone:$('phone').value,agent:$('agent').value,page:$('pageName').value,bar:$('barMode').value}));$('saveBrand').textContent='✓ Saved'}catch(e){$('saveBrand').textContent='Saving not available here'}setTimeout(()=>$('saveBrand').textContent='💾 Save my profile',1500)};
+$('saveBrand').onclick=()=>{try{localStorage.setItem('epd2brand',JSON.stringify({phone:$('phone').value,agent:$('agent').value,page:$('pageName').value,bar:$('barMode').value,dir:AGDIR}));$('saveBrand').textContent='✓ Saved'}catch(e){$('saveBrand').textContent='Saving not available here'}setTimeout(()=>$('saveBrand').textContent='💾 Save my profile',1500)};
 
 function filterList(){const q=$('q').value.toLowerCase().trim(),pg=$('fpage').value,fi=$('ffin').value;
  const am=$('famt').value.split('-').map(Number),sal=+$('fsal').value||0;const base=PROPS.map((p,i)=>[p,i]).filter(([p])=>(!sal||fits(p,sal))&&(!$('famt').value||(p.term30&&num(p.term30)>=am[0]&&num(p.term30)<=am[1]))&&(!pg||(pg.startsWith('prov:')?p.prov===pg.slice(5):(p.prov+'|'+p.city)===pg.slice(5)))&&(!$('fdev').value||p._dev===$('fdev').value)&&(!fi||(p.financing||[]).join(' ').toLowerCase().includes(fi.toLowerCase())));
@@ -262,7 +272,7 @@ function loadProp(i){cur=PROPS[i];const p=cur,g=PG();
  document.querySelectorAll('[data-f]').forEach(cb=>{cb.checked=def.includes(cb.dataset.f);cb.disabled=!fig(cb.dataset.f)});
  
  $('pinfo').textContent=[p.tcp&&'TCP '+p.tcp,p.term30&&'30y '+p.term30,p.monthlyDp&&'DP '+p.monthlyDp+'/mo',p.reservation&&'RF '+p.reservation,p.promo&&'Promo: '+p.promo].filter(Boolean).join('\n');
- const pi=PALS.findIndex(a=>a[0]===g.pal);applyPal(pi<0?0:pi);ORD=null;capIdx=0;genText();ph=[null,null];sm=[null,null,null];applyLib(false);draw()}
+ applyPageStyle();ORD=null;capIdx=0;genText();ph=[null,null];sm=[null,null,null];applyLib(false);draw()}
 $('prop').onchange=e=>loadProp(+e.target.value);
 
 function fig(k){if(!cur)return'';const p=cur;
@@ -280,11 +290,11 @@ let agOrig=null;
 $('aph').onchange=e=>readImg(e.target.files[0],i=>{agOrig=i;procAgent();try{const k2=Math.min(1,700/Math.max(i.width,i.height)),cc=document.createElement('canvas');cc.width=i.width*k2;cc.height=i.height*k2;cc.getContext('2d').drawImage(i,0,0,cc.width,cc.height);localStorage.setItem('epd2agentPhoto',cc.toDataURL('image/png'))}catch(e){}});
 function procAgent(){agImg=agOrig;draw()}
 try{const sv=localStorage.getItem('epd2agentPhoto');if(sv){const i=new Image();i.onload=()=>{agOrig=i;agImg=i;draw()};i.src=sv}}catch(e){}
-const AGENT_PHOTOS=['photos/agents/flo/1.png','photos/agents/flo/2.png'];
+const AGENT_PHOTOS=[1,2,3,4,5,6].map(n=>`photos/agents/${AGDIR}/${n}.png`);
 window.setAgentLib=k=>new Promise(r=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>{agOrig=i;agImg=i;draw();document.querySelectorAll('#agLib img').forEach((t,j)=>t.style.outline=j===k?'3px solid #e8b04b':'none');r(true)};i.onerror=()=>r(false);i.src=AGENT_PHOTOS[k%AGENT_PHOTOS.length]});
-AGENT_PHOTOS.forEach((u,k)=>{const t=document.createElement('img');t.src=u;t.title='Use this photo';t.style.cssText='width:54px;height:54px;object-fit:cover;object-position:top;border-radius:8px;background:#eee;cursor:pointer';t.onclick=()=>{try{localStorage.removeItem('epd2agentPhoto')}catch(e){}setAgentLib(k)};$('agLib').appendChild(t)});
+AGENT_PHOTOS.forEach((u,k)=>{const t=document.createElement('img');t.onerror=()=>{t.remove();const j=AGENT_PHOTOS.indexOf(u);if(j>=0)AGENT_PHOTOS.splice(j,1)};t.src=u;t.title='Use this photo';t.style.cssText='width:54px;height:54px;object-fit:cover;object-position:top;border-radius:8px;background:#eee;cursor:pointer';t.onclick=()=>{try{localStorage.removeItem('epd2agentPhoto')}catch(e){}setAgentLib(k)};$('agLib').appendChild(t)});
 {const b=document.createElement('button');b.type='button';b.textContent='🔄 Switch photo';b.onclick=()=>{window._agk=((window._agk||0)+1)%AGENT_PHOTOS.length;try{localStorage.removeItem('epd2agentPhoto')}catch(e){}setAgentLib(window._agk)};$('agLib').appendChild(b)}
-try{if(!localStorage.getItem('epd2agentPhoto')){window._agk=Math.floor(Math.random()*AGENT_PHOTOS.length);setAgentLib(window._agk)}}catch(e){setAgentLib(0)}
+try{if(QP.get('ph'))localStorage.removeItem('epd2agentPhoto');if(!localStorage.getItem('epd2agentPhoto')){window._agk=Math.floor(Math.random()*2);setAgentLib(window._agk).then(ok=>{if(!ok)setAgentLib(0)})}}catch(e){setAgentLib(0)}
 [0,1,2].forEach(k=>$('s'+(k+1)).onchange=e=>readImg(e.target.files[0],i=>{sm[k]=i;draw()}));
 
 document.querySelectorAll('aside input,aside select,aside textarea').forEach(el=>{if(!['q','fpage','fdev','ffin','famt','fsal','prop'].includes(el.id))el.addEventListener('input',()=>{$('zv').textContent=$('pz').value+'%';$('hsv').textContent=$('hs').value+'%';if(['persona'].includes(el.id)){capIdx=0;genText()}draw()})});
@@ -319,7 +329,7 @@ function logos(top,darkL,darkR){const m=40*S,zw=Math.min(240*S,W*.24);
 function bar(){if(!$('showBar').checked)return 0;const h=Math.max(70,H*.055)*S/S*(W/1080);x.fillStyle=T.bar;x.fillRect(0,H-h,W,h);
  const dark=lum(T.bar)<150,col=dark?'#fff':'#111',ph_=$('phone').value.trim();
  x.save();x.fillStyle=col;x.textBaseline='middle';x.textAlign='center';x.font=F(800,26,$('fb').value);
- x.fillText(`${($('barMode').value==='page'&&$('pageName').value.trim()?$('pageName').value.trim():$('loc').value).toUpperCase()}   |   ${ph_?'Call us '+ph_:'⚠️ Add contact number'}`,W/2,H-h/2,W*.94);x.restore();return h}
+ x.fillText(`${($('barMode').value==='page'?(PG().n||$('loc').value):$('loc').value).toUpperCase()}   |   ${ph_?'Call us '+ph_:'⚠️ Add contact number'}`,W/2,H-h/2,W*.94);x.restore();return h}
 function figBlock(X,Y,mw,o={}){const f=figsOn();if(!f.length)return 0;const{col=T.head,acc=T.acc,size=48,i0=4,cols=1}=o;let y=Y;
  if(cols>1){const cw=mw/cols;let k=0,rowH=0;f.forEach((g,j)=>{const cx=X+(j%cols)*cw;if(j%cols===0&&j){y+=rowH;rowH=0}
   const h1=tx(g[0],cx,y,{size:size*.5,w:600,col:hexA(col.length===7?col:'#ffffff',.75),i:i0+j,upper:true,ls:1.5,mw:cw-10});
