@@ -83,7 +83,7 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <div class="row" style="margin-top:4px"><div class="mini"><span>Zoom <b id="zv">100%</b></span><input type="range" id="pz" min="100" max="250" value="100"></div><div class="mini"><span>X</span><input type="range" id="px" min="0" max="100" value="50"></div><div class="mini"><span>Y</span><input type="range" id="py" min="0" max="100" value="50"></div></div>
 <label>Property photo 2 (for 2-frame layouts)</label><input type="file" id="ph2" accept="image/*">
 <label>Agent photo</label><div id="agLib" style="display:flex;gap:6px;margin:4px 0;flex-wrap:wrap"></div><input type="file" id="aph" accept="image/*">
-<div class="row"><div><label>Agent photo spot</label><select id="apos"><option value="br">Bottom right</option><option value="tr">Top right</option><option value="bl">Bottom left</option></select></div><div><label>Style</label><select id="ast"><option value="free">No frame (on top)</option><option value="circle">Circle</option></select></div><div><label>Agent photo size</label><input type="range" id="asz" min="100" max="700" value="190"></div></div>
+<div class="row"><div><label>Agent photo spot</label><select id="apos"><option value="br">Bottom right</option><option value="tr">Top right</option><option value="bl">Bottom left</option></select></div><div><label>Style</label><select id="ast"><option value="free">No frame (on top)</option><option value="circle">Circle</option></select></div><div><label>Agent photo size</label><input type="range" id="asz" min="100" max="700" value="270"></div></div>
 <div class="row"><div><label>Move my photo ↔ <span id="axv">0</span></label><input type="range" id="ax" min="-100" max="100" value="0"></div><div><label>Move my photo ↕ <span id="ayv">0</span></label><input type="range" id="ay" min="-100" max="100" value="0"></div></div>
 <label>3 small photos (amenities, rooms, facade)</label>
 <div style="display:grid;grid-template-columns:1fr;gap:4px"><input type="file" id="s1" accept="image/*"><input type="file" id="s2" accept="image/*"><input type="file" id="s3" accept="image/*"></div>
@@ -308,6 +308,7 @@ function headSz(base){return base*$('hs').value/100}
 
 function coverFit(img,dx,dy,dw,dh){const s=Math.max(dw/img.width,dh/img.height),iw=img.width*s,ih=img.height*s;x.drawImage(img,dx+(dw-iw)/2,dy+(dh-ih)/2,iw,ih)}
 const HIT={a:null,s:null};let PB=0;
+function agW(){if(!agImg)return 0;const hh=$('asz').value*S*1.3;return $('ast').value==='free'?hh*agImg.width/agImg.height:$('asz').value*S}
 function measure(fn){x.save();x.globalAlpha=0;const h=fn(0);x.restore();return h}
 function smalls(L,bh,m){const imgs=sm.filter(Boolean),idx=sm.map((x,i)=>x?i:-1).filter(i=>i>=0);HIT.sm=[];if(!imgs.length)return;let mode=$('spos').value;
  if(mode==='auto')mode={A:'col',C:'col',F:'col',H:'row',B:'mid',G:'mid',D:'col',E:'row',I:'rowL',J:'rowP',K:'col',M:'rowP'}[L]||'row';
@@ -398,7 +399,7 @@ function draw(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==
   x.save();x.translate(sw*.5,H-bh-m);x.rotate(-Math.PI/2);x.globalAlpha=av(2);x.font=F(800,headSz(Math.min(80,sw/S*.62)),fh);x.fillStyle=lum(T.bar)<150?'#fff':'#111';x.textBaseline='middle';x.fillText(String(title).toUpperCase(),0,0,H-bh-m*2);x.restore();
   x.fillStyle=T.acc;x.fillRect(sw,pH,W-sw,6*S);const X=sw+m*.8,mw=W-X-m;
   const blk=y0=>{let y=y0;y+=tx(kick,X,y,{size:46,w:600,it:true,col:T.acc,i:1,mw,max:2})+20*S;y+=tx(sub,X,y,{size:38,w:700,col:T.head,i:3,mw:mw*.95,max:2,lh:1.2})+10*S;
-   y+=tx('📍 '+loc,X,y,{size:33,w:500,col:hexA('#ffffff',.85),i:3,mw})+44*S;y+=figBlock(X,y,mw*.98,{cols:2,size:58,col:'#ffffff'});return y-y0};
+   y+=tx('📍 '+loc,X,y,{size:33,w:500,col:hexA('#ffffff',.85),i:3,mw})+44*S;const fw=Math.min(mw*.98,W-m-agW()-20*S-X);y+=figBlock(X,y,fw,{cols:fw<W*.56?1:2,size:56,col:'#ffffff'});return y-y0};
   const bH=measure(blk),top=pH+6*S,bot=H-bh;let y=top+Math.max(m*.5,(bot-top-bH)/2);blk(y);
 if(promo)tx('★ '+promo,X,H-bh-60*S,{size:26,w:700,col:T.acc,i:6,mw:mw*.6,max:2})}
 
@@ -416,10 +417,11 @@ if(promo)tx('★ '+promo,X,H-bh-60*S,{size:26,w:700,col:T.acc,i:6,mw:mw*.6,max:2
   y+=tx(title,W/2,y,{size:headSz(52),w:800,fam:fh,col:hc,al:'center',i:1,mw:W-2*m,max:1})+6*S;
   y+=tx(sub+'  ·  📍 '+loc,W/2,y,{size:28,w:500,col:sc,al:'center',i:1,mw:W-2*m,max:1})+26*S;
   const f=figsOn(),mo=f.find(g=>/month|amort/i.test(g[0]))||f[0],rv=f.find(g=>/reserv/i.test(g[0]));
-  if(mo){y+=tx(mo[0],W/2,y,{size:30,w:700,col:sc,al:'center',upper:true,ls:3,i:2})+4*S;y+=tx(mo[1],W/2,y,{size:headSz(128),w:900,fam:fh,col:dark?T.acc:T.bar,al:'center',i:2,mw:W-2*m,max:1})+20*S}
-  if(rv){const t2=rv[0]+'  '+rv[1];x.save();x.font=F(800,34,$('fb').value);const bw=x.measureText(t2).width+76*S;x.globalAlpha=av(3);x.fillStyle=T.acc;x.beginPath();x.roundRect(W/2-bw/2,y,bw,68*S,34*S);x.fill();x.restore();
-   tx(t2,W/2,y+16*S,{size:34,w:800,col:lum(T.acc)<150?'#fff':'#111',al:'center',i:3,mw:bw})}
-  tx(kick,W*.64,H-bh-78*S,{size:36,w:600,it:true,col:dark?T.acc:T.bar,al:'center',i:5,mw:W*.6,max:1})}
+  const ax=agImg&&y>H-bh-$('asz').value*S*1.3-200*S?(m+agW()+W-m)/2:W/2,amw=W-m-(ax===W/2?m:m+agW());
+  if(mo){y+=tx(mo[0],ax,y,{size:30,w:700,col:sc,al:'center',upper:true,ls:3,i:2})+4*S;y+=tx(mo[1],ax,y,{size:headSz(amw<W*.7?104:128),w:900,fam:fh,col:dark?T.acc:T.bar,al:'center',i:2,mw:amw,max:1})+20*S}
+  if(rv){const t2=rv[0]+'  '+rv[1];x.save();x.font=F(800,34,$('fb').value);const bw=x.measureText(t2).width+76*S;x.globalAlpha=av(3);x.fillStyle=T.acc;x.beginPath();x.roundRect(ax-bw/2,y,bw,68*S,34*S);x.fill();x.restore();
+   tx(t2,ax,y+16*S,{size:34,w:800,col:lum(T.acc)<150?'#fff':'#111',al:'center',i:3,mw:bw})}
+  tx(kick,ax===W/2?W*.64:ax,H-bh-78*S,{size:36,w:600,it:true,col:dark?T.acc:T.bar,al:'center',i:5,mw:W*.6,max:1})}
 
  if(!ANIM.on||ANIM.t>.6)bar();else{x.save();x.globalAlpha=ANIM.t/.6;bar();x.restore()}
  HIT.sm=[];HIT.ph=null;smalls(L,bh,m);agentPh(bh,m);if(ph[0]&&(L==='B'||L==='G'))HIT.ph=[ (L==='G'?60*S:0),(L==='G'?60*S*2.3:0),W-(L==='G'?120*S:0),(H-bh)*(L==='G'?.5:.56)];else if(ph[0])HIT.ph=[0,0,W,H*.45];setTimeout(ovUpd,0)}
