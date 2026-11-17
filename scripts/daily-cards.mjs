@@ -6,8 +6,8 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const COUNT = +(process.env.CARD_COUNT || 5);
-const PHONE = process.env.CARD_PHONE || '';
-const AGENT = process.env.CARD_AGENT || '';
+const PHONE = process.env.CARD_PHONE || '0976-339-8960';
+const AGENT = process.env.CARD_AGENT || 'Florence Alvarez';
 const day = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10); // Manila date
 const OUT = path.join(ROOT, 'daily-cards', day);
 fs.mkdirSync(OUT, { recursive: true });
@@ -23,6 +23,7 @@ const server = http.createServer((req, res) => {
 const browser = await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{});
 const page = await browser.newPage({ viewport: { width: 1400, height: 1100 } });
 page.on('pageerror', e => console.error('page error:', e.message));
+await page.addInitScript(h => { try { localStorage.setItem('epd2ok', h); } catch (e) {} }, 'ad1fd506789e51eee00bbd62843a02e16f3f355686807e03e7bce814a4c3f361');
 await page.goto('http://localhost:8765/epd2.html');
 await page.waitForTimeout(1500);
 if (PHONE) await page.fill('#phone', PHONE);
@@ -50,6 +51,7 @@ for (const i of cands) {
   if (!ok) continue;
   const key = await page.evaluate(i => PROPS[i].name + '|' + PROPS[i].model, i);
   if (seen.has(key)) continue; seen.add(key);
+  await page.evaluate(k => window.setAgentLib && window.setAgentLib(k), made.length + Math.floor(Date.now() / 864e5));
   await page.click('#autoBtn');
   await page.waitForTimeout(1500);
   const { png, cap, name } = await page.evaluate(i => {

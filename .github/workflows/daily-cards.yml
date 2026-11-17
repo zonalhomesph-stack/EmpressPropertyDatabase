@@ -16,8 +16,8 @@ jobs:
       - run: node scripts/daily-cards.mjs
         env:
           CARD_COUNT: ${{ vars.CARD_COUNT || '5' }}
-          CARD_PHONE: ${{ vars.CARD_PHONE }}
-          CARD_AGENT: ${{ vars.CARD_AGENT }}
+          CARD_PHONE: ${{ vars.CARD_PHONE || '0976-339-8960' }}
+          CARD_AGENT: ${{ vars.CARD_AGENT || 'Florence Alvarez' }}
       - name: Save cards to repo
         run: |
           git config user.name "EPD Daily Cards"
