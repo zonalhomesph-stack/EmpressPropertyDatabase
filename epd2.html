@@ -638,7 +638,7 @@ function ghLoad(p,base0){const k0=`${slug(p.name)}/${slug(baseModel(p.model))}`,
  return new Promise(res=>{(function nx(i){if(i>15)return res(out);const im=new Image();im.onload=()=>{out.push(im);nx(i+1)};im.onerror=()=>res(out);im.src=base+i+'.jpg'})(1)})}
 async function libLoad(key){if(LIBIMG[key])return LIBIMG[key];let a=[];
  if(PHOTO_LIB[key])a=(await Promise.all(PHOTO_LIB[key].map(src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})))).filter(Boolean);
- if(!a.length&&location.protocol.startsWith('http')&&cur){a=await ghLoad(cur);if(!a.length&&/bella\s*vita/i.test(cur.name))a=await ghLoad(cur,'photos/bellavita/')}return LIBIMG[key]=a}
+ if(!a.length&&location.protocol.startsWith('http')&&cur){a=await ghLoad(cur);if(!a.length&&cur._dev==='APEC Homes'&&apecKind(cur))a=await ghLoad(cur,`photos/apec/${apecKind(cur)}/`);if(!a.length&&/bella\s*vita/i.test(cur.name))a=await ghLoad(cur,'photos/bellavita/')}return LIBIMG[key]=a}
 let rot=Math.floor(Date.now()/864e5);
 async function applyLib(step){const k=libKey(cur),p0=cur;$('libInfo').textContent='';
  const imgs=await libLoad(k);if(cur!==p0)return false;window.NOIMG=!imgs.length;if(!imgs.length){ph[0]=null;ph[1]=null;sm=[null,null,null];setTimeout(draw,0)}$('libInfo').textContent=imgs.length?`📚 Empress Library: ${imgs.length} photos auto-loaded for ${cleanModel(cur.model)}`:`🔒 This project has no image yet — locked (no download). Upload to photos/${slug(cur.name)}/${slug(baseModel(cur.model))}/1.jpg`;if(!imgs.length)return false;if(step)rot++;const o=rot%imgs.length;const ord=imgs.slice(o).concat(imgs.slice(0,o));
