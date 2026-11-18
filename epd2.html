@@ -594,7 +594,7 @@ function angles(){const d=D(),rent=8000,am=num(d.amort)||num(d.dp),w='ALL',per=$
  const R=ORD.map(i=>A[i]);R.sort((p,q)=>q.score-p.score);/* persona/world matches first, random inside */
  return{d,A:R.map(o=>o.a)}}
 let ORD=null;function reshuffle(){ORD=null;capIdx=0;genText()}
-function hashtags(d){const tags=[...d.g.tags];const ct='#'+(d.city||'').replace(/[^A-Za-z]/g,'')+(d.prov||'').replace(/[^A-Za-z]/g,'');if(d.city&&!tags.some(t=>t.toLowerCase()===ct.toLowerCase()))tags.push(ct);
+function hashtags(d){const PROVS=['Cavite','Batangas','Laguna','Bulacan','Rizal','Tarlac','Pampanga','Bataan','Quezon','Pangasinan','NuevaEcija','Zambales'],pv=(d.prov||'').replace(/[^A-Za-z]/g,'');let tags=[...d.g.tags].filter(t=>!PROVS.some(P=>P.toLowerCase()!==pv.toLowerCase()&&t.toLowerCase().includes(P.toLowerCase())));if(pv&&tags.length<4){['#'+pv+'RealEstate','#HouseAndLot'+pv].forEach(t=>{if(!tags.some(x=>x.toLowerCase()===t.toLowerCase()))tags.push(t)})}const ct='#'+(d.city||'').replace(/[^A-Za-z]/g,'')+(d.prov||'').replace(/[^A-Za-z]/g,'');if(d.city&&!tags.some(t=>t.toLowerCase()===ct.toLowerCase()))tags.push(ct);
  const nt='#'+(d.name||'').replace(/[^A-Za-z0-9]/g,'');if(d.name&&nt.length<26&&!tags.some(t=>t.toLowerCase()===nt.toLowerCase()))tags.push(nt);return[...new Set(tags)].slice(0,8).join(' ')}
 function genCaps(){const{d,A}=angles(),lo=true;/* 40% Tagalog / 60% English mix: Taglish hook + revelation, English bridge, figures, CTA */const ht=hashtags(d);
  const out=A.map((a,v)=>{const L=[a[2],'',a[5]];const fl=figLines(d,lo);if(fl.length)L.push('',`${d.name} · ${d.loc}`,...fl);
@@ -606,7 +606,7 @@ const WN={EDU:'Education',MIRROR:'Mirror-holding',LIFE:'Lifestyle',INV:'Investme
 function genText(){if(!cur){$('cap').textContent='Pumili muna ng property sa kaliwa.';return}const{out,hk}=genCaps();const n=capIdx%out.length,o=out[n];
  $('cap').textContent=o.t;$('capmeta').textContent=`Version ${n+1}/${out.length} · ${WN[o.w]} · 40% Tagalog / 60% English`;
  $('hooks').textContent=hk.map((h,i)=>`${i+1}. ${h}`).join('\n');$('hookN').max=hk.length}
-function copy(t,btn){navigator.clipboard.writeText(t).then(()=>{const o=btn.textContent;btn.textContent='✓ Copied';setTimeout(()=>btn.textContent=o,1200)}).catch(()=>{})}
+function copy(t,btn){const ok=()=>{const o=btn.textContent;btn.textContent='✓ Copied';setTimeout(()=>btn.textContent=o,1200)};const fb=()=>{try{const x=document.createElement('textarea');x.value=t;x.setAttribute('readonly','');x.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(x);x.select();x.setSelectionRange(0,t.length);const r=document.execCommand('copy');x.remove();if(r){ok();return}}catch(e){}prompt('Copy the caption (Ctrl+C / long-press):',t)};if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb()}
 $('capCopy').onclick=e=>copy($('cap').textContent,e.target);$('hooksCopy').onclick=e=>copy($('hooks').textContent,e.target);
 $('hookTog').onclick=()=>{const b=$('hookBody'),o=b.style.display==='none';b.style.display=o?'block':'none';$('hookTog').textContent=o?'🙈 Hide hooks':'👁 Show hooks'};
 $('capShuf').onclick=reshuffle;$('capNext').onclick=()=>{capIdx++;genText()};$('capPrev').onclick=()=>{capIdx=(capIdx+49)%50;genText()};
