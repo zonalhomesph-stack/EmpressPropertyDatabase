@@ -121,6 +121,10 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 
 <label>My page (sets palette, font set, hashtags)</label><select id="pageName"><option value="">Auto: page ng property</option></select>
 <label>Bottom bar shows</label><select id="barMode"><option value="page" selected>Page name + number</option><option value="loc">Location + number</option></select>
+<label>My brand color (lahat ng cards ko, pati Today's cards)</label><select id="myPal"><option value="">Auto: kulay ng page ng property</option></select>
+<label>My location (province)</label><select id="myLoc"><option value="">— Any location —</option></select>
+<label>My 3 focused projects</label><select id="myP1"><option value="">— Project 1 —</option></select><select id="myP2" style="margin-top:4px"><option value="">— Project 2 —</option></select><select id="myP3" style="margin-top:4px"><option value="">— Project 3 —</option></select>
+<div class="muted" style="margin-top:4px">Today's cards mo ay manggagaling sa 3 focused projects mo, tapos sa location mo kung kulang.</div>
 <button id="copyProf" type="button" style="margin-top:6px;width:100%">🔗 Copy profile link (for an agent)</button>
 <button id="saveBrand" style="margin-top:8px;width:100%">💾 Save my profile</button>
 </div></details>
@@ -189,13 +193,13 @@ const FH=['Montserrat','Playfair Display','Poppins','Bebas Neue','Oswald','Cormo
 const FB=['Inter','Montserrat','Poppins','Open Sans','Lato','Nunito','Raleway','Lora','Manrope','DM Sans','Roboto','Space Mono','Plus Jakarta Sans','Roboto Mono','IBM Plex Mono','Josefin Sans','Nunito Sans','Source Sans 3'];
 const FSETS=[['Modern Luxury','Cormorant Garamond','Manrope','Montserrat'],['Classic Prestige','Playfair Display','Montserrat','Lato'],['Contemporary Elegance','DM Serif Display','DM Sans','Manrope'],['Boutique Luxury','Bodoni Moda','Poppins','Montserrat'],['Architectural Prestige','Cinzel','Raleway','Open Sans'],['Modern Corporate','Plus Jakarta Sans','Inter','DM Sans'],['Clean Minimalist','Outfit','Lato','Roboto'],['Editorial Modern','Instrument Serif','Inter','Space Mono'],['Friendly Professional','Poppins','Open Sans','Nunito'],['Warm Contemporary','Fraunces','DM Sans','Plus Jakarta Sans'],['Bold Real Estate','League Spartan','Lora','Montserrat'],['High-Impact Sales','Bebas Neue','Inter','Roboto Mono'],['Modern Sales Authority','Anton','DM Sans','IBM Plex Mono'],['Elegant Yet Affordable','Libre Baskerville','Raleway','Lato'],['Refined Modern Living','Italiana','Josefin Sans','Montserrat'],['Urban Modern','Oswald','Inter','Lato'],['Contemporary Classic','Marcellus','Montserrat','Open Sans'],['Sleek & Versatile','Montserrat','Nunito Sans','Source Sans 3'],['Real Estate Modern','Raleway','Poppins','Open Sans'],['Premium Contemporary','Syne','Manrope','DM Sans']];
 const FS=['Mr Dafoe','Alex Brush','Parisienne','Great Vibes','Dancing Script','Allura','Sacramento'];const HOOKF='Mr Dafoe';
-const LAYOUTS=[['A','A · Full photo + navy fade (v3)'],['B','B · Photo top + info panel'],['C','C · Monthly hero'],['D','D · Spec sheet (panel left)'],['E','E · Two photo frames'],['F','F · Story full photo'],['G','G · Clean light card'],['H','H · Price badge + ribbon'],['I','I · Diagonal split (premium)'],['J','J · Side panel title'],['K','K · Floating info card'],['M','M · Monthly hero + agent left'],['N','N · Vibrant hero agent (royal blue)']];
+const LAYOUTS=[['A','A · Full photo + navy fade (v3)'],['D','D · Spec sheet (panel left)'],['F','F · Story full photo'],['I','I · Diagonal split (premium)'],['J','J · Side panel title'],['K','K · Floating info card'],['M','M · Monthly hero + agent left'],['N','N · Vibrant hero agent (royal blue)']];
 const FIGS=[['term30','Monthly amort (30 yrs)'],['monthlyDp','Monthly DP / equity'],['reservation','Reservation'],['tcp','Total contract price'],['loanable','Loanable'],['income30','Income needed'],['lot','Lot area'],['floor','Floor area'],['beds','Bedrooms / T&B']];
 const FIGLBL={term30:'Monthly amort',monthlyDp:'Monthly DP',reservation:'Reservation',tcp:'TCP',loanable:'Loanable',income30:'Income needed',lot:'Lot area',floor:'Floor area',beds:'Bed / T&B'};
 
 /* ---------- helpers ---------- */
 const nl=s=>(s||'').replace(/\\n/g,'\n');
-const peso=v=>v?String(v).replace(/\.00(?!\d)/,''):'';
+const peso=v=>v?String(v).replace(/(\d[\d,]*)\.\d+/g,(m,a)=>Math.round(parseFloat(m.replace(/,/g,''))).toLocaleString('en-US')):'';
 const num=v=>{const m=String(v||'').replace(/,/g,'').match(/[\d.]+/);return m?parseFloat(m[0]):0};
 const fmt=n=>'₱ '+Math.round(n).toLocaleString('en-US');
 const pick=(a,i)=>a[((i%a.length)+a.length)%a.length];
@@ -203,7 +207,7 @@ function fillSel(id,arr,val){$(id).innerHTML=arr.map(a=>Array.isArray(a)?`<optio
 function PG(){const sel=$('pageName')&&$('pageName').value;return (sel&&PAGES[sel])||PAGES[cur&&cur.page]||PAGES.DEFAULT}
 const FSET_BY_PAGE={PAG:8,ANA:0,NEW:5,MCP:2,RIC:18,LIO:9,PAC:8,FOR:13,LOT:4,KAI:3,SUL:10,CAV:18,BAT:14,LAG:6,BUL:8,RIZ:16,ULT:17,DEFAULT:18};
 function pageCode(){const sel=$('pageName')&&$('pageName').value;return sel||(cur&&PAGES[cur.page]?cur.page:'DEFAULT')}
-function applyPageStyle(){const g=PG(),pi=PALS.findIndex(a=>a[0]===g.pal);applyPal(pi<0?0:pi);const fi=FSET_BY_PAGE[pageCode()];if(fi!=null&&window.applyFset)applyFset(fi)}
+function applyPageStyle(){const g=PG(),mp=$('myPal')&&$('myPal').value,pi=mp!==''&&mp!=null?+mp:PALS.findIndex(a=>a[0]===g.pal);applyPal(pi<0?0:pi);const fi=FSET_BY_PAGE[pageCode()];if(fi!=null&&window.applyFset)applyFset(fi)}
 
 /* ---------- init UI ---------- */
 function devOf(p){const t=[p.dev,p.name,p.source,p.notes,p.promo,p.listingId?'lhoopa':''].join(' ').toLowerCase();
@@ -231,11 +235,16 @@ window.applyFset=applyFset;$('fset').onclick=e=>{const d=e.target.closest('[data
 $('pageName').innerHTML+=Object.keys(PAGES).filter(k=>k!=='DEFAULT').map(k=>`<option value="${k}">${k} · ${PAGES[k].n}</option>`).join('');
 $('pageName').addEventListener('change',()=>{applyPageStyle();ORD=null;capIdx=0;try{genText()}catch(e){}draw()});
 try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.phone)$('phone').value=b.phone;if(b.agent)$('agent').value=b.agent;if(b.page&&PAGES[b.page])$('pageName').value=b.page;if(b.bar)$('barMode').value=b.bar}catch(e){}
-if(QP.get('a')||QP.get('p')||QP.get('pg')){if(QP.get('a'))$('agent').value=QP.get('a');if(QP.get('p'))$('phone').value=QP.get('p');if(QP.get('pg')&&PAGES[QP.get('pg')])$('pageName').value=QP.get('pg');try{localStorage.setItem('epd2brand',JSON.stringify({phone:$('phone').value,agent:$('agent').value,page:$('pageName').value,bar:$('barMode').value,dir:AGDIR}))}catch(e){}}
+(function(){$('myPal').innerHTML+=PALS.map((p,i)=>`<option value="${i}">${i+1}. ${p[0]}</option>`).join('');const pv=[...new Set(PROPS.map(p=>p.prov).filter(Boolean))].sort();$('myLoc').innerHTML+=pv.map(v=>`<option>${v}</option>`).join('');const pn=[...new Set(PROPS.map(p=>p.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b));['myP1','myP2','myP3'].forEach(id=>$(id).innerHTML+=pn.map(v=>`<option>${v.replace(/</g,'')}</option>`).join(''));
+ try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.pal!=null&&b.pal!=='')$('myPal').value=b.pal;if(b.loc)$('myLoc').value=b.loc;(b.focus||[]).forEach((v,i)=>{if($('myP'+(i+1)))$('myP'+(i+1)).value=v})}catch(e){}
+ if(QP.get('bc')!=null)$('myPal').value=QP.get('bc');if(QP.get('loc'))$('myLoc').value=QP.get('loc');if(QP.get('fp'))QP.get('fp').split('|').slice(0,3).forEach((v,i)=>$('myP'+(i+1)).value=v);
+ $('myPal').addEventListener('change',()=>{applyPageStyle();draw()})})();
+function profObj(){return{phone:$('phone').value,agent:$('agent').value,page:$('pageName').value,bar:$('barMode').value,dir:AGDIR,pal:$('myPal').value,loc:$('myLoc').value,focus:['myP1','myP2','myP3'].map(id=>$(id).value).filter(Boolean)}}
+if(QP.get('a')||QP.get('p')||QP.get('pg')){if(QP.get('a'))$('agent').value=QP.get('a');if(QP.get('p'))$('phone').value=QP.get('p');if(QP.get('pg')&&PAGES[QP.get('pg')])$('pageName').value=QP.get('pg');try{localStorage.setItem('epd2brand',JSON.stringify(profObj()))}catch(e){}}
 if($('pageName').value)setTimeout(applyPageStyle,300);
-$('copyProf').onclick=()=>{const u=new URL(location.href.split('?')[0]);u.searchParams.set('a',$('agent').value);u.searchParams.set('p',$('phone').value);if($('pageName').value)u.searchParams.set('pg',$('pageName').value);u.searchParams.set('ph',AGDIR);const t=u.toString();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$('copyProf').textContent='✓ Link copied'},()=>prompt('Copy this link:',t));setTimeout(()=>$('copyProf').textContent='🔗 Copy profile link (for an agent)',1800)};
+$('copyProf').onclick=()=>{const u=new URL(location.href.split('?')[0]);u.searchParams.set('a',$('agent').value);u.searchParams.set('p',$('phone').value);if($('pageName').value)u.searchParams.set('pg',$('pageName').value);u.searchParams.set('ph',AGDIR);if($('myPal').value)u.searchParams.set('bc',$('myPal').value);if($('myLoc').value)u.searchParams.set('loc',$('myLoc').value);const fz=['myP1','myP2','myP3'].map(id=>$(id).value).filter(Boolean);if(fz.length)u.searchParams.set('fp',fz.join('|'));const t=u.toString();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$('copyProf').textContent='✓ Link copied'},()=>prompt('Copy this link:',t));setTimeout(()=>$('copyProf').textContent='🔗 Copy profile link (for an agent)',1800)};
 ['pageName','barMode','phone','agent'].forEach(id=>$(id).addEventListener('input',draw));$('barMode').addEventListener('change',draw);
-$('saveBrand').onclick=()=>{try{localStorage.setItem('epd2brand',JSON.stringify({phone:$('phone').value,agent:$('agent').value,page:$('pageName').value,bar:$('barMode').value,dir:AGDIR}));$('saveBrand').textContent='✓ Saved'}catch(e){$('saveBrand').textContent='Saving not available here'}setTimeout(()=>$('saveBrand').textContent='💾 Save my profile',1500)};
+$('saveBrand').onclick=()=>{try{localStorage.setItem('epd2brand',JSON.stringify(profObj()));$('saveBrand').textContent='✓ Saved'}catch(e){$('saveBrand').textContent='Saving not available here'}setTimeout(()=>$('saveBrand').textContent='💾 Save my profile',1500)};
 
 function filterList(){const q=$('q').value.toLowerCase().trim(),pg=$('fpage').value,fi=$('ffin').value;
  const am=$('famt').value.split('-').map(Number),sal=+$('fsal').value||0;const base=PROPS.map((p,i)=>[p,i]).filter(([p])=>(!sal||fits(p,sal))&&(!$('famt').value||(p.term30&&num(p.term30)>=am[0]&&num(p.term30)<=am[1]))&&(!pg||(pg.startsWith('prov:')?p.prov===pg.slice(5):(p.prov+'|'+p.city)===pg.slice(5)))&&(!$('fdev').value||p._dev===$('fdev').value)&&(!fi||(p.financing||[]).join(' ').toLowerCase().includes(fi.toLowerCase())));
@@ -269,7 +278,7 @@ function kickList(){const per=$('persona').value;const m=KICKS.filter(k=>k[0]===
  const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};return sh(m).concat(sh(o))}
 function nextKick(){if(!KORD||kickIdx>=KORD.length){KORD=kickList();kickIdx=0}$('kicker').value=KORD[kickIdx++];draw()}
 $('kickShuf').onclick=nextKick;$('persona').addEventListener('change',()=>{KORD=null;nextKick()});
-function cleanModel(m){return String(m||'').replace(/\s*\((?:[^)]*\b(?:blk|block|lot|ph)\b[^)]*)\)/ig,'').replace(/\s*[-–—,]?\s*\bblk\.?\s*\d+\w*\s*(?:lot\.?\s*\d+\w*)?/ig,'').replace(/\s*\blot\s*\d+\w*/ig,'').trim()}
+function cleanModel(m){return String(m||'').replace(/\s*[-–—,]?\s*\bblock\s*\d+\w*\s*(?:lot\s*\d+\w*)?/ig,'').replace(/\s*\((?:[^)]*\b(?:blk|block|lot|ph)\b[^)]*)\)/ig,'').replace(/\s*[-–—,]?\s*\bblk\.?\s*\d+\w*\s*(?:lot\.?\s*\d+\w*)?/ig,'').replace(/\s*\blot\s*\d+\w*/ig,'').trim()}
 function loadProp(i){cur=PROPS[i];const p=cur,g=PG();
  $('title').value=p.name||'';$('sub').value=[cleanModel(p.model)+(p.position&&!new RegExp(p.position.split(' ')[0],'i').test(p.model)?' — '+p.position:''),p.type&&!String(p.model).includes(p.type)?p.type:''].filter(Boolean).join(' · ');
  $('loc').value=[p.city,p.prov].filter(Boolean).join(', ');KORD=null;nextKick();
@@ -277,7 +286,7 @@ function loadProp(i){cur=PROPS[i];const p=cur,g=PG();
  const def=p.term30?['term30','reservation']:p.monthlyDp?['monthlyDp','reservation']:['tcp','reservation'];
  document.querySelectorAll('[data-f]').forEach(cb=>{cb.checked=def.includes(cb.dataset.f);cb.disabled=!fig(cb.dataset.f)});
  
- $('pinfo').textContent=[p.tcp&&'TCP '+p.tcp,p.term30&&'30y '+p.term30,p.monthlyDp&&'DP '+p.monthlyDp+'/mo',p.reservation&&'RF '+p.reservation,p.promo&&'Promo: '+p.promo].filter(Boolean).join('\n');
+ $('pinfo').textContent=[p.tcp&&'TCP '+peso(p.tcp),p.term30&&'30y '+peso(p.term30),p.monthlyDp&&'DP '+peso(p.monthlyDp)+'/mo',p.reservation&&'RF '+peso(p.reservation),p.promo&&'Promo: '+p.promo].filter(Boolean).join('\n');
  TXT={};applyPageStyle();ORD=null;capIdx=0;genText();ph=[null,null];sm=[null,null,null];applyLib(false);draw()}
 $('prop').onchange=e=>loadProp(+e.target.value);
 
@@ -515,7 +524,7 @@ if(promo)tx('★ '+promo,X,H-bh-60*S,{size:26,w:700,col:T.acc,i:6,mw:mw*.6,max:2
  HIT.sm=[];HIT.ph=null;smalls(L,bh,m);if(L!=='N')agentPh(bh,m);if(ph[0]&&(L==='B'||L==='G'))HIT.ph=[ (L==='G'?60*S:0),(L==='G'?60*S*2.3:0),W-(L==='G'?120*S:0),(H-bh)*(L==='G'?.5:.56)];else if(ph[0])HIT.ph=[0,0,W,H*.45];setTimeout(ovUpd,0)}
 
 /* ---------- captions ---------- */
-function D(){const p=cur||{},g=PG();return{p,g,name:p.name||'',model:p.model||'',city:p.city||'',prov:p.prov||'',loc:[p.city,p.prov].filter(Boolean).join(', '),
+function D(){const p=cur||{},g=PG();return{p,g,name:p.name||'',model:cleanModel(p.model)||'',city:p.city||'',prov:p.prov||'',loc:[p.city,p.prov].filter(Boolean).join(', '),
  amort:peso(p.term30),dp:peso(p.monthlyDp),rf:peso(p.reservation),tcp:peso(p.tcp),inc:peso(p.income30),lot:p.lot?String(p.lot).replace(/\s*\(.*\)/,''):'',fl:p.floor?String(p.floor).replace(/\s*\(.*\)/,''):'',
  fin:(p.financing||[]).join(' / '),hl:nl(p.highlights).split('\n').map(s=>s.trim()).filter(s=>s&&!/pricelist|effective|cheapest/i.test(s)).slice(0,3),promo:p.promo?p.promo.replace(/\s*\[.*?\]/g,''):''}}
 const PERS={first:'first-time buyer',ofw:'OFW',family:'young family',bread:'breadwinner',invest:'investor',upgrade:'upgrader',pro:'young professional'};
@@ -636,20 +645,37 @@ function smPool(){if(!cur)return[];const p=[].concat(LIBIMG['amen|'+slug(cur.nam
 async function shufMain(){if(!cur)return;let a=LIBIMG[libKey(cur)];if(!a){await applyLib(false);a=LIBIMG[libKey(cur)]}if(!a||!a.length){alert('Walang naka-save na photos sa GitHub para sa unit na ito.');return}if(a.length<2)return;const i=a.indexOf(ph[0]);ph[0]=a[(i+1)%a.length];const j=sm.indexOf(ph[0]);if(j>=0){const p=smPool().filter(z=>!sm.includes(z)&&z!==ph[0]);sm[j]=p[0]||null}draw()}
 async function shufSm(){if(!cur)return;if(!LIBIMG[libKey(cur)])await applyLib(false);const p=smPool().slice();if(!p.length){alert('Walang naka-save na amenities/interior photos sa GitHub para sa unit na ito.');return}const now=sm.filter(Boolean);let c=p.filter(z=>!now.includes(z));if(c.length<3)c=c.concat(p.filter(z=>!c.includes(z)));for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]]}sm=[c[0]||null,c[1]||null,c[2]||null];draw()}
 $('autoBtn').onclick=async()=>{if(!cur)return;await applyLib(true);
- const good=['A','B','C','G','I','J','K','M','N'];$('layout').value=good[Math.floor(Math.random()*good.length)];
+ const good=LAYOUTS.map(l=>l[0]);$('layout').value=good[Math.floor(Math.random()*good.length)];
  KORD=null;nextKick();ORD=null;capIdx=0;genText();draw()};
 
 /* ---------- today's cards (from GitHub daily-cards) ---------- */
 $('todayX').onclick=()=>$('todayM').style.display='none';
+async function myCards(){let b={};try{b=JSON.parse(localStorage.getItem('epd2brand')||'{}')}catch(e){}const fz=(b.focus||[]).map(v=>v.toLowerCase()),loc=b.loc||'';if(!fz.length&&!loc)return null;
+ const day=new Date(Date.now()+8*3600e3).toISOString().slice(0,10),seed=Math.floor(Date.now()/864e5);let s0=seed;const rnd=()=>(s0=(s0*9301+49297)%233280)/233280;
+ const ok=p=>!String(p.id||'').startsWith('p_APEC_PH')&&(p.term30||p.monthlyDp||p.tcp);
+ const grp=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+ const byProj=fz.map(f=>grp(PROPS.map((p,i)=>[p,i]).filter(([p])=>ok(p)&&p.name.toLowerCase()===f).map(x=>x[1])));
+ const near=grp(PROPS.map((p,i)=>[p,i]).filter(([p])=>ok(p)&&loc&&p.prov===loc&&!fz.includes(p.name.toLowerCase())).map(x=>x[1]));
+ const order=[];for(let r=0;byProj.some(a=>a.length>r);r++)byProj.forEach(a=>{if(a[r]!=null)order.push(a[r])});const nearU=[],seenN=new Set();near.forEach(i=>{const n=PROPS[i].name;if(!seenN.has(n)){seenN.add(n);nearU.push(i)}});
+ const cand=order.concat(nearU,near.filter(i=>!nearU.includes(i))),out=[],seen=new Set(),keep=cur;
+ for(const i of cand){if(out.length>=9)break;const p=PROPS[i],k=libKey(p);if(seen.has(k))continue;cur=p;const im=await libLoad(k);cur=keep;if(!im||!im.length)continue;seen.add(k);out.push(i)}
+ if(!out.length)return null;return{day,mine:true,cards:out.map((i,n)=>({id:PROPS[i].id,st:{layout:LAYOUTS[(n+seed)%LAYOUTS.length][0]},png:'',txt:''}))}}
+async function renderSt(i,st,k=0){const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+cleanModel(PROPS[i].model),i));s.value=i;loadProp(i);await new Promise(r=>setTimeout(r,60));
+ $('layout').value=LAYOUTS[k%LAYOUTS.length][0];if(st){if(st.layout&&LAYOUTS.some(l=>l[0]===st.layout))$('layout').value=st.layout;if(st.kicker)$('kicker').value=st.kicker;if(st.rot!=null)rot=st.rot}await applyLib(false);try{genText()}catch(e){}draw();await new Promise(r=>setTimeout(r,120));
+ return{png:$('cv').toDataURL('image/jpeg',.88),cap:$('cap').textContent}}
 window.openToday=async()=>{const M=$('todayM'),G=$('todayG');M.style.display='block';G.innerHTML='<div class="muted">Loading…</div>';
- try{const r=await fetch('daily-cards/latest.json?'+Date.now());if(!r.ok)throw 0;const d=await r.json();$('todayH').textContent="📅 Cards for "+d.day;
-  G.innerHTML='';for(const c of d.cards){const w=document.createElement('div');w.style.cssText='background:#0e0e0e;border:1px solid #2b2b2b;border-radius:8px;padding:8px';
-   const src='daily-cards/'+c.png;w.innerHTML=`<img src="${src}" style="width:100%;border-radius:6px"><div style="font-size:12px;margin:6px 0">${c.title}</div>`;
+ try{let d=await myCards();if(!d){const r=await fetch('daily-cards/latest.json?'+Date.now());if(!r.ok)throw 0;d=await r.json()}$('todayH').textContent="📅 Cards for "+d.day+(d.mine?' · for '+($('agent').value||'you'):'');
+  G.innerHTML='';const JOBS=[];for(const c of d.cards){const w=document.createElement('div');w.style.cssText='background:#0e0e0e;border:1px solid #2b2b2b;border-radius:8px;padding:8px';
+   let src=c.png?'daily-cards/'+c.png:'data:image/gif;base64,R0lGODlhAQABAAAAACw=',capT=null;const pi=PROPS.findIndex(p=>p.id===c.id),pp=PROPS[pi],ttl=pp?[pp.name,cleanModel(pp.model),pp.position&&!/blk|lot/i.test(pp.position)&&!new RegExp(pp.position.split(' ')[0],'i').test(pp.model)?pp.position:''].filter(Boolean).join(' · '):String(c.title).replace(/\s*\b(blk|block|lot)\s*\d+\w*/ig,'');
+   w.innerHTML=`<img src="${src}" style="width:100%;border-radius:6px"><div style="font-size:12px;margin:6px 0">${ttl}</div>`;const im=w.querySelector('img');
+   const kk=JOBS.length;if(pi>=0)JOBS.push(async()=>{const r=await renderSt(pi,c.st,kk);if(r){im.src=r.png;src=r.png;capT=r.cap}});
    const dl=document.createElement('button');dl.className='pri';dl.textContent='⬇ Download';dl.style.width='100%';
-   dl.onclick=async()=>{const b=await (await fetch(src)).blob();saveFile(b,c.png.split('/').pop())};
+   dl.onclick=async()=>{const b=await (await fetch(src)).blob();saveFile(b,(pp?(pp.name+'-'+cleanModel(pp.model)).replace(/[^A-Za-z0-9]+/g,'-'):'card')+'.jpg')};
    const cp=document.createElement('button');cp.textContent='📋 Copy caption';cp.style.cssText='width:100%;margin-top:6px';
-   cp.onclick=async e=>{const t=await (await fetch('daily-cards/'+c.txt)).text();copy(t,e.target)};
-   const ed=document.createElement('button');ed.textContent='✏️ Edit this card';ed.style.cssText='width:100%;margin-top:6px';ed.onclick=()=>{const i=PROPS.findIndex(p=>p.id===c.id);if(i<0){alert('Property not found');return}const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+PROPS[i].model,i));s.value=i;loadProp(i);if(c.st){setTimeout(async()=>{$('layout').value=c.st.layout;$('kicker').value=c.st.kicker||'';rot=c.st.rot;await applyLib(false);draw()},300)}$('todayM').style.display='none';agentMode(true);$('cvWrap').scrollIntoView({behavior:'smooth'})};w.append(dl,cp);if(c.id)w.append(ed);G.appendChild(w)}}
+   cp.onclick=async e=>{const t=capT||(c.txt?await (await fetch('daily-cards/'+c.txt)).text():'');copy(t,e.target)};
+   const ed=document.createElement('button');ed.textContent='✏️ Edit this card';ed.style.cssText='width:100%;margin-top:6px';ed.onclick=()=>{const i=PROPS.findIndex(p=>p.id===c.id);if(i<0){alert('Property not found');return}const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+PROPS[i].model,i));s.value=i;loadProp(i);if(c.st){setTimeout(async()=>{$('layout').value=c.st.layout;$('kicker').value=c.st.kicker||'';rot=c.st.rot;await applyLib(false);draw()},300)}$('todayM').style.display='none';agentMode(true);$('cvWrap').scrollIntoView({behavior:'smooth'})};w.append(dl,cp);if(c.id)w.append(ed);G.appendChild(w)}
+  if(JOBS.length){const keep={i:$('prop').value,cur,L:$('layout').value,k:$('kicker').value,rot,ph:ph.slice(),sm:sm.slice()};$('todayH').textContent+=' · putting your name & number…';for(const j of JOBS){try{await j()}catch(e){}}$('todayH').textContent=$('todayH').textContent.replace(' · putting your name & number…','');
+   cur=keep.cur;rot=keep.rot;if(keep.cur){const ii=PROPS.indexOf(keep.cur);$('prop').value=keep.i;loadProp(ii);$('layout').value=keep.L;$('kicker').value=keep.k;ph=keep.ph;sm=keep.sm;draw()}}}
  catch(e){G.innerHTML='<div class="muted">Today\'s cards are only available on the GitHub version of EPD 2.0.</div>'}};
 
 /* ---------- on-card ✕ delete / ✥ move icons ---------- */
@@ -688,7 +714,7 @@ window.agentMode=on=>{['sec1','sec2','sec3x'].forEach(id=>{const e=$(id);if(e)e.
 let DL=null;try{window.claude&&claude.use&&claude.use('downloads').then(d=>DL=d).catch(()=>{})}catch(e){}
 async function saveFile(blob,name){if(DL){try{await DL.save({filename:name,data:blob});return}catch(e){}}const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove()}
 
-function fname(ext){return((cur?cur.name+'-'+cur.model:'listing').replace(/[^A-Za-z0-9]+/g,'-').slice(0,60))+'.'+ext}
+function fname(ext){return((cur?cur.name+'-'+cleanModel(cur.model):'listing').replace(/[^A-Za-z0-9]+/g,'-').slice(0,60))+'.'+ext}
 $('dlPng').onclick=()=>{ANIM.on=false;draw();c.toBlob(b=>saveFile(b,fname('png')),'image/png')};
 function runAnim(dur,done){ANIM.on=true;const t0=performance.now();(function step(now){ANIM.t=Math.min(1,(now-t0)/(dur*.55));draw();if(now-t0<dur)requestAnimationFrame(step);else{ANIM.on=false;ANIM.t=1;draw();done&&done()}})(t0)}
 $('anim').onclick=()=>runAnim(5000);

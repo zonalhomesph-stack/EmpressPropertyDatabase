@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
-const COUNT = +(process.env.CARD_COUNT || 5);
+const COUNT = +(process.env.CARD_COUNT || 9);
 const PHONE = process.env.CARD_PHONE || '0976-339-8960';
 const AGENT = process.env.CARD_AGENT || 'Florence Alvarez';
 const day = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10); // Manila date
@@ -48,15 +48,18 @@ for (const i of cands) {
     return document.getElementById('libInfo').textContent.includes('📚');
   }, i);
   if (!ok) continue;
-  const key = await page.evaluate(i => PROPS[i].name + '|' + PROPS[i].model, i);
+  const key = await page.evaluate(i => PROPS[i].name.toLowerCase().trim(), i); // one card per project
   if (seen.has(key)) continue; seen.add(key);
   await page.evaluate(k => window.setAgentLib && window.setAgentLib(k), made.length + Math.floor(Date.now() / 864e5));
   await page.click('#autoBtn');
   await page.waitForTimeout(1500);
+  // each card gets a different layout
+  await page.evaluate(k => { const L = LAYOUTS[k % LAYOUTS.length][0]; document.getElementById('layout').value = L; draw(); }, made.length + Math.floor(Date.now() / 864e5));
+  await page.waitForTimeout(500);
   const { png, cap, name } = await page.evaluate(i => {
     const p = PROPS[i];
     return { png: document.getElementById('cv').toDataURL('image/jpeg', 0.88), cap: document.getElementById('cap').textContent,
-             name: (p.name + '-' + p.model).replace(/[^A-Za-z0-9]+/g, '-').replace(/-+$/, '').slice(0, 70) };
+             name: (p.name + '-' + cleanModel(p.model)).replace(/[^A-Za-z0-9]+/g, '-').replace(/-+$/, '').slice(0, 70) };
   }, i);
   const n = String(made.length + 1).padStart(2, '0');
   fs.writeFileSync(path.join(OUT, `${n}-${name}.jpg`), Buffer.from(png.split(',')[1], 'base64'));

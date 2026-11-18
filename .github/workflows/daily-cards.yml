@@ -15,7 +15,7 @@ jobs:
       - run: npm install --no-save playwright@1.49.1 && npx playwright install --with-deps chromium
       - run: node scripts/daily-cards.mjs
         env:
-          CARD_COUNT: ${{ vars.CARD_COUNT || '5' }}
+          CARD_COUNT: ${{ vars.CARD_COUNT || '9' }}
           CARD_PHONE: ${{ vars.CARD_PHONE || '0976-339-8960' }}
           CARD_AGENT: ${{ vars.CARD_AGENT || 'Florence Alvarez' }}
       - name: Save cards to repo
