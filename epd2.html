@@ -14,6 +14,7 @@ header b{color:var(--gold);letter-spacing:.08em;font-size:14px}header span{color
 aside{padding:14px;border-right:1px solid var(--line);overflow:auto;max-height:calc(100vh - 50px)}
 @media(max-width:900px){aside{max-height:none}header span{display:none}}
 main{padding:18px;display:flex;flex-direction:column;align-items:center;gap:14px}
+#profToday details[open]{flex-basis:100%}
 details{background:#171717;border:1px solid var(--line);border-radius:8px;margin-bottom:10px}
 summary{padding:10px 12px;cursor:pointer;font-weight:700;color:#f3e7c4;list-style:none}summary::before{content:'▸ ';color:var(--gold)}details[open] summary::before{content:'▾ '}
 .bd{padding:2px 12px 12px}label{display:block;font-size:11px;color:#aaa;margin:8px 0 3px}
@@ -113,8 +114,8 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <label><span id="cntl">Property</span> (<span id="cnt">0</span>)</label><select id="prop" size="7" style="height:150px"></select>
 <div class="pinfo" id="pinfo"></div><div id="libInfo" class="muted" style="margin-top:6px"></div>
 </div></details>
-<button onclick="openToday()" style="width:100%;padding:14px;margin-bottom:10px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;font-size:15px">📅 Open Today's cards</button>
-<details id="secProf"><summary>👤 My profile</summary><div class="bd">
+<div id="profToday" style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap">
+<details id="secProf" style="flex:1;min-width:0"><summary>👤 My profile</summary><div class="bd">
 <label>My photo (tap one, or upload a new one)</label><div id="agLib" style="display:flex;gap:6px;margin:4px 0;flex-wrap:wrap"></div><input type="file" id="aph" accept="image/*">
 <div class="row"><div><label>Contact number</label><input type="tel" id="phone" placeholder="09XX XXX XXXX" value="0976-339-8960"></div></div>
 <label>Agent name</label><input type="text" id="agent" value="Florence Alvarez">
@@ -129,6 +130,8 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <button id="copyProf" type="button" style="margin-top:6px;width:100%">🔗 Copy profile link (for an agent)</button>
 <button id="saveBrand" style="margin-top:8px;width:100%">💾 Save my profile</button>
 </div></details>
+<button onclick="openToday()" style="flex:1;padding:14px;margin-bottom:10px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;font-size:15px">📅 Open Today's cards</button>
+</div>
 <div id="styleBar"><label>Palette: <b id="palName" style="color:#f3e7c4"></b></label><div class="pal" id="pal"></div><input type="range" id="palS" min="0" max="19" value="0" step="1" style="width:100%"><label>Font set: <b id="fsetName" style="color:#f3e7c4">— custom —</b></label><div class="pal fset" id="fset"></div><input type="range" id="fsetS" min="0" max="19" value="0" step="1" style="width:100%"><div class="muted" style="margin:-2px 0 8px">Headline · Body. Ang Short hook ay laging script (Mr Dafoe), kulay accent ng palette. </div></div></div>
 <div id="cvWrap" style="position:relative;display:inline-block;max-width:100%"><canvas id="cv" width="1080" height="1350"></canvas><div id="ov" style="position:absolute;inset:0;pointer-events:none"></div></div>
 <div class="btns">
