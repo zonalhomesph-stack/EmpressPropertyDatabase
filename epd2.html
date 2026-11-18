@@ -400,7 +400,8 @@ function agentPh(bh,m){const ag=$('agent').value.trim();HIT.a=null;if(!agImg){if
  x.save();x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=20*S;x.fillStyle=T.acc;x.beginPath();x.arc(cx,cy,R+6*S,0,7);x.fill();x.shadowColor='transparent';
  x.beginPath();x.arc(cx,cy,R,0,7);x.clip();coverFit(agImg,cx-R,cy-R*1.05,R*2,R*2.1);x.restore();
  if(ag)namePill(ag,cx,cy+R-10*S)}
-function draw(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==w||c.height!==h){c.width=w;c.height=h}W=w;H=h;
+function draw(){if(window.NOIMG){const [w,h]=$('size').value.split('x').map(Number);c.width=w;c.height=h;x.fillStyle='#151515';x.fillRect(0,0,w,h);x.fillStyle='#f3e7c4';x.textAlign='center';x.textBaseline='middle';x.font='800 '+Math.round(w/14)+'px sans-serif';x.fillText('🔒',w/2,h/2-w/8);x.font='800 '+Math.round(w/20)+'px sans-serif';x.fillText('This project has no image yet',w/2,h/2,w*.9);x.font='500 '+Math.round(w/32)+'px sans-serif';x.fillStyle='#aaa';x.fillText('Locked muna — lalabas ito kapag may photo na',w/2,h/2+w/14,w*.9);x.fillText((cur&&cur.name)||'',w/2,h/2+w/8,w*.9);return}draw0()}
+function draw0(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==w||c.height!==h){c.width=w;c.height=h}W=w;H=h;
  S=Math.min(W/1080,H/1350*1.15);if(H>W*1.5)S=W/1080;
  const L=$('layout').value,fh=$('fh').value,m=60*S,dark=lum(T.panel)<140;
  const title=$('title').value,sub=$('sub').value,loc=$('loc').value,kick=$('kicker').value,hook=$('hook').value,promo=$('promo').value;
@@ -637,10 +638,10 @@ function ghLoad(p,base0){const k0=`${slug(p.name)}/${slug(baseModel(p.model))}`,
  return new Promise(res=>{(function nx(i){if(i>15)return res(out);const im=new Image();im.onload=()=>{out.push(im);nx(i+1)};im.onerror=()=>res(out);im.src=base+i+'.jpg'})(1)})}
 async function libLoad(key){if(LIBIMG[key])return LIBIMG[key];let a=[];
  if(PHOTO_LIB[key])a=(await Promise.all(PHOTO_LIB[key].map(src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})))).filter(Boolean);
- if(!a.length&&location.protocol.startsWith('http')&&cur){a=await ghLoad(cur);if(!a.length&&cur._dev==='APEC Homes'&&apecKind(cur))a=await ghLoad(cur,`photos/apec/${apecKind(cur)}/`);if(!a.length&&/bella\s*vita/i.test(cur.name))a=await ghLoad(cur,'photos/bellavita/')}return LIBIMG[key]=a}
+ if(!a.length&&location.protocol.startsWith('http')&&cur){a=await ghLoad(cur);if(!a.length&&/bella\s*vita/i.test(cur.name))a=await ghLoad(cur,'photos/bellavita/')}return LIBIMG[key]=a}
 let rot=Math.floor(Date.now()/864e5);
 async function applyLib(step){const k=libKey(cur),p0=cur;$('libInfo').textContent='';
- const imgs=await libLoad(k);if(cur!==p0)return false;$('libInfo').textContent=imgs.length?`📚 Empress Library: ${imgs.length} photos auto-loaded for ${cleanModel(cur.model)}`:`📁 No library photos yet. Upload to photos/${slug(cur.name)}/${slug(baseModel(cur.model))}/1.jpg`;if(!imgs.length)return false;if(step)rot++;const o=rot%imgs.length;const ord=imgs.slice(o).concat(imgs.slice(0,o));
+ const imgs=await libLoad(k);if(cur!==p0)return false;window.NOIMG=!imgs.length;if(!imgs.length){ph[0]=null;ph[1]=null;sm=[null,null,null];setTimeout(draw,0)}$('libInfo').textContent=imgs.length?`📚 Empress Library: ${imgs.length} photos auto-loaded for ${cleanModel(cur.model)}`:`🔒 This project has no image yet — locked (no download). Upload to photos/${slug(cur.name)}/${slug(baseModel(cur.model))}/1.jpg`;if(!imgs.length)return false;if(step)rot++;const o=rot%imgs.length;const ord=imgs.slice(o).concat(imgs.slice(0,o));
  ph[0]=ord[0];ph[1]=ord[1]||null;sm=[null,null,null];const ak='amen|'+slug(cur.name),ik='int|'+k,web=location.protocol.startsWith('http');
  if(!(ak in LIBIMG))LIBIMG[ak]=web?await ghLoad(cur,`photos/${slug(cur.name)}/amenities/`):[];
  if(!(ik in LIBIMG)){const k0=`${slug(cur.name)}/${slug(baseModel(cur.model))}`;let a=web?await ghLoad(cur,`photos/${PHOTO_ALIAS[k0]||k0}/interior/`):[];if(!a.length&&web&&/bella\s*vita/i.test(cur.name))a=await ghLoad(cur,'photos/bellavita/interior/');if(!a.length&&web&&apecKind(cur)&&(cur._dev==='APEC Homes'||/mapletree/i.test(cur.name)))a=await ghLoad(cur,`photos/apec/${apecKind(cur)}/interior/`);LIBIMG[ik]=a}
@@ -723,7 +724,7 @@ let DL=null;try{window.claude&&claude.use&&claude.use('downloads').then(d=>DL=d)
 async function saveFile(blob,name){if(DL){try{await DL.save({filename:name,data:blob});return}catch(e){}}const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove()}
 
 function fname(ext){return((cur?cur.name+'-'+cleanModel(cur.model):'listing').replace(/[^A-Za-z0-9]+/g,'-').slice(0,60))+'.'+ext}
-$('dlPng').onclick=()=>{ANIM.on=false;draw();c.toBlob(b=>saveFile(b,fname('png')),'image/png')};
+$('dlPng').onclick=()=>{if(window.NOIMG){alert('This project has no image yet. Locked muna ito hanggang may photo na.');return}ANIM.on=false;draw();c.toBlob(b=>saveFile(b,fname('png')),'image/png')};
 function runAnim(dur,done){ANIM.on=true;const t0=performance.now();(function step(now){ANIM.t=Math.min(1,(now-t0)/(dur*.55));draw();if(now-t0<dur)requestAnimationFrame(step);else{ANIM.on=false;ANIM.t=1;draw();done&&done()}})(t0)}
 $('anim').onclick=()=>runAnim(5000);
 $('rec').onclick=()=>{if(!c.captureStream||!window.MediaRecorder){alert('Video recording is not supported in this browser. Try Chrome desktop.');return}
