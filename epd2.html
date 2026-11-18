@@ -40,7 +40,7 @@ input[type=file]{width:100%;min-width:0;font-size:11px;color:#bbb}
 #styleBar{background:#171717;border:1px solid var(--line);border-radius:8px;padding:4px 10px 6px}#styleBar label{margin-top:4px}#styleBar .pal div{flex-basis:36px;height:36px}#styleBar .fset div{flex-basis:52px!important;height:42px!important;font-size:17px}#styleBar .muted{font-size:10px}
 @media(max-width:900px){.wrap{display:flex;flex-direction:column}main{order:-1;padding:10px}}
 </style></head><body>
-<div id="pwGate" style="position:fixed;inset:0;z-index:99999;background:#0f1f3d;display:flex;align-items:center;justify-content:center;font-family:sans-serif"><form id="pwF" style="background:#fff;padding:28px;border-radius:14px;width:300px;text-align:center"><div style="font-size:20px;font-weight:700;margin-bottom:6px">EPD 2.0</div><div style="font-size:13px;color:#555;margin-bottom:14px">Enter team password</div><input id="pwI" type="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:100%;padding:10px;font-size:16px;border:1px solid #ccc;border-radius:8px;box-sizing:border-box"><label style="display:flex;align-items:center;gap:6px;justify-content:center;font-size:13px;color:#333;margin-top:8px;cursor:pointer"><input type="checkbox" id="pwShow" onchange="var p=document.getElementById('pwI');p.type=this.checked?'text':'password'"> 👁️ Show password</label><div id="pwE" style="color:#c00;font-size:12px;height:16px;margin-top:6px"></div><button style="margin-top:6px;width:100%;padding:10px;background:#0f1f3d;color:#fff;border:0;border-radius:8px;font-size:15px">Enter</button></form></div>
+<div id="pwGate" style="position:fixed;inset:0;z-index:99999;background:#0f1f3d;display:flex;align-items:center;justify-content:center;font-family:sans-serif"><form id="pwF" style="background:#fff;padding:28px;border-radius:14px;width:300px;text-align:center"><div style="font-size:20px;font-weight:700;margin-bottom:6px">EPD 2.0</div><div style="font-size:13px;color:#555;margin-bottom:14px">Enter team password</div><input id="pwI" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:100%;padding:10px;font-size:16px;border:1px solid #ccc;border-radius:8px;box-sizing:border-box"><label style="display:flex;align-items:center;gap:6px;justify-content:center;font-size:13px;color:#333;margin-top:8px;cursor:pointer"><input type="checkbox" id="pwShow" onchange="var p=document.getElementById('pwI');p.type=this.checked?'text':'password'"> 👁️ Show password</label><div id="pwE" style="color:#c00;font-size:12px;height:16px;margin-top:6px"></div><button style="margin-top:6px;width:100%;padding:10px;background:#0f1f3d;color:#fff;border:0;border-radius:8px;font-size:15px">Enter</button></form></div>
 <script>(function(){var H="ad1fd506789e51eee00bbd62843a02e16f3f355686807e03e7bce814a4c3f361",g=document.getElementById("pwGate");try{if(localStorage.getItem("epd2ok")===H){g.remove();return}}catch(e){}
 async function sha256hex(v){try{if(window.crypto&&crypto.subtle){var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v));return[...new Uint8Array(b)].map(function(c){return c.toString(16).padStart(2,"0")}).join("")}}catch(e){}
 var K=[],H0=[],p=2,n=0;function f(x){return(x-Math.floor(x))*4294967296|0}while(n<64){var ok=1;for(var d=2;d*d<=p;d++)if(p%d==0){ok=0;break}if(ok){if(n<8)H0[n]=f(Math.pow(p,1/2));K[n++]=f(Math.pow(p,1/3))}p++}
@@ -48,7 +48,7 @@ var by=unescape(encodeURIComponent(v)),l=by.length,w=[],i;for(i=0;i<l;i++)w[i>>2
 var h=H0.slice();function r(x,c){return x>>>c|x<<(32-c)}for(var j=0;j<w.length;j+=16){var W=w.slice(j,j+16),a=h.slice();for(i=0;i<64;i++){if(i>15){var s0=r(W[i-15],7)^r(W[i-15],18)^W[i-15]>>>3,s1=r(W[i-2],17)^r(W[i-2],19)^W[i-2]>>>10;W[i]=W[i-16]+s0+W[i-7]+s1|0}
 var t1=a[7]+(r(a[4],6)^r(a[4],11)^r(a[4],25))+(a[4]&a[5]^~a[4]&a[6])+K[i]+W[i]|0,t2=(r(a[0],2)^r(a[0],13)^r(a[0],22))+(a[0]&a[1]^a[0]&a[2]^a[1]&a[2])|0;a=[t1+t2|0].concat(a);a[4]=a[4]+t1|0;a.pop()}for(i=0;i<8;i++)h[i]=h[i]+a[i]|0}
 return h.map(function(x){return(x>>>0).toString(16).padStart(8,"0")}).join("")}
-document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var v=document.getElementById("pwI").value.trim().toLowerCase(),x=await sha256hex(v);if(x===H){try{localStorage.setItem("epd2ok",H)}catch(e){}g.remove()}else document.getElementById("pwE").textContent="Wrong password"};})();</script>
+document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var v=document.getElementById("pwI").value.trim().toLowerCase(),x=await sha256hex(v);if(x===H||x==="dbcb3e96ba8503b2537ced8d87ee05d5ba0e55c4640041153ca714343119b590"){try{localStorage.setItem("epd2ok",H)}catch(e){}g.remove()}else document.getElementById("pwE").textContent="Wrong password"};})();</script>
 <header><b>EPD 2.0</b><button id="todayTop" onclick="openToday()" style="margin-left:auto;order:3;background:#1f4e8c;border-color:#1f4e8c;color:#fff;white-space:nowrap">📅 Today's cards</button><span>Listing card + caption maker · Empress Property Database · No ChatGPT needed</span></header>
 <div class="wrap"><aside><div id="amBar" style="display:none;background:#1b2a1b;border:1px solid #2e7d4f;color:#cfe8cf;padding:10px;border-radius:8px;margin-bottom:10px;font-size:12px">✏️ Editing a Today's card. Add your photo, then move (✥), resize (+ / −) or remove (✕) photos right on the card.<button onclick="document.getElementById('aph').click()" class="pri" style="margin-top:8px;width:100%">📷 Add / change my photo</button><button onclick="agentMode(false)" style="margin-top:6px;width:100%">⚙️ Show all settings</button></div>
 
@@ -129,7 +129,7 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <div class="btns">
 <button id="todayBtn" style="background:#1f4e8c;border-color:#1f4e8c;color:#fff">📅 Today's cards</button><button class="pri" id="autoBtn" style="background:#2e7d4f;border-color:#2e7d4f;color:#fff">⚡ Auto card</button><button class="pri" id="dlPng">⬇ Download PNG</button>
 <button id="anim">▶ Preview animation</button>
-<button id="rec">🎬 Make video (8s)</button>
+<button id="rec">🎬 Make video (8s)</button> <button id="shufMainB" onclick="shufMain()">🔀 Shuffle main photo</button> <button id="shufSmB" onclick="shufSm()">🔀 Shuffle 3 small photos</button>
 </div>
 <div id="vout"><video id="vid" controls playsinline></video><div class="btns" style="margin-top:6px"><button class="pri" id="dlVid">⬇ Download video</button></div></div>
 
@@ -336,12 +336,14 @@ function cover(img,dx,dy,dw,dh){const z=$('pz').value/100,ox=$('px').value/100,o
 function photo(n,dx,dy,dw,dh,r=0){x.save();x.beginPath();r?x.roundRect(dx,dy,dw,dh,r*S):x.rect(dx,dy,dw,dh);x.clip();
  const img=ph[n]||ph[0];if(img)cover(img,dx,dy,dw,dh);else{const g=x.createLinearGradient(dx,dy,dx,dy+dh);g.addColorStop(0,'#6b7a86');g.addColorStop(1,'#39434c');x.fillStyle=g;x.fillRect(dx,dy,dw,dh);
  x.fillStyle='rgba(255,255,255,.55)';x.font=F(600,26,'Inter');x.textAlign='center';x.fillText('⬆ Upload your real property photo',dx+dw/2,dy+dh/2)}x.restore()}
-function zonal(X,Y,w,bgDark,al='left'){if(!$('showZ').checked||!zl.width)return 0;const h=zl.height*w/zl.width,dx=al==='right'?X-w:al==='center'?X-w/2:X;x.save();x.shadowColor=bgDark?hexA(lum(T.panel)<140?T.panel:'#000000',.9):hexA(T.acc,.55);x.shadowBlur=18*S;x.shadowOffsetY=3*S;
+function zonal(X,Y,w,bgDark,al='left'){if(!$('showZ').checked||!zl.width)return 0;const h=zl.height*w/zl.width,dx=al==='right'?X-w:al==='center'?X-w/2:X;x.save();x.shadowColor=logoSh();x.shadowBlur=16*S;x.shadowOffsetX=2*S;x.shadowOffsetY=4*S;
  if(bgDark){const oc=document.createElement('canvas');oc.width=zl.width;oc.height=zl.height;const o=oc.getContext('2d');o.drawImage(zl,0,0);o.globalCompositeOperation='source-in';o.fillStyle='#fff';o.fillRect(0,0,oc.width,oc.height);x.drawImage(oc,dx,Y,w,h)}else x.drawImage(zl,dx,Y,w,h);x.restore();return h}
+function logoSh(){const c=lum(T.acc)>150?(lum(T.panel)<140?T.panel:'#000000'):T.acc;return hexA(c,.85)}
+function elDraw(a,b,c,d){x.save();x.shadowColor=logoSh();x.shadowBlur=16*S;x.shadowOffsetX=2*S;x.shadowOffsetY=4*S;x.drawImage(el,a,b,c,d);x.restore()}
 function logos(top,darkL,darkR){const m=40*S,zw=Math.min(240*S,W*.24);
 
  zonal(m,top+6*S,zw,darkL,'left');
- if(el.width){const ew=96*S;x.drawImage(el,W-m-ew,top,ew,ew)}}
+ if(el.width){const ew=96*S;elDraw(W-m-ew,top,ew,ew)}}
 function bar(){if(!$('showBar').checked)return 0;const h=Math.max(70,H*.055)*S/S*(W/1080);x.fillStyle=T.bar;x.fillRect(0,H-h,W,h);
  const dark=lum(T.bar)<150,col=dark?'#fff':'#111',ph_=$('phone').value.trim();
  x.save();x.fillStyle=col;x.textBaseline='middle';x.textAlign='center';x.font=F(800,26,$('fb').value);
@@ -424,7 +426,7 @@ function draw(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==
   if(promo)tx('★ '+promo,m,H-bh-56*S,{size:24,w:700,col:isD?T.acc:T.bar,i:6,mw:W-2*m,max:2})}
 
  else if(L==='D'){const pw=W*.46;photo(0,pw,0,W-pw,H-bh);const g=x.createLinearGradient(pw,0,pw+160*S,0);g.addColorStop(0,hexA(T.panel,1));g.addColorStop(1,hexA(T.panel,0));x.fillStyle=g;x.fillRect(pw-1,0,170*S,H);
-  zonal(m,m,Math.min(230*S,pw*.6),dark);if(el.width)x.drawImage(el,W-m-90*S,m,90*S,90*S);
+  zonal(m,m,Math.min(230*S,pw*.6),dark);if(el.width)elDraw(W-m-90*S,m,90*S,90*S);
   let y=H*.2;y+=tx(kick,m,y,{size:30,w:600,it:true,col:T.acc,i:1,mw:pw-m*1.4})+12*S;
   y+=tx(title,m,y,{size:headSz(68),w:800,fam:fh,col:T.head,i:2,mw:pw-m*1.2,max:4})+8*S;
   y+=tx(sub,m,y,{size:28,w:600,col:T.head,i:3,mw:pw-m*1.2})+4*S;y+=tx('📍 '+loc,m,y,{size:24,w:500,col:hexA('#ffffff',.8),i:3,mw:pw-m*1.2})+30*S;
@@ -444,7 +446,7 @@ function draw(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==
  else if(L==='I'){const ph_=H-bh,xt=W*.58,xb=W*.40;x.save();x.beginPath();x.moveTo(0,0);x.lineTo(xt,0);x.lineTo(xb,ph_);x.lineTo(0,ph_);x.closePath();x.clip();photo(0,0,0,xt,ph_);
   const tg=x.createLinearGradient(0,0,0,H*.2);tg.addColorStop(0,'rgba(0,0,0,.45)');tg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=tg;x.fillRect(0,0,W,H*.2);x.restore();
   x.save();x.strokeStyle=T.acc;x.lineWidth=8*S;x.globalAlpha=av(1);x.beginPath();x.moveTo(xt,0);x.lineTo(xb,ph_);x.stroke();x.restore();
-  zonal(m*.7,m*.7,Math.min(220*S,W*.22),true);if(el.width)x.drawImage(el,W-m-96*S,m*.7,96*S,96*S);
+  zonal(m*.7,m*.7,Math.min(220*S,W*.22),true);if(el.width)elDraw(W-m-96*S,m*.7,96*S,96*S);
   const X=W*.55,mw=W-X-m*.8;
   const blk=y0=>{let y=y0;y+=tx(kick,X,y,{size:38,w:600,it:true,col:T.acc,i:1,mw,max:2})+22*S;
    y+=tx(title,X,y,{size:headSz(84),w:800,fam:fh,col:T.head,i:2,mw,max:3,lh:1.04})+20*S;y+=tx(sub,X,y,{size:34,w:600,col:T.head,i:3,mw,max:2,lh:1.22})+10*S;
@@ -454,7 +456,7 @@ function draw(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==
 
  else if(L==='J'){const sw=W*.15,pH=(H-bh)*.54;PB=pH;x.fillStyle=T.bar;x.fillRect(0,0,sw,H-bh);photo(0,sw,0,W-sw,pH);
   const tg=x.createLinearGradient(0,0,0,H*.18);tg.addColorStop(0,'rgba(0,0,0,.45)');tg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=tg;x.fillRect(sw,0,W-sw,H*.18);
-  zonal(sw+m*.5,m*.6,Math.min(210*S,W*.21),true);if(el.width)x.drawImage(el,W-m-92*S,m*.6,92*S,92*S);
+  zonal(sw+m*.5,m*.6,Math.min(210*S,W*.21),true);if(el.width)elDraw(W-m-92*S,m*.6,92*S,92*S);
   x.save();x.translate(sw*.5,H-bh-m);x.rotate(-Math.PI/2);x.globalAlpha=av(2);x.font=F(800,headSz(Math.min(80,sw/S*.62)),fh);x.fillStyle=lum(T.bar)<150?'#fff':'#111';x.textBaseline='middle';x.fillText(String(title).toUpperCase(),0,0,H-bh-m*2);x.restore();
   x.fillStyle=T.acc;x.fillRect(sw,pH,W-sw,6*S);const X=sw+m*.8,mw=W-X-m;
   const blk=y0=>{let y=y0;y+=tx(kick,X,y,{size:46,w:600,it:true,col:T.acc,i:1,mw,max:2})+20*S;y+=tx(sub,X,y,{size:38,w:700,col:T.head,i:3,mw:mw*.95,max:2,lh:1.2})+10*S;
@@ -490,7 +492,7 @@ if(promo)tx('★ '+promo,X,H-bh-60*S,{size:26,w:700,col:T.acc,i:6,mw:mw*.6,max:2
   x.beginPath();x.moveTo(W*.62,0);x.bezierCurveTo(W*.45,H*.05,W*.28,H*.13,0,H*.13);x.strokeStyle=GD;x.lineWidth=4*S;x.stroke();x.restore();
   zonal(m*.8,m*.55,Math.min(250*S,W*.25),true);
   {const rw=190*S,rx=W-m*.6-rw,rh=250*S;x.save();x.globalAlpha=av(1);x.shadowColor='rgba(0,0,0,.4)';x.shadowBlur=20*S;x.beginPath();x.moveTo(rx,-4);x.lineTo(rx+rw,-4);x.lineTo(rx+rw,rh*.8);x.lineTo(rx+rw/2,rh);x.lineTo(rx,rh*.8);x.closePath();x.fillStyle=DB;x.fill();x.shadowColor='transparent';x.strokeStyle=GD;x.lineWidth=4*S;x.stroke();x.restore();
-   if(el.width)x.drawImage(el,rx+rw/2-52*S,22*S,104*S,104*S);tx((cur&&cur.city||loc).toUpperCase(),rx+rw/2,140*S,{size:24,w:800,col:'#fff',al:'center',mw:rw-24*S,max:2,ls:1,i:1});x.fillStyle=GD;x.fillRect(rx+rw/2-30*S,rh*.78,60*S,4*S)}
+   if(el.width)elDraw(rx+rw/2-52*S,22*S,104*S,104*S);tx((cur&&cur.city||loc).toUpperCase(),rx+rw/2,140*S,{size:24,w:800,col:'#fff',al:'center',mw:rw-24*S,max:2,ls:1,i:1});x.fillStyle=GD;x.fillRect(rx+rw/2-30*S,rh*.78,60*S,4*S)}
   const tall=agImg&&agImg.height/agImg.width>1.8,ah=H*(tall?.66:.5),aw=agImg?ah*agImg.width/agImg.height:0,ax=W-aw*(tall?.92:.86)-m*.2,ay=H*.9-ah;
   if(agImg){x.save();x.globalAlpha=av(4);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=30*S;x.drawImage(agImg,ax,ay,aw,ah);x.restore();HIT.a=[ax,ay,aw,ah]}
   const X=m,mw=W*.52;let y=H*.19;
@@ -626,7 +628,13 @@ async function libLoad(key){if(LIBIMG[key])return LIBIMG[key];let a=[];
 let rot=Math.floor(Date.now()/864e5);
 async function applyLib(step){const k=libKey(cur),p0=cur;$('libInfo').textContent='';
  const imgs=await libLoad(k);if(cur!==p0)return false;$('libInfo').textContent=imgs.length?`📚 Empress Library: ${imgs.length} photos auto-loaded for ${cleanModel(cur.model)}`:`📁 No library photos yet. Upload to photos/${slug(cur.name)}/${slug(baseModel(cur.model))}/1.jpg`;if(!imgs.length)return false;if(step)rot++;const o=rot%imgs.length;const ord=imgs.slice(o).concat(imgs.slice(0,o));
- ph[0]=ord[0];ph[1]=ord[1]||null;sm=[ord[1]||null,ord[2]||null,ord[3]||null];const ak='amen|'+slug(cur.name);if(!(ak in LIBIMG))LIBIMG[ak]=location.protocol.startsWith('http')?await ghLoad(cur,`photos/${slug(cur.name)}/amenities/`):[];const am=LIBIMG[ak];if(am&&am.length)sm[2]=am[rot%am.length];draw();return true}
+ ph[0]=ord[0];ph[1]=ord[1]||null;sm=[null,null,null];const ak='amen|'+slug(cur.name),ik='int|'+k,web=location.protocol.startsWith('http');
+ if(!(ak in LIBIMG))LIBIMG[ak]=web?await ghLoad(cur,`photos/${slug(cur.name)}/amenities/`):[];
+ if(!(ik in LIBIMG)){const k0=`${slug(cur.name)}/${slug(baseModel(cur.model))}`;let a=web?await ghLoad(cur,`photos/${PHOTO_ALIAS[k0]||k0}/interior/`):[];if(!a.length&&web&&/bella\s*vita/i.test(cur.name))a=await ghLoad(cur,'photos/bellavita/interior/');LIBIMG[ik]=a}
+ if(cur!==p0)return false;const pool=[].concat(LIBIMG[ak]||[],LIBIMG[ik]||[]);if(pool.length){const o2=rot%pool.length;const po=pool.slice(o2).concat(pool.slice(0,o2));for(let i=0;i<3&&i<po.length;i++)sm[i]=po[i]}else sm=[ord[1]||null,ord[2]||null,ord[3]||null];draw();return true}
+function smPool(){if(!cur)return[];const p=[].concat(LIBIMG['amen|'+slug(cur.name)]||[],LIBIMG['int|'+libKey(cur)]||[]);return p.length?p:(LIBIMG[libKey(cur)]||[]).filter(i=>i!==ph[0])}
+async function shufMain(){if(!cur)return;let a=LIBIMG[libKey(cur)];if(!a){await applyLib(false);a=LIBIMG[libKey(cur)]}if(!a||!a.length){alert('Walang naka-save na photos sa GitHub para sa unit na ito.');return}if(a.length<2)return;const i=a.indexOf(ph[0]);ph[0]=a[(i+1)%a.length];const j=sm.indexOf(ph[0]);if(j>=0){const p=smPool().filter(z=>!sm.includes(z)&&z!==ph[0]);sm[j]=p[0]||null}draw()}
+async function shufSm(){if(!cur)return;if(!LIBIMG[libKey(cur)])await applyLib(false);const p=smPool().slice();if(!p.length){alert('Walang naka-save na amenities/interior photos sa GitHub para sa unit na ito.');return}const now=sm.filter(Boolean);let c=p.filter(z=>!now.includes(z));if(c.length<3)c=c.concat(p.filter(z=>!c.includes(z)));for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]]}sm=[c[0]||null,c[1]||null,c[2]||null];draw()}
 $('autoBtn').onclick=async()=>{if(!cur)return;await applyLib(true);
  const good=['A','B','C','G','I','J','K','M','N'];$('layout').value=good[Math.floor(Math.random()*good.length)];
  KORD=null;nextKick();ORD=null;capIdx=0;genText();draw()};
