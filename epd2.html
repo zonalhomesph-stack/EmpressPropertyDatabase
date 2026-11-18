@@ -360,7 +360,7 @@ function logos(top,darkL,darkR){const m=40*S,zw=Math.min(240*S,W*.24);
 function bar(){if(!$('showBar').checked)return 0;const h=Math.max(70,H*.055)*S/S*(W/1080);x.fillStyle=T.bar;x.fillRect(0,H-h,W,h);
  const dark=lum(T.bar)<150,col=dark?'#fff':'#111',ph_=$('phone').value.trim();
  x.save();x.fillStyle=col;x.textBaseline='middle';x.textAlign='center';x.font=F(800,26,$('fb').value);
- x.fillText(`${($('barMode').value==='page'?(PG().n||$('loc').value):$('loc').value).toUpperCase()}   |   ${ph_?'Call us '+ph_:'⚠️ Add contact number'}`,W/2,H-h/2,W*.94);x.restore();return h}
+ x.fillText(`${($('barMode').value==='page'?(window.CUSTPG||PG().n||$('loc').value):$('loc').value).toUpperCase()}   |   ${ph_?'Call us '+ph_:'⚠️ Add contact number'}`,W/2,H-h/2,W*.94);x.restore();return h}
 function figBlock(...a){TR='figs';try{return figBlock0(...a)}finally{TR=null}}
 function figBlock0(X,Y,mw,o={}){const f=figsOn();if(!f.length)return 0;const{col=T.head,acc=T.acc,size=48,i0=4,cols=1}=o;let y=Y;
  if(cols>1){const cw=mw/cols;let k=0,rowH=0;f.forEach((g,j)=>{const cx=X+(j%cols)*cw;if(j%cols===0&&j){y+=rowH;rowH=0}
@@ -654,15 +654,15 @@ $('autoBtn').onclick=async()=>{if(!cur)return;await applyLib(true);
 
 /* ---------- today's cards (from GitHub daily-cards) ---------- */
 $('todayX').onclick=()=>$('todayM').style.display='none';
-async function myCards(b){if(!b){b={};try{b=JSON.parse(localStorage.getItem('epd2brand')||'{}')}catch(e){}}const fz=(b.focus||[]).slice(0,2).map(v=>v.toLowerCase()),loc=b.loc||'';if(!fz.length&&!loc&&!b.force)return null;
+async function myCards(b){if(!b){b={};try{b=JSON.parse(localStorage.getItem('epd2brand')||'{}')}catch(e){}}const fz=(b.focus||[]).slice(0,2).map(v=>v.toLowerCase()),loc=b.loc||'',LOCS=loc.split(/\s*[|,]\s*/).filter(Boolean);if(!fz.length&&!loc&&!b.force)return null;
  const day=new Date(Date.now()+8*3600e3).toISOString().slice(0,10),seed=Math.floor(Date.now()/864e5)+String(b.agent||'').length;let s0=seed%233280;const rnd=()=>(s0=(s0*9301+49297)%233280)/233280;
  const ok=p=>!String(p.id||'').startsWith('p_APEC_PH')&&(p.term30||p.monthlyDp||p.tcp);const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
  const all=sh(PROPS.map((p,i)=>i).filter(i=>ok(PROPS[i]))),keep=cur,out=[],usedP=new Set(),usedK=new Set();
  const has=async i=>{const p=PROPS[i],k=libKey(p);if(usedK.has(k))return false;cur=p;const im=await libLoad(k);cur=keep;return !!(im&&im.length)};
  const take=async(list,onePer,max=9)=>{for(const i of list){if(out.length>=max)return;const n=PROPS[i].name.toLowerCase();if(onePer&&usedP.has(n))continue;if(await has(i)){out.push(i);usedP.add(n);usedK.add(libKey(PROPS[i]))}}};
  for(const f of fz){if(out.length>=9)break;const l=all.filter(i=>PROPS[i].name.toLowerCase()===f);for(const i of l){if(await has(i)){out.push(i);usedP.add(f);usedK.add(libKey(PROPS[i]));break}}}
- if(loc)await take(all.filter(i=>PROPS[i].prov===loc),true);
- if(loc&&out.length<6)await take(all.filter(i=>PROPS[i].prov===loc),false,6);
+ if(loc)await take(all.filter(i=>LOCS.includes(PROPS[i].prov)),true);
+ if(loc&&out.length<6)await take(all.filter(i=>LOCS.includes(PROPS[i].prov)),false,6);
  if(out.length<6)await take(all,true,6);
  if(out.length<6)await take(all,false,6);
  if(!out.length)return null;return{day,mine:true,cards:out.map((i,n)=>({id:PROPS[i].id,st:{layout:LAYOUTS[(n+seed)%LAYOUTS.length][0]},png:'',txt:''}))}}
@@ -682,7 +682,7 @@ window.openToday=async(who)=>{const M=$('todayM'),G=$('todayG');M.style.display=
    const cp=document.createElement('button');cp.textContent='📋 Copy caption';cp.style.cssText='width:100%;margin-top:6px';
    cp.onclick=async e=>{const t=capT||(c.txt?await (await fetch('daily-cards/'+c.txt)).text():'');copy(t,e.target)};
    const ed=document.createElement('button');ed.textContent='✏️ Edit this card';ed.style.cssText='width:100%;margin-top:6px';ed.onclick=()=>{const i=PROPS.findIndex(p=>p.id===c.id);if(i<0){alert('Property not found');return}const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+PROPS[i].model,i));s.value=i;loadProp(i);if(c.st){setTimeout(async()=>{$('layout').value=c.st.layout;$('kicker').value=c.st.kicker||'';rot=c.st.rot;await applyLib(false);draw()},300)}$('todayM').style.display='none';agentMode(true);$('cvWrap').scrollIntoView({behavior:'smooth'})};w.append(dl,cp);if(c.id)w.append(ed);G.appendChild(w)}
-  if(JOBS.length){const keep={i:$('prop').value,cur,L:$('layout').value,k:$('kicker').value,rot,ph:ph.slice(),sm:sm.slice(),ag:$('agent').value,phn:$('phone').value,pal:$('myPal').value,img:agImg,io:agOrig};if(A){$('agent').value=A.agent||'';$('phone').value=A.phone||'';$('myPal').value=A.pal!=null?A.pal:'';if(A.dir){await new Promise(r=>{const im=new Image();im.onload=()=>{agImg=im;agOrig=im;r()};im.onerror=()=>{agImg=null;r()};im.src='photos/agents/'+A.dir+'/1.png'})}else agImg=null}$('todayH').textContent+=' · putting your name & number…';for(const j of JOBS){try{await j()}catch(e){}}$('todayH').textContent=$('todayH').textContent.replace(' · putting your name & number…','');
+  if(JOBS.length){const keep={i:$('prop').value,cur,L:$('layout').value,k:$('kicker').value,rot,ph:ph.slice(),sm:sm.slice(),ag:$('agent').value,phn:$('phone').value,pal:$('myPal').value,img:agImg,io:agOrig};if(A){$('agent').value=A.agent||'';$('phone').value=A.phone||'';$('myPal').value=A.pal!=null?A.pal:'';if(A.dir){await new Promise(r=>{const im=new Image();im.onload=()=>{agImg=im;agOrig=im;r()};im.onerror=()=>{agImg=null;r()};im.src='photos/agents/'+A.dir+'/1.png'})}else agImg=null}window.CUSTPG=A&&A.page&&!PAGES[A.page]?A.page:null;$('todayH').textContent+=' · putting your name & number…';for(const j of JOBS){try{await j()}catch(e){}}window.CUSTPG=null;$('todayH').textContent=$('todayH').textContent.replace(' · putting your name & number…','');
    $('agent').value=keep.ag;$('phone').value=keep.phn;$('myPal').value=keep.pal;agImg=keep.img;agOrig=keep.io;cur=keep.cur;rot=keep.rot;if(keep.cur){const ii=PROPS.indexOf(keep.cur);$('prop').value=keep.i;loadProp(ii);$('layout').value=keep.L;$('kicker').value=keep.k;ph=keep.ph;sm=keep.sm;draw()}}}
  catch(e){G.innerHTML='<div class="muted">Today\'s cards are only available on the GitHub version of EPD 2.0.</div>'}};
 
