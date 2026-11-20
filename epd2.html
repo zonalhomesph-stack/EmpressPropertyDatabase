@@ -75,9 +75,9 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <details open><summary>3 · Layout &amp; size</summary><div class="bd">
 <div class="row"><div><label>Layout</label><select id="layout"></select></div><div><label>Size</label><select id="size">
 <option value="1080x1350">Feed 4:5</option><option value="1080x1080">Square 1:1</option><option value="1080x1920">Story / Reel 9:16</option><option value="1920x1080">Landscape 16:9</option><option value="1240x1754">A4</option></select></div></div>
-<label>Headline font</label><select id="fh"></select>
+<div style="display:none"><label>Headline font</label><select id="fh"></select>
 <div class="row"><div><label>Body font</label><select id="fb"></select></div><div><label>Short hook font</label><select id="fs"></select></div></div>
-<label>Headline size <span id="hsv">100%</span></label><input type="range" id="hs" min="70" max="130" value="100">
+<label>Headline size <span id="hsv">100%</span></label><input type="range" id="hs" min="70" max="130" value="100"></div>
 </div></details>
 
 
@@ -121,13 +121,14 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <label>Agent name</label><input type="text" id="agent" value="Florence Alvarez">
 
 <label>My page (sets palette, font set, hashtags)</label><select id="pageName"><option value="">Auto: page ng property</option></select>
-<label>Bottom bar shows</label><select id="barMode"><option value="page" selected>Page name + number</option><option value="loc">Location + number</option></select>
+<label style="display:none">Bottom bar shows</label><select id="barMode" style="display:none"><option value="page" selected>Page name + number</option><option value="loc">Location + number</option></select>
 <label>My brand color (lahat ng cards ko, pati Today's cards)</label><select id="myPal"><option value="">Auto: kulay ng page ng property</option></select>
 <label>My location (province)</label><select id="myLoc"><option value="">— Any location —</option></select>
-<label>My 2 focused projects</label><select id="myP1"><option value="">— Project 1 —</option></select><select id="myP2" style="margin-top:4px"><option value="">— Project 2 —</option></select>
-<div class="muted" style="margin-top:4px">Today's cards mo: tig-isang card ang 2 focused projects mo, tapos ibang projects sa location mo (at least 6 cards).</div>
+<div style="display:none"><label>My 2 focused projects</label><select id="myP1"><option value="">— Project 1 —</option></select><select id="myP2" style="margin-top:4px"><option value="">— Project 2 —</option></select>
+<div class="muted" style="margin-top:4px">Today's cards mo: tig-isang card ang 2 focused projects mo, tapos ibang projects sa location mo (at least 6 cards).</div></div>
+<div class="muted" style="margin-top:4px">Today's cards mo: 9 projects, uunahin ang nasa location mo.</div>
 <button id="shareProf" type="button" style="margin-top:6px;width:100%" onclick="shareProf()">📤 Send my profile to Flo (team list)</button>
-<button id="copyProf" type="button" style="margin-top:6px;width:100%">🔗 Copy profile link (for an agent)</button>
+<button id="copyProf" type="button" style="display:none;margin-top:6px;width:100%">🔗 Copy profile link (for an agent)</button>
 <button id="saveBrand" style="margin-top:8px;width:100%">💾 Save my profile</button>
 </div></details>
 </div>
@@ -237,7 +238,7 @@ window.applyFset=applyFset;$('fset').onclick=e=>{const d=e.target.closest('[data
 ['Panel','Head','Acc','Bar'].forEach(k=>$('c'+k).oninput=e=>{T[k==='Head'?'head':k.toLowerCase()]=e.target.value;draw()});
 $('pageName').innerHTML+=Object.keys(PAGES).filter(k=>k!=='DEFAULT').map(k=>`<option value="${k}">${k} · ${PAGES[k].n}</option>`).join('');
 $('pageName').addEventListener('change',()=>{applyPageStyle();ORD=null;capIdx=0;try{genText()}catch(e){}draw()});
-try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.phone)$('phone').value=b.phone;if(b.agent)$('agent').value=b.agent;if(b.page&&PAGES[b.page])$('pageName').value=b.page;if(b.bar)$('barMode').value=b.bar}catch(e){}
+try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.phone)$('phone').value=b.phone;if(b.agent)$('agent').value=b.agent;if(b.page&&PAGES[b.page])$('pageName').value=b.page;}catch(e){}
 (function(){$('myPal').innerHTML+=PALS.map((p,i)=>`<option value="${i}">${i+1}. ${p[0]}</option>`).join('');const pv=[...new Set(PROPS.map(p=>p.prov).filter(Boolean))].sort();$('myLoc').innerHTML+=pv.map(v=>`<option>${v}</option>`).join('');const pn=[...new Set(PROPS.map(p=>p.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b));['myP1','myP2'].forEach(id=>$(id).innerHTML+=pn.map(v=>`<option>${v.replace(/</g,'')}</option>`).join(''));
  try{const b=JSON.parse(localStorage.getItem('epd2brand')||'{}');if(b.pal!=null&&b.pal!=='')$('myPal').value=b.pal;if(b.loc)$('myLoc').value=b.loc;(b.focus||[]).slice(0,2).forEach((v,i)=>{if($('myP'+(i+1)))$('myP'+(i+1)).value=v})}catch(e){}
  if(QP.get('bc')!=null)$('myPal').value=QP.get('bc');if(QP.get('loc'))$('myLoc').value=QP.get('loc');if(QP.get('fp'))QP.get('fp').split('|').slice(0,2).forEach((v,i)=>$('myP'+(i+1)).value=v);
@@ -359,7 +360,7 @@ function logos(top,darkL,darkR){const m=40*S,zw=Math.min(240*S,W*.24);
 function bar(){if(!$('showBar').checked)return 0;const h=Math.max(70,H*.055)*S/S*(W/1080);x.fillStyle=T.bar;x.fillRect(0,H-h,W,h);
  const dark=lum(T.bar)<150,col=dark?'#fff':'#111',ph_=$('phone').value.trim();
  x.save();x.fillStyle=col;x.textBaseline='middle';x.textAlign='center';x.font=F(800,26,$('fb').value);
- x.fillText(`${($('barMode').value==='page'?(window.CUSTPG||PG().n||$('loc').value):$('loc').value).toUpperCase()}   |   ${ph_?'Call us '+ph_:'⚠️ Add contact number'}`,W/2,H-h/2,W*.94);x.restore();return h}
+ x.fillText(`${(window.CUSTPG||PG().n||$('loc').value).toUpperCase()}   |   ${ph_?'Call us '+ph_:'⚠️ Add contact number'}`,W/2,H-h/2,W*.94);x.restore();return h}
 function figBlock(...a){TR='figs';try{return figBlock0(...a)}finally{TR=null}}
 function figBlock0(X,Y,mw,o={}){const f=figsOn();if(!f.length)return 0;const{col=T.head,acc=T.acc,size=48,i0=4,cols=1}=o;let y=Y;
  if(cols>1){const cw=mw/cols;let k=0,rowH=0;f.forEach((g,j)=>{const cx=X+(j%cols)*cw;if(j%cols===0&&j){y+=rowH;rowH=0}
@@ -654,7 +655,7 @@ $('autoBtn').onclick=async()=>{if(!cur)return;await applyLib(true);
 
 /* ---------- today's cards (from GitHub daily-cards) ---------- */
 $('todayX').onclick=()=>$('todayM').style.display='none';
-async function myCards(b){if(!b){b={};try{b=JSON.parse(localStorage.getItem('epd2brand')||'{}')}catch(e){}}const fz=(b.focus||[]).slice(0,2).map(v=>v.toLowerCase()),loc=b.loc||'',LOCS=loc.split(/\s*[|,]\s*/).filter(Boolean);if(!fz.length&&!loc&&!b.force)return null;
+async function myCards(b){if(!b){b={};try{b=JSON.parse(localStorage.getItem('epd2brand')||'{}')}catch(e){}}const fz=[],loc=b.loc||'',LOCS=loc.split(/\s*[|,]\s*/).filter(Boolean);
  const day=new Date(Date.now()+8*3600e3).toISOString().slice(0,10),seed=Math.floor(Date.now()/864e5)+String(b.agent||'').length;let s0=seed%233280;const rnd=()=>(s0=(s0*9301+49297)%233280)/233280;
  const ok=p=>!String(p.id||'').startsWith('p_APEC_PH')&&(p.term30||p.monthlyDp||p.tcp);const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
  const all=sh(PROPS.map((p,i)=>i).filter(i=>ok(PROPS[i]))),keep=cur,out=[],usedP=new Set(),usedK=new Set();
@@ -662,9 +663,9 @@ async function myCards(b){if(!b){b={};try{b=JSON.parse(localStorage.getItem('epd
  const take=async(list,onePer,max=9)=>{for(const i of list){if(out.length>=max)return;const n=PROPS[i].name.toLowerCase();if(onePer&&usedP.has(n))continue;if(await has(i)){out.push(i);usedP.add(n);usedK.add(libKey(PROPS[i]))}}};
  for(const f of fz){if(out.length>=9)break;const l=all.filter(i=>PROPS[i].name.toLowerCase()===f);for(const i of l){if(await has(i)){out.push(i);usedP.add(f);usedK.add(libKey(PROPS[i]));break}}}
  if(loc)await take(all.filter(i=>LOCS.includes(PROPS[i].prov)),true);
- if(loc&&out.length<6)await take(all.filter(i=>LOCS.includes(PROPS[i].prov)),false,6);
- if(out.length<6)await take(all,true,6);
- if(out.length<6)await take(all,false,6);
+ if(loc&&out.length<9)await take(all.filter(i=>LOCS.includes(PROPS[i].prov)),false,9);
+ if(out.length<9)await take(all,true,9);
+ if(out.length<9)await take(all,false,9);
  if(!out.length)return null;return{day,mine:true,cards:out.map((i,n)=>({id:PROPS[i].id,st:{layout:LAYOUTS[(n+seed)%LAYOUTS.length][0]},png:'',txt:''}))}}
 let TEAM=null;async function loadTeam(){if(TEAM)return TEAM;try{TEAM=await (await fetch('data/agents.json?'+Date.now())).json()}catch(e){TEAM=[]}return TEAM}
 window.shareProf=()=>{const o=profObj();delete o.page;delete o.bar;const t=JSON.stringify(o);const msg='EPD 2.0 profile ko:\n'+t;(navigator.clipboard?navigator.clipboard.writeText(msg):Promise.reject()).then(()=>{$('shareProf').textContent='✓ Copied — i-paste at i-send kay Flo'},()=>prompt('Copy at i-send kay Flo:',msg));setTimeout(()=>$('shareProf').textContent='📤 Send my profile to Flo (team list)',2500)};
