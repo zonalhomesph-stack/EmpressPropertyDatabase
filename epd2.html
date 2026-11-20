@@ -757,7 +757,7 @@ try{Promise.all(['400 40px "Great Vibes"','400 40px "Mr Dafoe"','400 40px "DM Se
 <details style="margin-top:8px"><summary>➕ Request a new project</summary><div class="bd">
 <label>Project name</label><input id="rptNP"><label>Location</label><input id="rptNL" placeholder="Hal. General Trias, Cavite"></div></details>
 <button class="pri" id="rptSend" style="width:100%;margin-top:10px;padding:12px" onclick="RPT.send()">📤 Send kay Flo</button>
-<div style="text-align:right;margin-top:10px"><a href="#" style="color:#555;font-size:11px" onclick="RPT.admin();return false">Admin</a></div>
+<button type="button" style="width:100%;margin-top:10px" onclick="RPT.admin()">🛠 Admin (Flo only)</button>
 </div>
 <div id="rptAdm" style="display:none"><button class="pri" style="width:100%;margin-top:8px;background:#1f4e8c;border-color:#1f4e8c" onclick="GHLW.panel()">📤 Week for GHL (FB auto-post)</button>
 <div id="ghlP" style="display:none;border:1px solid #2b2b2b;border-radius:8px;padding:8px;margin-top:6px"><div class="muted">7 cards bawat page, 12:00 PM araw-araw. Pages (puwedeng i-edit ang pangalan sa bottom bar):</div><div id="ghlRows"></div><label>Start date</label><input type="date" id="ghlStart"><button class="pri" style="width:100%;margin-top:8px" onclick="GHLW.run()">⚡ Gawin ang 7 araw</button><div id="ghlLog" class="muted" style="margin-top:6px"></div><div id="ghlRes"></div></div>
