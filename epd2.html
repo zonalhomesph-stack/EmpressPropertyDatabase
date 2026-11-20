@@ -759,7 +759,9 @@ try{Promise.all(['400 40px "Great Vibes"','400 40px "Mr Dafoe"','400 40px "DM Se
 <button class="pri" id="rptSend" style="width:100%;margin-top:10px;padding:12px" onclick="RPT.send()">📤 Send kay Flo</button>
 <div style="text-align:right;margin-top:10px"><a href="#" style="color:#555;font-size:11px" onclick="RPT.admin();return false">Admin</a></div>
 </div>
-<div id="rptAdm" style="display:none"><div class="muted" style="margin:8px 0" id="rptAdmMsg"></div><div id="rptAdmL"></div></div>
+<div id="rptAdm" style="display:none"><button class="pri" style="width:100%;margin-top:8px;background:#1f4e8c;border-color:#1f4e8c" onclick="GHLW.panel()">📤 Week for GHL (FB auto-post)</button>
+<div id="ghlP" style="display:none;border:1px solid #2b2b2b;border-radius:8px;padding:8px;margin-top:6px"><div class="muted">7 cards bawat page, 12:00 PM araw-araw. Pages (puwedeng i-edit ang pangalan sa bottom bar):</div><div id="ghlRows"></div><label>Start date</label><input type="date" id="ghlStart"><button class="pri" style="width:100%;margin-top:8px" onclick="GHLW.run()">⚡ Gawin ang 7 araw</button><div id="ghlLog" class="muted" style="margin-top:6px"></div><div id="ghlRes"></div></div>
+<div class="muted" style="margin:8px 0" id="rptAdmMsg"></div><div id="rptAdmL"></div></div>
 </div></div>
 <script>
 (function(){
@@ -813,8 +815,45 @@ window.RPT={
 };
 $('rptFiles').onchange=async e=>{for(const f of [...e.target.files].slice(0,8-files.length)){const u=await shrink(f);if(u)files.push(u)}$('rptPrev').innerHTML=files.map(u=>`<img src="${u}" style="height:60px;border-radius:4px">`).join('')};
 $('rptProj').onchange=stat;
-if(URL_)load().then(badge);
+window.RPT_URL=URL_;if(URL_)load().then(badge);
 const _ot=window.openToday;if(_ot)window.openToday=async(...a)=>{const x=await _ot(...a);RPT.tagToday();return x};
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const GP=[['SUL','Sulit Homes',p=>p.page==='SUL'],['CAV','Cavite Homes by Flo',p=>p.page==='CAV'],['LHO','Lhoopa',p=>devOf(p)==='Lhoopa'],['APE','APEC Homes',p=>devOf(p)==='APEC Homes'],['ANA','Antel Anyana',p=>p.page==='ANA'],['MCP','MetroCavite Property Hub',p=>p.page==='MCP'],['LOT','Lots of LOTS',p=>p.page==='LOT']];
+let OUT={};
+const ymd=d=>new Date(d.getTime()+8*3600e3).toISOString().slice(0,10);
+const q=t=>'"'+String(t||'').replace(/"/g,'""')+'"';
+window.GHLW={
+ panel(){const el=$('ghlP');if(el.style.display==='block'){el.style.display='none';return}el.style.display='block';
+  $('ghlRows').innerHTML=GP.map(([c,n],i)=>`<label class="chk" style="display:flex;gap:6px;align-items:center"><input type="checkbox" class="ghlOn" data-i="${i}" checked> <input class="ghlNm" data-i="${i}" value="${n}" style="flex:1"></label>`).join('')},
+ async run(){const key=(()=>{try{return localStorage.getItem('epd2admin')||''}catch(e){return''}})();const U=window.RPT_URL;if(!U||!key){alert('Buksan muna ang Admin view gamit ang admin key.');return}
+  const days=7,st=$('ghlStart').value?new Date($('ghlStart').value+'T12:00:00+08:00'):new Date(Date.now()+864e5),log=$('ghlLog');OUT={};$('ghlRes').innerHTML='';
+  const keep={pg:$('pageName').value,prop:$('prop').value,cust:window.CUSTPG};
+  const sel=[...document.querySelectorAll('.ghlOn')].filter(x=>x.checked).map(x=>+x.dataset.i);
+  for(const gi of sel){const [code,,fn]=GP[gi],name=document.querySelector(`.ghlNm[data-i="${gi}"]`).value.trim()||GP[gi][1];
+   const ok=p=>!String(p.id||'').startsWith('p_APEC_PH')&&(p.term30||p.monthlyDp||p.tcp);
+   let L=PROPS.map((p,i)=>i).filter(i=>fn(PROPS[i])&&ok(PROPS[i]));const seen=new Set(),pick=[];
+   log.textContent=`${name}: checking photos…`;
+   for(const i of L){const k=libKey(PROPS[i]);if(seen.has(PROPS[i].name))continue;cur=PROPS[i];const im=await libLoad(k);if(im&&im.length){pick.push(i);seen.add(PROPS[i].name)}}
+   if(pick.length<days)for(const i of L){if(pick.length>=days*2)break;if(pick.includes(i))continue;cur=PROPS[i];const im=await libLoad(libKey(PROPS[i]));if(im&&im.length)pick.push(i)}
+   if(!pick.length){OUT[code]={name,rows:[],msg:'Walang project na may photos'};continue}
+   const rows=[];
+   for(let d=0;d<days;d++){const i=pick[d%pick.length];log.textContent=`${name}: card ${d+1}/${days} · ${PROPS[i].name}`;
+    $('pageName').value=PAGES[code]?code:'';window.CUSTPG=PAGES[code]?null:name;try{applyPageStyle()}catch(e){}
+    capIdx=d*7+gi;const r=await renderSt(i,{layout:LAYOUTS[(d+gi)%LAYOUTS.length][0]},d+gi);if(!r)continue;
+    let id='';for(let t=0;t<2&&!id;t++){try{const j=await (await fetch(U,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'media',key,name:code+'-'+ymd(new Date(st.getTime()+d*864e5))+'.jpg',data:r.png.split(',')[1]})})).json();if(j.ok)id=j.id;else throw j.error}catch(e){log.textContent='Upload error: '+e}}
+    if(!id)continue;const when=ymd(new Date(st.getTime()+d*864e5))+' 12:00:00';rows.push({when,cap:r.cap,img:'https://lh3.googleusercontent.com/d/'+id,thumb:r.png,proj:PROPS[i].name})}
+   OUT[code]={name,rows}}
+  $('pageName').value=keep.pg;window.CUSTPG=keep.cust;try{applyPageStyle()}catch(e){}if(keep.prop){$('prop').value=keep.prop;try{loadProp(+keep.prop)}catch(e){}}try{genText();draw()}catch(e){}
+  log.textContent='Tapos! I-download ang CSV ng bawat page, tapos i-upload sa GHL (Basic Format, piliin ang page sa Select socials).';
+  $('ghlRes').innerHTML=Object.entries(OUT).map(([c,o])=>`<div style="border:1px solid #2b2b2b;border-radius:8px;padding:8px;margin:6px 0"><b style="color:#f3e7c4">${o.name}</b> <span class="muted">${o.rows.length} posts${o.msg?' · '+o.msg:''}</span><div style="display:flex;gap:4px;overflow-x:auto;margin:6px 0">${o.rows.map(r=>`<img src="${r.thumb}" title="${r.when} · ${r.proj}" style="height:70px;border-radius:4px">`).join('')}</div>${o.rows.length?`<button class="pri" onclick="GHLW.csv('${c}')">⬇ CSV for ${o.name}</button>`:''}</div>`).join('')},
+ csv(c){const o=OUT[c];const h='postAtSpecificTime (YYYY-MM-DD HH:mm:ss),content,link (OGmetaUrl),imageUrls,gifUrl,videoUrls,thumbnailUrl\r\n';
+  const b=h+o.rows.map(r=>[r.when,q(r.cap),'',r.img,'','',''].join(',')).join('\r\n')+'\r\n';
+  saveFile(new Blob([b],{type:'text/csv'}),'GHL-'+o.name.replace(/[^A-Za-z0-9]+/g,'-')+'-'+o.rows[0].when.slice(0,10)+'.csv')}
+};
 })();
 </script>
 </body></html>
