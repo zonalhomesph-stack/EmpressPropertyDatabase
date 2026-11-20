@@ -633,7 +633,7 @@ const LIBIMG={};function libKey(p){return p?(p.name+'|'+p.model):''}
 function baseModel(m){return cleanModel(String(m||'').split(/\s+[—–-]\s+/)[0]).replace(/\s+(inner|end|corner)(\s+unit)?$/i,'')}
 function slug(t){return String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
 function apecKind(p){const t=(p.model+' '+(p.type||'')).toLowerCase();const k=/duplex|\bdx/.test(t)?'duplex':/single|\bsa\d/.test(t)?'single-attached':/townhouse|\bth\b|socialized/.test(t)?'townhouse':'';const n=(String(p.model).match(/(\d+(?:\.\d+)?)/)||[])[1];return k&&n?k+'-'+String(+n).replace('.','-'):''}
-const PHOTO_ALIAS={'liora-homes-naic/amora-ecolove':'liora-homes-naic/amora','anyana/sydney-a':'anyana/sydney','anyana/sydney-b':'anyana/sydney','pacifictown-enclave/th-inner':'pacifictown-enclave/townhouse','pacifictown-enclave/th-end':'pacifictown-enclave/townhouse'};
+const PHOTO_ALIAS={'liora-homes-naic/amora-ecolove':'liora-homes-naic/amora','mapletree-residences/duplex-50-00':'mapletree-residences/duplex-50','mapletree-residences/duplex-45-50':'mapletree-residences/dx45-50','anyana/sydney-a':'anyana/sydney','anyana/sydney-b':'anyana/sydney','pacifictown-enclave/th-inner':'pacifictown-enclave/townhouse','pacifictown-enclave/th-end':'pacifictown-enclave/townhouse'};
 function ghLoad(p,base0){const k0=`${slug(p.name)}/${slug(baseModel(p.model))}`,base=base0||`photos/${PHOTO_ALIAS[k0]||k0}/`,out=[];
  return new Promise(res=>{(function nx(i){if(i>15)return res(out);const im=new Image();im.onload=()=>{out.push(im);nx(i+1)};im.onerror=()=>res(out);im.src=base+i+'.jpg'})(1)})}
 async function libLoad(key){if(LIBIMG[key])return LIBIMG[key];let a=[];
