@@ -50,7 +50,7 @@ var h=H0.slice();function r(x,c){return x>>>c|x<<(32-c)}for(var j=0;j<w.length;j
 var t1=a[7]+(r(a[4],6)^r(a[4],11)^r(a[4],25))+(a[4]&a[5]^~a[4]&a[6])+K[i]+W[i]|0,t2=(r(a[0],2)^r(a[0],13)^r(a[0],22))+(a[0]&a[1]^a[0]&a[2]^a[1]&a[2])|0;a=[t1+t2|0].concat(a);a[4]=a[4]+t1|0;a.pop()}for(i=0;i<8;i++)h[i]=h[i]+a[i]|0}
 return h.map(function(x){return(x>>>0).toString(16).padStart(8,"0")}).join("")}
 document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var v=document.getElementById("pwI").value.trim().toLowerCase(),x=await sha256hex(v);if(x===H||x==="dbcb3e96ba8503b2537ced8d87ee05d5ba0e55c4640041153ca714343119b590"){try{localStorage.setItem("epd2ok",H)}catch(e){}g.remove()}else document.getElementById("pwE").textContent="Wrong password"};})();</script>
-<header><b>EPD 2.0</b><button id="profTop" type="button" onclick="(function(){var d=document.getElementById('secProf'),w=document.getElementById('profToday');var o=w.style.display==='none';w.style.display=o?'flex':'none';d.open=o;if(o)w.scrollIntoView({behavior:'smooth',block:'start'})})()" style="margin-left:auto;order:2;white-space:nowrap">👤 My profile</button><button id="todayTop" onclick="openToday()" style="margin-left:8px;order:3;background:#1f4e8c;border-color:#1f4e8c;color:#fff;white-space:nowrap">📅 Today's cards</button><span>Listing card + caption maker · Empress Property Database · No ChatGPT needed</span></header>
+<header><b>EPD 2.0</b><button id="profTop" type="button" onclick="(function(){var d=document.getElementById('secProf'),w=document.getElementById('profToday');var o=w.style.display==='none';w.style.display=o?'flex':'none';d.open=o;if(o)w.scrollIntoView({behavior:'smooth',block:'start'})})()" style="margin-left:auto;order:2;white-space:nowrap">👤 My profile</button><button id="rptTop" type="button" onclick="RPT.open()" style="margin-left:8px;order:2;white-space:nowrap">📝 Report</button><button id="todayTop" onclick="openToday()" style="margin-left:8px;order:3;background:#1f4e8c;border-color:#1f4e8c;color:#fff;white-space:nowrap">📅 Today's cards</button><span>Listing card + caption maker · Empress Property Database · No ChatGPT needed</span></header>
 <div class="wrap"><aside><div id="amBar" style="display:none;background:#1b2a1b;border:1px solid #2e7d4f;color:#cfe8cf;padding:10px;border-radius:8px;margin-bottom:10px;font-size:12px">✏️ Editing a Today's card. Add your photo, then move (✥), resize (+ / −) or remove (✕) photos right on the card.<button onclick="document.getElementById('aph').click()" class="pri" style="margin-top:8px;width:100%">📷 Add / change my photo</button><button onclick="agentMode(false)" style="margin-top:6px;width:100%">⚙️ Show all settings</button></div>
 
 <details id="secStyle"><summary>🎨 Fine-tune colors</summary><div class="bd">
@@ -682,7 +682,7 @@ window.openToday=async(who)=>{const M=$('todayM'),G=$('todayG');M.style.display=
    dl.onclick=async()=>{const b=await (await fetch(src)).blob();saveFile(b,(pp?(pp.name+'-'+cleanModel(pp.model)).replace(/[^A-Za-z0-9]+/g,'-'):'card')+'.jpg')};
    const cp=document.createElement('button');cp.textContent='📋 Copy caption';cp.style.cssText='width:100%;margin-top:6px';
    cp.onclick=async e=>{const t=capT||(c.txt?await (await fetch('daily-cards/'+c.txt)).text():'');copy(t,e.target)};
-   const ed=document.createElement('button');ed.textContent='✏️ Edit this card';ed.style.cssText='width:100%;margin-top:6px';ed.onclick=()=>{const i=PROPS.findIndex(p=>p.id===c.id);if(i<0){alert('Property not found');return}const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+PROPS[i].model,i));s.value=i;loadProp(i);if(c.st){setTimeout(async()=>{$('layout').value=c.st.layout;$('kicker').value=c.st.kicker||'';rot=c.st.rot;await applyLib(false);draw()},300)}$('todayM').style.display='none';agentMode(true);$('cvWrap').scrollIntoView({behavior:'smooth'})};w.append(dl,cp);if(c.id)w.append(ed);G.appendChild(w)}
+   const ed=document.createElement('button');ed.textContent='✏️ Edit this card';ed.style.cssText='width:100%;margin-top:6px';ed.onclick=()=>{const i=PROPS.findIndex(p=>p.id===c.id);if(i<0){alert('Property not found');return}const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+PROPS[i].model,i));s.value=i;loadProp(i);if(c.st){setTimeout(async()=>{$('layout').value=c.st.layout;$('kicker').value=c.st.kicker||'';rot=c.st.rot;await applyLib(false);draw()},300)}$('todayM').style.display='none';agentMode(true);$('cvWrap').scrollIntoView({behavior:'smooth'})};if(pp)w.dataset.proj=pp.name;const rb=document.createElement('button');rb.textContent='⚠️ Report this project';rb.style.cssText='width:100%;margin-top:6px';rb.onclick=()=>RPT.open(pp?pp.name:'');w.append(dl,cp);if(c.id)w.append(ed);w.append(rb);G.appendChild(w)}
   if(JOBS.length){const keep={i:$('prop').value,cur,L:$('layout').value,k:$('kicker').value,rot,ph:ph.slice(),sm:sm.slice(),ag:$('agent').value,phn:$('phone').value,pal:$('myPal').value,img:agImg,io:agOrig};if(A){$('agent').value=A.agent||'';$('phone').value=A.phone||'';$('myPal').value=A.pal!=null?A.pal:'';if(A.dir){await new Promise(r=>{const im=new Image();im.onload=()=>{agImg=im;agOrig=im;r()};im.onerror=()=>{agImg=null;r()};im.src='photos/agents/'+A.dir+'/1.png'})}else agImg=null}window.CUSTPG=A&&A.page&&!PAGES[A.page]?A.page:null;$('todayH').textContent+=' · putting your name & number…';for(const j of JOBS){try{await j()}catch(e){}}window.CUSTPG=null;$('todayH').textContent=$('todayH').textContent.replace(' · putting your name & number…','');
    $('agent').value=keep.ag;$('phone').value=keep.phn;$('myPal').value=keep.pal;agImg=keep.img;agOrig=keep.io;cur=keep.cur;rot=keep.rot;if(keep.cur){const ii=PROPS.indexOf(keep.cur);$('prop').value=keep.i;loadProp(ii);$('layout').value=keep.L;$('kicker').value=keep.k;ph=keep.ph;sm=keep.sm;draw()}}}
  catch(e){G.innerHTML='<div class="muted">Today\'s cards are only available on the GitHub version of EPD 2.0.</div>'}};
@@ -739,4 +739,82 @@ filterList();if(PROPS.length){$('prop').selectedIndex=0;loadProp(+$('prop').valu
  if(td){try{const d=await (await fetch('daily-cards/latest.json?'+Date.now())).json();const c=d.cards.find(x=>x.png===td);if(c){await openToday();const b=[...document.querySelectorAll('#todayG button')].filter(x=>x.textContent.includes('Edit'))[d.cards.indexOf(c)];b&&b.click()}}catch(e){}}})();
 document.fonts.ready.then(draw);draw();
 try{Promise.all(['400 40px "Great Vibes"','400 40px "Mr Dafoe"','400 40px "DM Serif Display"','800 40px "Playfair Display"','900 40px "Playfair Display"','800 40px Poppins'].map(f=>document.fonts.load(f))).then(draw)}catch(e){}
-</script></body></html>
+</script><div id="rptM" style="display:none;position:fixed;inset:0;background:#000c;z-index:60;overflow:auto;padding:12px"><div style="max-width:560px;margin:0 auto;background:#151515;border:1px solid #333;border-radius:10px;padding:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0;color:#f3e7c4" id="rptH">📝 Report / Request</h3><button onclick="RPT.close()">✕ Close</button></div>
+<div id="rptForm">
+<div style="margin-top:10px;color:#f3e7c4;font-weight:700;font-size:13px">My reports</div><div id="rptMine" class="muted" style="margin:4px 0 10px">Loading…</div>
+<label>Project</label><select id="rptProj"><option value="">— Pumili ng project —</option></select>
+<div id="rptStat" class="muted" style="margin:4px 0"></div>
+<label>Ano ang issue?</label>
+<label class="chk"><input type="checkbox" class="rptIss" value="Price not updated"> 💰 Price / computation not updated</label>
+<label class="chk"><input type="checkbox" class="rptIss" value="No image yet"> 🖼 No image yet</label>
+<label class="chk"><input type="checkbox" class="rptIss" value="Promo update"> 🎉 May bagong promo</label>
+<label class="chk"><input type="checkbox" class="rptIss" value="Other"> ✳️ Iba pa</label>
+<label>📷 Upload project photos / screenshot ng pricelist o promo</label><input type="file" id="rptFiles" accept="image/*" multiple>
+<div id="rptPrev" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px"></div>
+<label>🔗 Link ng update (FB post, GC, Drive)</label><input id="rptLink" placeholder="https://…">
+<label>Note</label><textarea id="rptNote" rows="2" placeholder="Hal. bagong 0% DP promo hanggang Dec 15" style="width:100%"></textarea>
+<details style="margin-top:8px"><summary>➕ Request a new project</summary><div class="bd">
+<label>Project name</label><input id="rptNP"><label>Location</label><input id="rptNL" placeholder="Hal. General Trias, Cavite"></div></details>
+<button class="pri" id="rptSend" style="width:100%;margin-top:10px;padding:12px" onclick="RPT.send()">📤 Send kay Flo</button>
+<div style="text-align:right;margin-top:10px"><a href="#" style="color:#555;font-size:11px" onclick="RPT.admin();return false">Admin</a></div>
+</div>
+<div id="rptAdm" style="display:none"><div class="muted" style="margin:8px 0" id="rptAdmMsg"></div><div id="rptAdmL"></div></div>
+</div></div>
+<script>
+(function(){
+const URL_='https://script.google.com/macros/s/AKfycbx9X7MeEY7PG4N-wFR2Ub_wtwsyFzfwWM9Mi1MQNf9LimOrT7l3XJmQPvQ9zYsj9mpohQ/exec';/* Apps Script Web app URL */
+const $=id=>document.getElementById(id),esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let ALL=null,files=[];
+const me=()=>($('agent')&&$('agent').value.trim())||'';
+const ico=s=>s==='Done'?'✅':s==='Rejected'?'❌':'⏳';
+const day=d=>d?new Date(d).toLocaleDateString('en-PH',{month:'short',day:'numeric'}):'';
+async function load(){if(!URL_)return [];try{const r=await fetch(URL_+'?t='+Date.now());ALL=(await r.json()).reports||[]}catch(e){ALL=ALL||[]}return ALL}
+const recent=r=>r.status==='Pending'||(Date.now()-new Date(r.doneDate||r.date))<5*864e5;
+function badge(){const b=$('rptTop');if(!b||!ALL)return;let seen=0;try{seen=+localStorage.getItem('epd2rptSeen')||0}catch(e){}
+ const n=ALL.filter(r=>r.agent===me()&&r.status!=='Pending'&&new Date(r.doneDate)>seen).length;b.textContent='📝 Report'+(n?' ('+n+' ✅)':'')}
+function mine(){const L=(ALL||[]).filter(r=>r.agent&&r.agent===me()).reverse();
+ $('rptMine').innerHTML=!me()?'I-set muna ang pangalan mo sa 👤 My profile.':!L.length?'Wala ka pang report.':L.slice(0,15).map(r=>`<div style="padding:4px 0;border-bottom:1px solid #222;color:#ccc">${ico(r.status)} <b>${esc(r.project||r.newProject)}</b> — ${esc(r.issues||'New project request')} <span class="muted">(${day(r.date)})</span>${r.status!=='Pending'?`<br><span style="color:${r.status==='Done'?'#5fbf7f':'#e07a6a'}">→ ${r.status} ${day(r.doneDate)}${r.reply?': '+esc(r.reply):''}</span>`:''}</div>`).join('');
+ try{localStorage.setItem('epd2rptSeen',Date.now())}catch(e){}badge()}
+function stat(){const p=$('rptProj').value,L=(ALL||[]).filter(r=>r.project===p&&recent(r));
+ $('rptStat').innerHTML=L.map(r=>`${ico(r.status)} ${r.status==='Pending'?'Na-report na':''+r.status}: ${esc(r.issues)} (${day(r.status==='Pending'?r.date:r.doneDate)})${r.status==='Pending'?' — inaayos na ni Flo.':''}`).join('<br>')}
+function shrink(f){return new Promise(res=>{const rd=new FileReader();rd.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,1600/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.85))};i.onerror=()=>res(null);i.src=rd.result};rd.readAsDataURL(f)})}
+window.RPT={
+ async open(proj){$('rptM').style.display='block';$('rptForm').style.display='';$('rptAdm').style.display='none';$('rptH').textContent='📝 Report / Request';
+  const s=$('rptProj');if(s.options.length<2&&window.PROPS)[...new Set(PROPS.map(p=>p.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).forEach(n=>s.add(new Option(n,n)));
+  if(proj)s.value=proj;if(!URL_){$('rptMine').textContent='Hindi pa naka-setup ang Reports. Sabihan si Flo.';return}
+  $('rptMine').textContent='Loading…';await load();mine();stat()},
+ close(){$('rptM').style.display='none'},
+ async send(){if(!URL_){alert('Hindi pa naka-setup ang Reports.');return}
+  const iss=[...document.querySelectorAll('.rptIss:checked')].map(x=>x.value),d={action:'submit',agent:me()||'(no name)',project:$('rptProj').value,issues:iss,link:$('rptLink').value.trim(),note:$('rptNote').value.trim(),newProject:$('rptNP').value.trim(),newLocation:$('rptNL').value.trim(),files:files.map(u=>({type:'image/jpeg',data:u.split(',')[1]}))};
+  if(!d.project&&!d.newProject){alert('Pumili ng project, o mag-request ng bagong project.');return}
+  if(d.project&&!iss.length&&!files.length&&!d.link&&!d.note){alert('Lagyan ng check, photo, link o note.');return}
+  const b=$('rptSend');b.disabled=true;b.textContent='Sending…';
+  try{const r=await (await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)})).json();if(!r.ok)throw r.error;
+   b.textContent='✓ Sent! Salamat';document.querySelectorAll('.rptIss').forEach(x=>x.checked=false);['rptLink','rptNote','rptNP','rptNL'].forEach(i=>$(i).value='');$('rptFiles').value='';files=[];$('rptPrev').innerHTML='';await load();mine();stat()}
+  catch(e){b.textContent='⚠️ Hindi na-send, subukan ulit'}setTimeout(()=>{b.disabled=false;b.textContent='📤 Send kay Flo'},2500)},
+ async admin(){let k='';try{k=localStorage.getItem('epd2admin')||''}catch(e){}if(!k){k=prompt('Admin key:')||'';if(!k)return}
+  $('rptForm').style.display='none';$('rptAdm').style.display='';$('rptH').textContent='🛠 All reports';$('rptAdmMsg').textContent='Loading…';
+  try{const r=await (await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin',key:k})})).json();if(!r.ok){try{localStorage.removeItem('epd2admin')}catch(e){}$('rptAdmMsg').textContent='Mali ang admin key.';return}
+   try{localStorage.setItem('epd2admin',k)}catch(e){}const L=r.reports.reverse();L.sort((a,b)=>(a.status==='Pending'?0:1)-(b.status==='Pending'?0:1));
+   $('rptAdmMsg').textContent=L.filter(x=>x.status==='Pending').length+' pending · '+L.length+' total';
+   $('rptAdmL').innerHTML=L.map(x=>{const F=String(x.files||'').split(',').filter(Boolean);return `<div style="border:1px solid #2b2b2b;border-radius:8px;padding:8px;margin:6px 0;${x.status!=='Pending'?'opacity:.55':''}">
+    <div>${ico(x.status)} <b style="color:#f3e7c4">${esc(x.project||'➕ '+x.newProject+' · '+x.newLocation)}</b> <span class="muted">${esc(x.agent)} · ${day(x.date)}</span></div>
+    ${x.issues?`<div>${esc(x.issues)}</div>`:''}${x.note?`<div style="color:#ccc">“${esc(x.note)}”</div>`:''}${x.link?`<div><a href="${esc(x.link)}" target="_blank" style="color:#6aa8ff;word-break:break-all">${esc(x.link)}</a></div>`:''}
+    ${F.length?`<div style="display:flex;gap:4px;flex-wrap:wrap;margin:4px 0">${F.map(id=>`<a href="https://drive.google.com/file/d/${id}/view" target="_blank"><img src="https://drive.google.com/thumbnail?id=${id}&sz=w300" style="height:80px;border-radius:4px"></a><a href="https://drive.google.com/uc?export=download&id=${id}" target="_blank" title="Download" style="align-self:flex-end;color:#fff;text-decoration:none">⬇</a>`).join('')}</div>`:''}
+    ${x.reply?`<div class="muted">Reply: ${esc(x.reply)}</div>`:''}
+    <div class="btns" style="margin-top:4px"><button class="pri" onclick="RPT.set('${x.id}','Done')">✅ Accept / Done</button><button onclick="RPT.set('${x.id}','Rejected')">❌ Reject</button>${x.status!=='Pending'?`<button onclick="RPT.set('${x.id}','Pending')">↺ Pending</button>`:''}</div></div>`}).join('')||'Wala pang reports.'}
+  catch(e){$('rptAdmMsg').textContent='Hindi ma-load. Check ang internet.'}},
+ async set(id,st){let rep=st==='Pending'?'':prompt(st==='Done'?'Short reply sa agent (optional):':'Bakit rejected? (makikita ng agent)','');if(rep===null)return;
+  let k='';try{k=localStorage.getItem('epd2admin')||''}catch(e){}
+  try{const r=await (await fetch(URL_,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'status',key:k,id,status:st,reply:rep})})).json();if(!r.ok)throw r.error}catch(e){alert('Hindi na-update: '+e);return}RPT.admin()},
+ async tagToday(){if(!URL_)return;await load();document.querySelectorAll('#todayG [data-proj]').forEach(w=>{const L=ALL.filter(r=>r.project===w.dataset.proj&&recent(r));const t=w.querySelector('.rptTag');if(t)t.remove();if(!L.length)return;
+  const pend=L.some(r=>r.status==='Pending'),d=document.createElement('div');d.className='rptTag';d.style.cssText='font-size:11px;margin:4px 0;color:'+(pend?'#e8b04b':'#5fbf7f');d.textContent=pend?'⏳ May report: '+L.filter(r=>r.status==='Pending').map(r=>r.issues).join(', '):'✅ Updated';w.insertBefore(d,w.children[1]||null)});badge()}
+};
+$('rptFiles').onchange=async e=>{for(const f of [...e.target.files].slice(0,8-files.length)){const u=await shrink(f);if(u)files.push(u)}$('rptPrev').innerHTML=files.map(u=>`<img src="${u}" style="height:60px;border-radius:4px">`).join('')};
+$('rptProj').onchange=stat;
+if(URL_)load().then(badge);
+const _ot=window.openToday;if(_ot)window.openToday=async(...a)=>{const x=await _ot(...a);RPT.tagToday();return x};
+})();
+</script>
+</body></html>
