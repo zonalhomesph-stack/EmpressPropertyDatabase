@@ -781,7 +781,7 @@ function stat(){const p=$('rptProj').value,L=(ALL||[]).filter(r=>r.project===p&&
 function shrink(f){return new Promise(res=>{const rd=new FileReader();rd.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,1600/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.85))};i.onerror=()=>res(null);i.src=rd.result};rd.readAsDataURL(f)})}
 window.RPT={
  async open(proj){$('rptM').style.display='block';$('rptForm').style.display='';$('rptAdm').style.display='none';$('rptH').textContent='📝 Report / Request';
-  const s=$('rptProj');if(s.options.length<2&&window.PROPS)[...new Set(PROPS.map(p=>p.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).forEach(n=>s.add(new Option(n,n)));
+  const s=$('rptProj');if(s.options.length<2&&typeof PROPS!=='undefined')[...new Set(PROPS.map(p=>p.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).forEach(n=>s.add(new Option(n,n)));
   if(proj)s.value=proj;if(!URL_){$('rptMine').textContent='Hindi pa naka-setup ang Reports. Sabihan si Flo.';return}
   $('rptMine').textContent='Loading…';await load();mine();stat()},
  close(){$('rptM').style.display='none'},
