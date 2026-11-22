@@ -125,8 +125,8 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 <label>My brand color (lahat ng cards ko, pati Today's cards)</label><select id="myPal"><option value="">Auto: kulay ng page ng property</option></select>
 <label>My location (province)</label><select id="myLoc"><option value="">— Any location —</option></select>
 <div style="display:none"><label>My 2 focused projects</label><select id="myP1"><option value="">— Project 1 —</option></select><select id="myP2" style="margin-top:4px"><option value="">— Project 2 —</option></select>
-<div class="muted" style="margin-top:4px">Today's cards mo: tig-isang card ang 2 focused projects mo, tapos ibang projects sa location mo (at least 6 cards).</div></div>
-<div class="muted" style="margin-top:4px">Today's cards mo: 9 projects, uunahin ang nasa location mo.</div>
+<div class="muted" style="margin-top:4px">Today's cards mo: tig-isang card ang 2 focused projects mo, tapos ibang projects sa location mo (6 cards).</div></div>
+<div class="muted" style="margin-top:4px">Today's cards mo: 6 projects, uunahin ang nasa location mo.</div>
 <button id="shareProf" type="button" style="margin-top:6px;width:100%" onclick="shareProf()">📤 Send my profile to Flo (team list)</button>
 <button id="copyProf" type="button" style="display:none;margin-top:6px;width:100%">🔗 Copy profile link (for an agent)</button>
 <button id="saveBrand" style="margin-top:8px;width:100%">💾 Save my profile</button>
@@ -382,7 +382,7 @@ function ico(k,cx,cy,r,col){x.save();x.strokeStyle=col;x.fillStyle=col;x.lineWid
  else if(k==='bank'){x.moveTo(cx-r,cy-r*.35);x.lineTo(cx,cy-r*.9);x.lineTo(cx+r,cy-r*.35);x.closePath();[-.6,-.2,.2,.6].forEach(o=>{x.moveTo(cx+o*r,cy-r*.2);x.lineTo(cx+o*r,cy+r*.5)});x.moveTo(cx-r,cy+r*.7);x.lineTo(cx+r,cy+r*.7)}
  else{x.moveTo(cx,cy+r*.9);x.bezierCurveTo(cx-r*1.1,cy-r*.1,cx-r*.7,cy-r*.95,cx,cy-r*.95);x.bezierCurveTo(cx+r*.7,cy-r*.95,cx+r*1.1,cy-r*.1,cx,cy+r*.9);x.moveTo(cx+r*.3,cy-r*.3);x.arc(cx,cy-r*.3,r*.3,0,7)}
  x.stroke();x.restore()}
-function agW(){if(!agImg)return 0;const hh=$('asz').value*S*1.3;return $('ast').value==='free'?hh*agImg.width/agImg.height:$('asz').value*S}
+function agW(){if(!agImg)return 0;const hh=agHH();return $('ast').value==='free'?Math.min(W*.36,hh*agImg.width/agImg.height):$('asz').value*S}
 function measure(fn){x.save();x.globalAlpha=0;const h=fn(0);x.restore();return h}
 function smalls(L,bh,m){const imgs=sm.filter(Boolean),idx=sm.map((x,i)=>x?i:-1).filter(i=>i>=0);HIT.sm=[];if(!imgs.length)return;let mode=$('spos').value;
  if(mode==='auto')mode={A:'col',C:'col',F:'col',H:'row',B:'mid',G:'mid',D:'col',E:'row',I:'rowL',J:'rowP',K:'col',M:'rowP',N:'none'}[L]||'row';if(mode==='none')return;
@@ -396,11 +396,16 @@ function smalls(L,bh,m){const imgs=sm.filter(Boolean),idx=sm.map((x,i)=>x?i:-1).
   x.beginPath();x.roundRect(px,py,zz,zz,14*S);x.clip();x.filter=enhF();coverFit(im,px,py,zz,zz);x.restore()})}
 function agentPh(bh,m){const ag=$('agent').value.trim();HIT.a=null;if(!agImg){if(ag)tx(ag,W-m,H-bh-34*S,{size:20,w:600,col:'#ffffff',al:'right',i:7,mw:W*.4,shadow:true,max:1});return}
  const R=$('asz').value*S/2,p=$('layout').value==='M'?'bl':$('apos').value,cx0=p==='bl'?m+R:W-m-R,cy0=p==='tr'?m*2.6+R+100*S:H-bh-R-(ag?58*S:30*S),cx=cx0+$('ax').value/100*W,cy=cy0+$('ay').value/100*H;HIT.a=[cx-R,cy-R,2*R,2*R];
- if($('ast').value==='free'){const hh=R*2.6,ww=agImg.width*hh/agImg.height,bx=p==='bl'?cx-R:cx+R-ww,by=(p==='tr'?cy+R-hh:H-bh-hh)+$('ay').value/100*H;HIT.a=[bx,by,ww,hh];x.save();x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=24*S;x.drawImage(agImg,bx,by,ww,hh);x.restore();if(ag)namePill(ag,bx+ww/2,by+hh-62*S);return}
+ if($('ast').value==='free'){let hh=agHH(),ww=agImg.width*hh/agImg.height;if(ww>W*.36){ww=W*.36;hh=ww*agImg.height/agImg.width}const bx=p==='bl'?cx-R:cx+R-ww,by=(p==='tr'?cy+R-hh:H-bh-hh)+$('ay').value/100*H;HIT.a=[bx,by,ww,hh];x.save();x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=24*S;x.drawImage(agImg,bx,by,ww,hh);x.restore();if(ag)namePill(ag,bx+ww/2,by+hh-62*S);return}
  x.save();x.globalAlpha=av(7);x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=20*S;x.fillStyle=T.acc;x.beginPath();x.arc(cx,cy,R+6*S,0,7);x.fill();x.shadowColor='transparent';
  x.beginPath();x.arc(cx,cy,R,0,7);x.clip();coverFit(agImg,cx-R,cy-R*1.05,R*2,R*2.1);x.restore();
  if(ag)namePill(ag,cx,cy+R-10*S)}
-function draw(){if(window.NOIMG){const [w,h]=$('size').value.split('x').map(Number);c.width=w;c.height=h;x.fillStyle='#151515';x.fillRect(0,0,w,h);x.fillStyle='#f3e7c4';x.textAlign='center';x.textBaseline='middle';x.font='800 '+Math.round(w/14)+'px sans-serif';x.fillText('🔒',w/2,h/2-w/8);x.font='800 '+Math.round(w/20)+'px sans-serif';x.fillText('This project has no image yet',w/2,h/2,w*.9);x.font='500 '+Math.round(w/32)+'px sans-serif';x.fillStyle='#aaa';x.fillText('Locked muna — lalabas ito kapag may photo na',w/2,h/2+w/14,w*.9);x.fillText((cur&&cur.name)||'',w/2,h/2+w/8,w*.9);return}draw0()}
+function trimAg(im){if(!im||im._t)return im;try{const w0=im.naturalWidth||im.width,h0=im.naturalHeight||im.height;if(!w0||!h0)return im;const f=Math.min(1,1400/Math.max(w0,h0)),w=Math.round(w0*f),h=Math.round(h0*f),cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d');g.drawImage(im,0,0,w,h);const d=g.getImageData(0,0,w,h).data;let x0=w,y0=h,x1=-1,y1=-1;for(let yy=0;yy<h;yy+=2)for(let xx=0;xx<w;xx+=2){if(d[(yy*w+xx)*4+3]>24){if(xx<x0)x0=xx;if(xx>x1)x1=xx;if(yy<y0)y0=yy;if(yy>y1)y1=yy}}
+ const A=(xx,yy)=>d[(yy*w+xx)*4+3],opaque=A(1,1)>200&&A(w-2,1)>200&&A(1,h-2)>200&&A(w-2,h-2)>200;
+ if(opaque&&!im._bg){im._bg=1;setTimeout(()=>{if(agImg&&agImg._src===im&&window.removeBgAgent)removeBgAgent()},50)}
+ if(x1<0)return im;x0=Math.max(0,x0-2);y0=Math.max(0,y0-2);x1=Math.min(w-1,x1+2);y1=Math.min(h-1,y1+2);const o=document.createElement('canvas');o.width=x1-x0+1;o.height=y1-y0+1;o.getContext('2d').drawImage(cv,x0,y0,o.width,o.height,0,0,o.width,o.height);o._t=1;o._src=im;return o}catch(e){im._t=1;return im}}
+function agHH(){const r=Math.max(.6,Math.min(1.6,$('asz').value/270));return Math.max(H*.24,Math.min(H*.46,H*.33*r))}
+function draw(){if(agImg&&!agImg._t)agImg=trimAg(agImg);if(window.NOIMG){const [w,h]=$('size').value.split('x').map(Number);c.width=w;c.height=h;x.fillStyle='#151515';x.fillRect(0,0,w,h);x.fillStyle='#f3e7c4';x.textAlign='center';x.textBaseline='middle';x.font='800 '+Math.round(w/14)+'px sans-serif';x.fillText('🔒',w/2,h/2-w/8);x.font='800 '+Math.round(w/20)+'px sans-serif';x.fillText('This project has no image yet',w/2,h/2,w*.9);x.font='500 '+Math.round(w/32)+'px sans-serif';x.fillStyle='#aaa';x.fillText('Locked muna — lalabas ito kapag may photo na',w/2,h/2+w/14,w*.9);x.fillText((cur&&cur.name)||'',w/2,h/2+w/8,w*.9);return}draw0()}
 function draw0(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!==w||c.height!==h){c.width=w;c.height=h}W=w;H=h;
  S=Math.min(W/1080,H/1350*1.15);if(H>W*1.5)S=W/1080;
  const L=$('layout').value,fh=$('fh').value,m=60*S,dark=lum(T.panel)<140;
@@ -465,7 +470,7 @@ function draw0(){const [w,h]=$('size').value.split('x').map(Number);if(c.width!=
   const blk=y0=>{let y=y0;y+=tx(kick,X,y,{size:38,w:600,it:true,col:T.acc,i:1,mw,max:2})+22*S;
    y+=tx(title,X,y,{size:headSz(84),w:800,fam:fh,col:T.head,i:2,mw,max:3,lh:1.04})+20*S;y+=tx(sub,X,y,{size:34,w:600,col:T.head,i:3,mw,max:2,lh:1.22})+10*S;
    y+=tx('📍 '+loc,X,y,{size:31,w:500,col:hexA('#ffffff',.85),i:3,mw,max:2})+36*S;x.fillStyle=T.acc;x.fillRect(X,y,90*S,7*S);y+=44*S;y+=figBlock(X,y,mw,{size:64,col:'#ffffff'});return y-y0};
-  const top=H*.15,bot=H-bh-$('asz').value*S*1.15,bH=measure(blk);blk(Math.max(top,top+(bot-top-bH)/2));
+  const top=H*.15,bot=H-bh-($('ast').value==='free'&&agImg?agHH()*.88:$('asz').value*S*1.15),bH=measure(blk);blk(Math.max(top,top+(bot-top-bH)/2));
   if(promo)tx('★ '+promo,m,H-bh-64*S,{size:28,w:700,col:'#fff',shadow:true,i:6,mw:W*.38,max:2})}
 
  else if(L==='J'){const sw=W*.15,pH=(H-bh)*.54;PB=pH;x.fillStyle=T.bar;x.fillRect(0,0,sw,H-bh);photo(0,sw,0,W-sw,pH);
@@ -660,12 +665,12 @@ async function myCards(b){if(!b){b={};try{b=JSON.parse(localStorage.getItem('epd
  const ok=p=>!String(p.id||'').startsWith('p_APEC_PH')&&(p.term30||p.monthlyDp||p.tcp);const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
  const all=sh(PROPS.map((p,i)=>i).filter(i=>ok(PROPS[i]))),keep=cur,out=[],usedP=new Set(),usedK=new Set();
  const has=async i=>{const p=PROPS[i],k=libKey(p);if(usedK.has(k))return false;cur=p;const im=await libLoad(k);cur=keep;return !!(im&&im.length)};
- const take=async(list,onePer,max=9)=>{for(const i of list){if(out.length>=max)return;const n=PROPS[i].name.toLowerCase();if(onePer&&usedP.has(n))continue;if(await has(i)){out.push(i);usedP.add(n);usedK.add(libKey(PROPS[i]))}}};
- for(const f of fz){if(out.length>=9)break;const l=all.filter(i=>PROPS[i].name.toLowerCase()===f);for(const i of l){if(await has(i)){out.push(i);usedP.add(f);usedK.add(libKey(PROPS[i]));break}}}
+ const take=async(list,onePer,max=6)=>{for(const i of list){if(out.length>=max)return;const n=PROPS[i].name.toLowerCase();if(onePer&&usedP.has(n))continue;if(await has(i)){out.push(i);usedP.add(n);usedK.add(libKey(PROPS[i]))}}};
+ for(const f of fz){if(out.length>=6)break;const l=all.filter(i=>PROPS[i].name.toLowerCase()===f);for(const i of l){if(await has(i)){out.push(i);usedP.add(f);usedK.add(libKey(PROPS[i]));break}}}
  if(loc)await take(all.filter(i=>LOCS.includes(PROPS[i].prov)),true);
- if(loc&&out.length<9)await take(all.filter(i=>LOCS.includes(PROPS[i].prov)),false,9);
- if(out.length<9)await take(all,true,9);
- if(out.length<9)await take(all,false,9);
+ if(loc&&out.length<6)await take(all.filter(i=>LOCS.includes(PROPS[i].prov)),false,6);
+ if(out.length<6)await take(all,true,6);
+ if(out.length<6)await take(all,false,6);
  if(!out.length)return null;return{day,mine:true,cards:out.map((i,n)=>({id:PROPS[i].id,st:{layout:LAYOUTS[(n+seed)%LAYOUTS.length][0]},png:'',txt:''}))}}
 let TEAM=null;async function loadTeam(){if(TEAM)return TEAM;try{TEAM=await (await fetch('data/agents.json?'+Date.now())).json()}catch(e){TEAM=[]}return TEAM}
 function teamIdx(tm){const nm=String($('agent').value||'').trim().toLowerCase();if(!nm)return -1;return tm.findIndex(a=>String(a.agent).trim().toLowerCase()===nm)}
@@ -674,8 +679,8 @@ window.shareProf=()=>{const o=profObj();delete o.page;delete o.bar;const t=JSON.
 async function renderSt(i,st,k=0){const s=$('prop');if(![...s.options].some(o=>o.value==i))s.add(new Option(PROPS[i].name+' — '+cleanModel(PROPS[i].model),i));s.value=i;loadProp(i);await new Promise(r=>setTimeout(r,60));
  $('layout').value=LAYOUTS[k%LAYOUTS.length][0];if(st){if(st.layout&&LAYOUTS.some(l=>l[0]===st.layout))$('layout').value=st.layout;if(st.kicker)$('kicker').value=st.kicker;if(st.rot!=null)rot=st.rot}await applyLib(false);try{genText()}catch(e){}draw();await new Promise(r=>setTimeout(r,120));
  return{png:$('cv').toDataURL('image/jpeg',.88),cap:$('cap').textContent}}
-window.openToday=async(who)=>{const M=$('todayM'),G=$('todayG');M.style.display='block';const tm=await loadTeam(),ws=$('todayWho');if(ws.options.length<2){tm.forEach((a,k)=>ws.add(new Option(a.agent+(a.loc?' · '+a.loc:''),k)));ws.onchange=()=>openToday(ws.value)}if(who==null&&ws.value===''){const k=teamIdx(tm);if(k>=0){ws.value=String(k);who=String(k)}}who=who!=null?who:ws.value;const A=who!==''&&tm[+who]?tm[+who]:null;G.innerHTML='<div class="muted">Loading…</div>';
- try{let d=await myCards(A?Object.assign({force:1},A):null);if(!d){const r=await fetch('daily-cards/latest.json?'+Date.now());if(!r.ok)throw 0;d=await r.json()}$('todayH').textContent="📅 Cards for "+d.day+(d.mine?' · for '+(A?A.agent:($('agent').value||'you')):'');
+window.openToday=async(who)=>{const M=$('todayM'),G=$('todayG');M.style.display='block';const tm=await loadTeam(),ws=$('todayWho');if(ws.options.length<2){tm.forEach((a,k)=>ws.add(new Option(a.agent+(a.loc?' · '+a.loc:''),k)));ws.onchange=()=>openToday(ws.value)}if(who==null&&ws.value===''){const k=teamIdx(tm);if(k>=0){ws.value=String(k);who=String(k)}}who=who!=null?who:ws.value;const A=who!==''&&tm[+who]?tm[+who]:null;if(!A&&!String($('agent').value||'').trim()){$('todayH').textContent="📅 Today's cards";G.innerHTML='<div class="muted" style="grid-column:1/-1;padding:16px;text-align:center;font-size:14px">👆 Pumili muna ng profile sa <b>View cards of</b> (o i-set ang name mo sa 👤 My profile) para lumabas ang cards mo.</div>';return}G.innerHTML='<div class="muted">Loading…</div>';
+ try{let d=await myCards(A?Object.assign({force:1},A):null);if(!d){const r=await fetch('daily-cards/latest.json?'+Date.now());if(!r.ok)throw 0;d=await r.json()}d.cards=d.cards.slice(0,6);$('todayH').textContent="📅 Cards for "+d.day+(d.mine?' · for '+(A?A.agent:($('agent').value||'you')):'');
   G.innerHTML='';const JOBS=[];for(const c of d.cards){const w=document.createElement('div');w.style.cssText='background:#0e0e0e;border:1px solid #2b2b2b;border-radius:8px;padding:8px';
    const pi=PROPS.findIndex(p=>p.id===c.id),pp=PROPS[pi];let src=c.png&&pi<0?'daily-cards/'+c.png:'data:image/gif;base64,R0lGODlhAQABAAAAACw=',capT=null,ttl=pp?[pp.name,cleanModel(pp.model),pp.position&&!/blk|lot/i.test(pp.position)&&!new RegExp(pp.position.split(' ')[0],'i').test(pp.model)?pp.position:''].filter(Boolean).join(' · '):String(c.title).replace(/\s*\b(blk|block|lot)\s*\d+\w*/ig,'');
    w.innerHTML=`<img src="${src}" style="width:100%;border-radius:6px"><div style="font-size:12px;margin:6px 0">${ttl}</div>`;const im=w.querySelector('img');
@@ -713,13 +718,13 @@ window.undoEdit=()=>{const h=HIST.pop();if(!h)return;if(h.txt)TXT=h.txt;ph=h.ph;
 let SEL=null;
 c.addEventListener('click',e=>{const p=cpt(e);let s2=null;(HIT.sm||[]).forEach(([r,i])=>{if(inR(p,r))s2='s'+i});if(!s2&&inR(p,HIT.a))s2='a';if(!s2)for(const [rl,r] of Object.entries(HIT.t||{}))if(inR(p,[r[0]-12*S,r[1]-12*S,r[2]+24*S,r[3]+24*S])){s2='t:'+rl;break}if(!s2&&inR(p,HIT.ph))s2='p';SEL=s2;ovUpd()});
 function ovUpd(){const o=$('ov');if(!o)return;if(ANIM.on){o.innerHTML='';return}const k=c.getBoundingClientRect().width/W;let h='';
- const btn=(x,y,act,ic,ttl,move)=>`<div data-a="${act}" title="${ttl}" style="position:absolute;left:${x*k}px;top:${y*k}px;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:${move===2?'#2e7d4f':move?'#1f4e8c':'#c0392b'};color:#fff;font:700 15px/28px sans-serif;text-align:center;pointer-events:auto;cursor:${move?'move':'pointer'};box-shadow:0 2px 6px #0008;touch-action:none">${ic}</div>`;
- let SELd=0;(HIT.sm||[]).forEach(([r,i])=>{if(SEL!=='s'+i)return;h+=btn(r[0]+r[2],r[1],'s'+i,'✕','Remove photo');h+=btn(r[0],r[1],'up:s'+(i+1),'📷','Replace this photo',2);h+=btn(r[0]+r[2]/2,r[1]+r[3]/2,'m'+i,'✥','Move this photo',1);h+=btn(r[0],r[1]+r[3],'z+'+i,'+','Bigger',2);h+=btn(r[0]+r[2],r[1]+r[3],'z-'+i,'−','Smaller',2)});
+ const GAP=46/k,pm=(x,y,ap,am,tp,tm)=>btn(x,y,ap,'+',tp,2,-GAP)+btn(x,y,am,'−',tm,2,GAP);const btn=(x,y,act,ic,ttl,move,dx=0)=>`<div data-a="${act}" title="${ttl}" style="position:absolute;left:${(x+dx)*k}px;top:${y*k}px;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:${move===2?'#2e7d4f':move?'#1f4e8c':'#c0392b'};color:#fff;font:700 15px/28px sans-serif;text-align:center;pointer-events:auto;cursor:${move?'move':'pointer'};box-shadow:0 2px 6px #0008;touch-action:none">${ic}</div>`;
+ let SELd=0;(HIT.sm||[]).forEach(([r,i])=>{if(SEL!=='s'+i)return;h+=btn(r[0]+r[2],r[1],'s'+i,'✕','Remove photo');h+=btn(r[0],r[1],'up:s'+(i+1),'📷','Replace this photo',2);h+=btn(r[0]+r[2]/2,r[1]+r[3]/2,'m'+i,'✥','Move this photo',1);h+=pm(r[0]+r[2]/2,r[1]+r[3],'z+'+i,'z-'+i,'Bigger','Smaller')});
  
- if(HIT.a&&SEL==='a'){h+=btn(HIT.a[0],HIT.a[1]+HIT.a[3],'za+','+','Bigger',2);h+=btn(HIT.a[0]+HIT.a[2],HIT.a[1]+HIT.a[3],'za-','−','Smaller',2);h+=btn(HIT.a[0]+HIT.a[2],HIT.a[1],'a','✕','Remove agent photo');h+=btn(HIT.a[0],HIT.a[1],'ma','✥','Move agent photo',1);h+=btn(HIT.a[0]+HIT.a[2]/2,HIT.a[1],'up:aph','📷','Replace agent photo',2);h+=btn(HIT.a[0],HIT.a[1]+HIT.a[3]/2,'bga','✂️','Remove background',2)}
+ if(HIT.a&&SEL==='a'){h+=pm(HIT.a[0]+HIT.a[2]/2,HIT.a[1]+HIT.a[3],'za+','za-','Bigger','Smaller');h+=btn(HIT.a[0]+HIT.a[2],HIT.a[1],'a','✕','Remove agent photo');h+=btn(HIT.a[0],HIT.a[1],'ma','✥','Move agent photo',1);h+=btn(HIT.a[0]+HIT.a[2]/2,HIT.a[1],'up:aph','📷','Replace agent photo',2);h+=btn(HIT.a[0],HIT.a[1]+HIT.a[3]/2,'bga','✂️','Remove background',2)}
  if(SEL&&SEL.startsWith('t:')&&HIT.t&&HIT.t[SEL.slice(2)]){const rl=SEL.slice(2),r=HIT.t[rl];h+=`<div style="position:absolute;left:${(r[0]-8*S)*k}px;top:${(r[1]-8*S)*k}px;width:${(r[2]+16*S)*k}px;height:${(r[3]+16*S)*k}px;border:2px dashed #e8b04b;border-radius:6px"></div>`;
-  h+=btn(r[0]+r[2]/2,r[1]+r[3]/2,'mt:'+rl,'✥','Move text',1);h+=btn(r[0],r[1]+r[3]+8*S,'zt+:'+rl,'+','Bigger text',2);h+=btn(r[0]+40*S,r[1]+r[3]+8*S,'zt-:'+rl,'−','Smaller text',2);h+=btn(r[0]+r[2],r[1]-8*S,'rt:'+rl,'↺','Reset text')}
- if(HIT.ph&&SEL==='p'){const cx=HIT.ph[0]+HIT.ph[2]/2,cy=HIT.ph[1]+HIT.ph[3]/2;h+=btn(cx,cy,'p','✕','Remove main photo');h+=btn(cx,cy-70*S,'up:ph1','📷','Replace main photo',2);h+=btn(cx-70*S,cy,'zp-','−','Zoom out',2);h+=btn(cx+70*S,cy,'zp+','+','Zoom in',2)}
+  h+=btn(r[0]+r[2]/2,r[1]+r[3]/2,'mt:'+rl,'✥','Move text',1);h+=pm(r[0]+r[2]/2,r[1]+r[3]+8*S+18/k,'zt+:'+rl,'zt-:'+rl,'Bigger text','Smaller text');h+=btn(r[0]+r[2],r[1]-8*S,'rt:'+rl,'↺','Reset text')}
+ if(HIT.ph&&SEL==='p'){const cx=HIT.ph[0]+HIT.ph[2]/2,cy=HIT.ph[1]+HIT.ph[3]/2;h+=btn(cx,cy,'p','✕','Remove main photo');h+=btn(cx,cy-70*S,'up:ph1','📷','Replace main photo',2);h+=pm(cx,cy+70*S,'zp+','zp-','Zoom in','Zoom out')}
  if(!SEL&&(HIT.sm&&HIT.sm.length||HIT.a||HIT.ph))h+=`<div style="position:absolute;left:8px;bottom:${(H*.075)*k}px;background:#000a;color:#fff;font-size:11px;padding:3px 7px;border-radius:5px">👆 Tap a photo to replace 📷, move or resize it</div>`;if(HIST.length)h+=`<div data-a="undo" style="position:absolute;left:8px;top:${(H*.12)*k}px;background:#333;color:#fff;font:700 13px sans-serif;padding:6px 10px;border-radius:16px;pointer-events:auto;cursor:pointer;box-shadow:0 2px 6px #0008">↶ Undo</div>`;o.innerHTML=h;
  o.querySelectorAll('[data-a]').forEach(d=>{const a=d.dataset.a;if(a.startsWith('up:')){d.onclick=e=>{e.stopPropagation();const f=$(a.slice(3));if(f){f.value='';f.click()}};return}if(a==='undo'){d.onclick=e=>{e.stopPropagation();undoEdit()};return}if(a==='bga'){d.onclick=e=>{e.stopPropagation();removeBgAgent()};return}if(a==='enh'){d.onclick=e=>{e.stopPropagation();$('enh').checked=!$('enh').checked;draw()};return}
   if(/^(mt|zt\+|zt-|rt):/.test(a)){const [op,rl]=a.split(':');const cur0=()=>TXT[rl]||{x:0,y:0,s:1};
