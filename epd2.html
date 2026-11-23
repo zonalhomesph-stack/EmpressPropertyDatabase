@@ -83,7 +83,7 @@ document.getElementById("pwF").onsubmit=async function(e){e.preventDefault();var
 
 
 <details id="sec5"><summary>5 · Photos &amp; logos</summary><div class="bd">
-<div class="row" style="display:none;align-items:center;gap:8px;margin:4px 0 8px"><label class="chk" style="flex:1"><input type="checkbox" id="enh" checked> ✨ Enhance photo</label><input type="range" id="enhS" min="0" max="100" value="100" style="flex:2" title="Enhance strength"><span id="enhV" style="width:36px;font-size:12px">100%</span></div>
+<div class="row" style="display:none;align-items:center;gap:8px;margin:4px 0 8px"><label class="chk" style="flex:1"><input type="checkbox" id="enh" checked> ✨ Enhance photo</label><input type="range" id="enhS" min="0" max="100" value="100" style="flex:2" title="Enhance strength"><span id="enhV" style="width:36px;font-size:12px">100%</span></div><input type="hidden" id="bri" value="0">
 <label>Property photo 1 (main, real photo only)</label><input type="file" id="ph1" accept="image/*">
 <div class="row" style="margin-top:4px"><div class="mini"><span>Zoom <b id="zv">100%</b></span><input type="range" id="pz" min="100" max="250" value="100"></div><div class="mini"><span>X</span><input type="range" id="px" min="0" max="100" value="50"></div><div class="mini"><span>Y</span><input type="range" id="py" min="0" max="100" value="50"></div></div>
 <label>Property photo 2 (for 2-frame layouts)</label><input type="file" id="ph2" accept="image/*">
@@ -286,7 +286,7 @@ function cleanModel(m){return String(m||'').replace(/\s*[-–—,]?\s*\bblock\s*
 function loadProp(i){cur=PROPS[i];const p=cur,g=PG();
  $('title').value=p.name||'';$('sub').value=[cleanModel(p.model)+(p.position&&!new RegExp(p.position.split(' ')[0],'i').test(p.model)?' — '+p.position:''),p.type&&!String(p.model).includes(p.type)?p.type:''].filter(Boolean).join(' · ');
  $('loc').value=[p.city,p.prov].filter(Boolean).join(', ');KORD=null;nextKick();
- $('promo').value='';$('hook').value='';
+ $('promo').value='';$('hook').value='';if($('bri'))$('bri').value=0;
  const def=p.term30?['term30','reservation']:p.monthlyDp?['monthlyDp','reservation']:['tcp','reservation'];
  document.querySelectorAll('[data-f]').forEach(cb=>{cb.checked=def.includes(cb.dataset.f);cb.disabled=!fig(cb.dataset.f)});
  
@@ -342,7 +342,7 @@ function tx(t,X,Y,o){if(!t)return 0;const role=roleOf(t);if(role&&TXT[role]){con
  if(shadow){x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=14*S;x.shadowOffsetY=3*S}
  const a=av(i);x.globalAlpha*=a;const dy=(1-a)*30*S;
  let L=wrap(upper?String(t).toUpperCase():t,mw).slice(0,max),sz2=size;const mxw=Math.max(...L.map(l=>x.measureText(l).width));if(mxw>mw){sz2=size*mw/mxw*.98;x.font=(it?'italic ':'')+F(w,sz2,fam);L=wrap(upper?String(t).toUpperCase():t,mw).slice(0,max)}L.forEach((l,k)=>x.fillText(l,X,Y+dy+k*sz2*S*lh));if(role){const ww=Math.max(...L.map(l=>x.measureText(l).width)),hh=L.length*sz2*S*lh,x0=al==='center'?X-ww/2:al==='right'?X-ww:X;HIT.t=HIT.t||{};const q=HIT.t[role];HIT.t[role]=q?[Math.min(q[0],x0),Math.min(q[1],Y),Math.max(q[0]+q[2],x0+ww)-Math.min(q[0],x0),Math.max(q[1]+q[3],Y+hh)-Math.min(q[1],Y)]:[x0,Y,ww,hh]}x.restore();return L.length*sz2*S*lh}
-function enhF(){if(!$('enh')||!$('enh').checked)return 'none';const k=$('enhS').value/100;return `brightness(${(1+.08*k).toFixed(3)}) contrast(${(1+.14*k).toFixed(3)}) saturate(${(1+.35*k).toFixed(3)})`}
+function enhF(){const bv=1+(+($('bri')&&$('bri').value)||0)/100;if(!$('enh')||!$('enh').checked)return bv===1?'none':`brightness(${bv.toFixed(3)})`;const k=$('enhS').value/100;return `brightness(${((1+.08*k)*bv).toFixed(3)}) contrast(${(1+.14*k).toFixed(3)}) saturate(${(1+.35*k).toFixed(3)})`}
 function cover(img,dx,dy,dw,dh){const z=$('pz').value/100,ox=$('px').value/100,oy=$('py').value/100;
  let kb=1;if(ANIM.on)kb=1+.08*ANIM.t;const s=Math.max(dw/img.width,dh/img.height)*z*kb,iw=img.width*s,ih=img.height*s;
  x.save();x.filter=enhF();x.drawImage(img,dx+(dw-iw)*ox,dy+(dh-ih)*oy,iw,ih);x.restore()}
@@ -713,8 +713,8 @@ window.removeBgAgent=async function(){if(BGBUSY)return;const src=agOrig||agImg;i
  catch(e){console.error(e);bgToast('');alert('Hindi natanggal ang background. Check internet then try ulit.')}
  BGBUSY=false}
 /* ---------- undo for on-card photo edits ---------- */
-const HIST=[];function snap(){HIST.push({txt:JSON.parse(JSON.stringify(TXT)),ph:ph.slice(),sm:sm.slice(),ag:agImg,agO:agOrig,smOff:smOff.map(o=>({...o})),smSc:smSc.slice(),v:['pz','px','py','asz','ax','ay','sx','sy','ssz'].map(id=>$(id)?$(id).value:null)});if(HIST.length>40)HIST.shift();ovUpd()}
-window.undoEdit=()=>{const h=HIST.pop();if(!h)return;if(h.txt)TXT=h.txt;ph=h.ph;sm=h.sm;agImg=h.ag;agOrig=h.agO;smOff=h.smOff;smSc=h.smSc;['pz','px','py','asz','ax','ay','sx','sy','ssz'].forEach((id,i)=>{if($(id)&&h.v[i]!=null)$(id).value=h.v[i]});if(typeof posLbl==='function')posLbl();draw()};
+const HIST=[];function snap(){HIST.push({txt:JSON.parse(JSON.stringify(TXT)),ph:ph.slice(),sm:sm.slice(),ag:agImg,agO:agOrig,smOff:smOff.map(o=>({...o})),smSc:smSc.slice(),v:['pz','px','py','asz','ax','ay','sx','sy','ssz','kicker','hook','bri'].map(id=>$(id)?$(id).value:null)});if(HIST.length>40)HIST.shift();ovUpd()}
+window.undoEdit=()=>{const h=HIST.pop();if(!h)return;if(h.txt)TXT=h.txt;ph=h.ph;sm=h.sm;agImg=h.ag;agOrig=h.agO;smOff=h.smOff;smSc=h.smSc;['pz','px','py','asz','ax','ay','sx','sy','ssz','kicker','hook','bri'].forEach((id,i)=>{if($(id)&&h.v[i]!=null)$(id).value=h.v[i]});if(typeof posLbl==='function')posLbl();draw()};
 let SEL=null;
 c.addEventListener('click',e=>{const p=cpt(e);let s2=null;(HIT.sm||[]).forEach(([r,i])=>{if(inR(p,r))s2='s'+i});if(!s2&&inR(p,HIT.a))s2='a';if(!s2)for(const [rl,r] of Object.entries(HIT.t||{}))if(inR(p,[r[0]-12*S,r[1]-12*S,r[2]+24*S,r[3]+24*S])){s2='t:'+rl;break}if(!s2&&inR(p,HIT.ph))s2='p';SEL=s2;ovUpd()});
 function ovUpd(){const o=$('ov');if(!o)return;if(ANIM.on){o.innerHTML='';return}const k=c.getBoundingClientRect().width/W;let h='';
@@ -723,10 +723,10 @@ function ovUpd(){const o=$('ov');if(!o)return;if(ANIM.on){o.innerHTML='';return}
  
  if(HIT.a&&SEL==='a'){h+=pm(HIT.a[0]+HIT.a[2]/2,HIT.a[1]+HIT.a[3],'za+','za-','Bigger','Smaller');h+=btn(HIT.a[0]+HIT.a[2],HIT.a[1],'a','✕','Remove agent photo');h+=btn(HIT.a[0],HIT.a[1],'ma','✥','Move agent photo',1);h+=btn(HIT.a[0]+HIT.a[2]/2,HIT.a[1],'up:aph','📷','Replace agent photo',2);h+=btn(HIT.a[0],HIT.a[1]+HIT.a[3]/2,'bga','✂️','Remove background',2)}
  if(SEL&&SEL.startsWith('t:')&&HIT.t&&HIT.t[SEL.slice(2)]){const rl=SEL.slice(2),r=HIT.t[rl];h+=`<div style="position:absolute;left:${(r[0]-8*S)*k}px;top:${(r[1]-8*S)*k}px;width:${(r[2]+16*S)*k}px;height:${(r[3]+16*S)*k}px;border:2px dashed #e8b04b;border-radius:6px"></div>`;
-  h+=btn(r[0]+r[2]/2,r[1]+r[3]/2,'mt:'+rl,'✥','Move text',1);h+=pm(r[0]+r[2]/2,r[1]+r[3]+8*S+18/k,'zt+:'+rl,'zt-:'+rl,'Bigger text','Smaller text');h+=btn(r[0]+r[2],r[1]-8*S,'rt:'+rl,'↺','Reset text')}
- if(HIT.ph&&SEL==='p'){const cx=HIT.ph[0]+HIT.ph[2]/2,cy=HIT.ph[1]+HIT.ph[3]/2;h+=btn(cx,cy,'p','✕','Remove main photo');h+=btn(cx,cy-70*S,'up:ph1','📷','Replace main photo',2);h+=pm(cx,cy+70*S,'zp+','zp-','Zoom in','Zoom out')}
+  h+=btn(r[0]+r[2]/2,r[1]+r[3]/2,'mt:'+rl,'✥','Move text',1);h+=pm(r[0]+r[2]/2,r[1]+r[3]+8*S+18/k,'zt+:'+rl,'zt-:'+rl,'Bigger text','Smaller text');h+=btn(r[0]+r[2],r[1]-8*S,'rt:'+rl,'↺','Reset text');if(rl==='kick')h+=btn(r[0],r[1]-8*S,'dk','🗑','Delete hook text')}
+ if(HIT.ph&&SEL==='p'){const cx=HIT.ph[0]+HIT.ph[2]/2,cy=HIT.ph[1]+HIT.ph[3]/2;h+=btn(cx,cy,'p','✕','Remove main photo');h+=btn(cx,cy-70*S,'up:ph1','📷','Replace main photo',2);h+=pm(cx,cy+70*S,'zp+','zp-','Zoom in','Zoom out');h+=btn(cx-80*S,cy,'br-','🌙','Darker photo');h+=btn(cx+80*S,cy,'br+','☀️','Brighter photo');const bvv=+$('bri').value||0;h+=`<div style="position:absolute;left:${cx*k-34}px;top:${(cy+125*S)*k}px;width:68px;text-align:center;background:#000b;color:#fff;font:700 12px sans-serif;padding:3px 0;border-radius:10px">☀️ ${bvv>0?'+':''}${bvv}%</div>`}
  if(!SEL&&(HIT.sm&&HIT.sm.length||HIT.a||HIT.ph))h+=`<div style="position:absolute;left:8px;bottom:${(H*.075)*k}px;background:#000a;color:#fff;font-size:11px;padding:3px 7px;border-radius:5px">👆 Tap a photo to replace 📷, move or resize it</div>`;if(HIST.length)h+=`<div data-a="undo" style="position:absolute;left:8px;top:${(H*.12)*k}px;background:#333;color:#fff;font:700 13px sans-serif;padding:6px 10px;border-radius:16px;pointer-events:auto;cursor:pointer;box-shadow:0 2px 6px #0008">↶ Undo</div>`;o.innerHTML=h;
- o.querySelectorAll('[data-a]').forEach(d=>{const a=d.dataset.a;if(a.startsWith('up:')){d.onclick=e=>{e.stopPropagation();const f=$(a.slice(3));if(f){f.value='';f.click()}};return}if(a==='undo'){d.onclick=e=>{e.stopPropagation();undoEdit()};return}if(a==='bga'){d.onclick=e=>{e.stopPropagation();removeBgAgent()};return}if(a==='enh'){d.onclick=e=>{e.stopPropagation();$('enh').checked=!$('enh').checked;draw()};return}
+ o.querySelectorAll('[data-a]').forEach(d=>{const a=d.dataset.a;if(a.startsWith('up:')){d.onclick=e=>{e.stopPropagation();const f=$(a.slice(3));if(f){f.value='';f.click()}};return}if(a==='undo'){d.onclick=e=>{e.stopPropagation();undoEdit()};return}if(a==='bga'){d.onclick=e=>{e.stopPropagation();removeBgAgent()};return}if(a==='dk'){d.onclick=e=>{e.stopPropagation();snap();$('kicker').value='';$('hook').value='';delete TXT.kick;SEL=null;draw()};return}if(a==='br+'||a==='br-'){d.onclick=e=>{e.stopPropagation();snap();$('bri').value=Math.max(-40,Math.min(60,(+$('bri').value||0)+(a==='br+'?10:-10)));draw()};return}if(a==='enh'){d.onclick=e=>{e.stopPropagation();$('enh').checked=!$('enh').checked;draw()};return}
   if(/^(mt|zt\+|zt-|rt):/.test(a)){const [op,rl]=a.split(':');const cur0=()=>TXT[rl]||{x:0,y:0,s:1};
    if(op==='mt'){d.onpointerdown=e=>{e.preventDefault();e.stopPropagation();snap();const p0=cpt(e),o0={...cur0()};const mv=ev=>{const p=cpt(ev);TXT[rl]={...o0,x:o0.x+(p[0]-p0[0])/W,y:o0.y+(p[1]-p0[1])/H};draw()};const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up)};addEventListener('pointermove',mv);addEventListener('pointerup',up)};return}
    d.onclick=e=>{e.stopPropagation();snap();const o0=cur0();if(op==='rt')delete TXT[rl];else TXT[rl]={...o0,s:Math.max(.4,Math.min(2.5,o0.s*(op==='zt+'?1.1:1/1.1)))};draw()};return}
