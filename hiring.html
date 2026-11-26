@@ -27,24 +27,37 @@ textarea{min-height:64px;resize:vertical}
 button{background:#7a1020;color:#f3d9a0;border:0;padding:11px 14px;border-radius:9px;font:inherit;font-weight:600;cursor:pointer;width:100%;margin-top:12px}
 button.sec{background:#f6ecea;color:#7a1020}
 .preview{display:flex;flex-direction:column;align-items:center;gap:10px}
-canvas{max-width:100%;max-height:84vh;border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+#pbar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}#pbar button{width:auto;margin:0;padding:8px 12px}#cwrap{position:relative;display:inline-block;max-width:100%}#phint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);color:#fff;font:600 12px sans-serif;text-shadow:0 1px 3px #000;pointer-events:none;white-space:nowrap}#c{touch-action:none;cursor:grab}#c.drag{cursor:grabbing}canvas{max-width:100%;max-height:84vh;border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
 #out{display:none;text-align:center}
 #out img{max-width:300px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
 .hint{font-size:12px;color:#6b5458}
 .pre{margin-bottom:5px;background:#fbf6f3;font-size:12px!important}
 .chk{display:flex;align-items:center;gap:6px;font-size:12px;margin-top:8px}
+.wrap{display:flex!important;flex-direction:column;max-width:560px!important;padding:12px!important;gap:14px!important}.wrap>.panel{order:0}.preview{order:1}canvas{max-height:none!important;width:100%}#cwrap{width:100%}
+button{font-size:12px!important;padding:8px 10px!important;margin-top:8px!important}#pbar button,#ttb button{margin:0!important}
+.acts{width:100%;display:flex;flex-direction:column}.acts .row{gap:6px}#pbar{align-items:center;margin-top:4px}
+h3{font-size:12px!important}label{font-size:11px!important}
+#selbox{position:absolute;border:2px dashed #e0457b;border-radius:4px;pointer-events:none;display:none}
+#ttb{position:absolute;display:none;gap:4px;background:#fff;border-radius:10px;padding:4px;box-shadow:0 3px 12px rgba(0,0,0,.25);z-index:5}#ttb button{width:auto!important;padding:5px 8px!important;font-size:13px!important}
+#tedit{position:absolute;display:none;z-index:6;width:80%!important;left:10%;font-size:14px!important}
+#ovl{position:absolute;top:8px;left:8px;display:flex;gap:6px;z-index:4}#ovl button{width:auto!important;margin:0!important;padding:5px 9px!important;font-size:11px!important;background:rgba(255,255,255,.9);color:#7a1020;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
 </style>
 </head>
 <body>
-<header><h1>Hiring Poster Maker</h1><p>Team Empress logo always included. Pick a layout, color branding and fonts.</p></header>
+<header><h1>Hiring Poster Maker</h1><p>Pick your name, then shuffle until you love it. Team Empress logo always included.</p></header>
 <div class="wrap">
 <div class="panel">
+  <h3>👑 My profile</h3>
+  <input type="hidden" id="aname"><div class="row"><div><label>Name on poster</label><select id="agentSel"><option value="">— Choose your name —</option></select></div><div><label>Cell number</label><input type="text" id="aphone" placeholder="e.g. 0917 123 4567"></div></div>
+  <div class="row"><button type="button" id="shAll">🔀 Shuffle all</button><button type="button" class="sec" id="shPhoto">🖼️ Shuffle photo</button></div>
+  <div class="row"><button type="button" class="sec" id="shLay">🧩 Shuffle layout</button><button type="button" class="sec" id="shCol">🎨 Shuffle colors &amp; fonts</button></div>
+<div id="advanced" style="display:none">
   <h3>Layout</h3>
   <label>Layout</label>
   <select id="layout"><option value="A">A · Split — text left, photo right</option><option value="B">B · Photo left — icon bar</option><option value="C">C · Circle portrait</option><option value="D">D · Dark modern — pill logos</option><option value="E">E · Arch photo + checklist</option><option value="F">F · Property backdrop + card</option><option value="G">G · Realty partner — 2 property frames</option><option value="H">H · House hero + badge</option><option value="I">I · Services card</option>
     <optgroup label="Mobile video / Story (9:16)"><option value="J">J · Full photo + bottom headline</option><option value="K">K · Arch frame on brand color</option><option value="L">L · Full photo + centered title</option><option value="M">M · Dream home + 2 frames</option></optgroup></select>
   <label>Size</label>
-  <select id="size"><option value="1080x1528">A4 poster</option><option value="1080x1350">Feed 4:5</option><option value="1080x1080">Square 1:1</option><option value="1920x1080">Landscape 16:9</option><option value="1080x1920">Story 9:16</option></select>
+  <select id="size"><option value="1080x1528">A4 poster</option><option value="1080x1350" selected>Feed 4:5</option><option value="1080x1080">Square 1:1</option><option value="1920x1080">Landscape 16:9</option><option value="1080x1920">Story 9:16</option></select>
   <label>Color branding</label><select id="pal"></select>
   <div class="row" style="margin-top:6px">
     <div><label>Panel</label><input type="color" id="c_panel"></div><div><label>Headline</label><input type="color" id="c_ink"></div>
@@ -64,7 +77,7 @@ canvas{max-width:100%;max-height:84vh;border-radius:6px;box-shadow:0 6px 24px rg
   <label>Locations (one line each)</label><textarea id="locs">Cavite · Laguna · Batangas · Rizal · Bulacan
 Metro Manila · Pampanga · Tarlac · Bataan
 Nueva Ecija · Pangasinan · Baguio · Bicol · Quezon</textarea>
-  <div class="row"><div><label>Agent name</label><input type="text" id="aname" placeholder="e.g. Juana Dela Cruz"></div><div><label>Cell number</label><input type="text" id="aphone" placeholder="e.g. 0917 123 4567"></div></div>
+  
   <label>Button</label><select id="p_cta" class="pre"></select><input type="text" id="cta" value="CONTACT US">
   <label>Bottom bar perks (one per line, max 4)</label><select id="p_perks" class="pre"></select><textarea id="perks">Be your own boss
 Unlimited income
@@ -80,19 +93,24 @@ Grow with a strong team</textarea>
   <input type="file" id="bgfile" accept="image/*" style="display:none;margin-top:6px">
   <label>Photo panel size <span id="pwv">Auto</span></label><input type="range" id="pw" min="0" max="30" value="0" style="width:100%">
   <div class="chk"><input type="checkbox" id="contain"><label for="contain" style="margin:0">Show the whole photo (no cropping)</label></div>
-  <label>Photo size <span id="zv">100%</span></label><input type="range" id="zoom" min="50" max="250" value="100" style="width:100%">
-  <div class="row"><div><label>Move left/right</label><input type="range" id="ox" min="-100" max="100" value="0" style="width:100%"></div><div><label>Move up/down</label><input type="range" id="oy" min="-100" max="100" value="0" style="width:100%"></div></div>
+  <label>Photo size <span id="zv">100%</span></label><input type="range" id="zoom" min="20" max="400" value="100" style="width:100%">
+  <div class="row"><div><label>Move left/right</label><input type="range" id="ox" min="-300" max="300" value="0" style="width:100%"></div><div><label>Move up/down</label><input type="range" id="oy" min="-300" max="300" value="0" style="width:100%"></div></div>
   <div class="chk"><input type="checkbox" id="cutout"><label for="cutout" style="margin:0">Photo is a PNG cutout — let it overlap (Layout D)</label></div>
   <button class="sec" id="fitp" type="button" style="margin-top:6px">Reset photo position</button>
   <div class="chk"><input type="checkbox" id="blur"><label for="blur" style="margin:0">Soft blur photo (Layout B look)</label></div>
+</div>
+
+</div>
+<div class="preview">
+    <div id="cwrap"><canvas id="c"></canvas><div id="selbox"></div><div id="ovl"><button type="button" id="undoBtn" title="Undo">↶ Undo</button><button type="button" id="tRestore" title="Restore deleted">↩ Restore</button></div><div id="ttb"><button type="button" data-t="-">➖</button><button type="button" data-t="+">➕</button><button type="button" data-t="e">✏️</button><button type="button" data-t="d">🗑️</button></div><input id="tedit" type="text"></div>
+  <div class="acts">  <button type="button" class="sec" id="gptBtn">✨ ChatGPT prompt for my design</button>
+  <div id="gptBox" style="display:none;margin-top:8px"><p class="hint">1) Save your poster as PNG below. 2) Open ChatGPT, upload the poster (and a nicer photo of you if you want). 3) Paste this prompt.</p><textarea id="gptTxt" style="min-height:170px"></textarea><button type="button" id="gptCopy">📋 Copy prompt</button></div>
 
   <button id="save">Save poster as PNG</button>
   <div class="row"><button class="sec" id="anim" type="button">▶ Preview animation</button><button class="sec" id="rec" type="button">🎬 Make video (8s)</button></div>
   <button class="sec" id="reset">Reset text</button>
-</div>
-<div class="preview">
-  <canvas id="c"></canvas>
-  <div class="panel" style="width:100%;max-width:760px"><h3>Caption + hashtag ideas (38 — by persona &amp; pain point)</h3><select id="capsel"></select><textarea id="captxt" style="min-height:210px;margin-top:8px"></textarea><div class="row"><button id="capcopy" type="button">Copy caption + hashtags</button><button class="sec" id="capnext" type="button">Next idea →</button></div><p class="hint" id="caphint"></p></div>
+  </div>
+  <div class="panel" style="width:100%;max-width:760px"><h3>Caption + hashtags</h3><select id="capsel"></select><textarea id="captxt" style="min-height:210px;margin-top:8px"></textarea><div class="row"><button id="capcopy" type="button">Copy caption + hashtags</button><button class="sec" id="capnext" type="button">🔀 Shuffle caption</button></div><p class="hint" id="caphint"></p></div>
   <div id="vout" style="display:none;text-align:center"><p class="hint"><b>Right-click → Save video as</b> (desktop) or <b>long-press → Download</b> (phone). If FB rejects the file, open it in CapCut and export as MP4.</p><video id="vid" controls playsinline style="max-width:300px;border-radius:6px"></video></div>
   <div id="out"><p class="hint"><b>Right-click → Save image as</b> (desktop) or <b>long-press → Save</b> (phone).</p><img id="outimg" alt="Poster"></div>
 </div>
@@ -127,6 +145,23 @@ const PALS=[
  ['Terracotta Warm','#fbf3ec','#4a2416','#5e3a2c','#c8643b','#a34a2a','#ffffff'],
  ['Mocha Earth','#f5efe8','#3b2a20','#54443a','#a67c52','#5c4033','#ffffff'],
  ['Sunset Orange','#fff8f1','#3a1f0b','#55361f','#f28c28','#d9591b','#ffffff']
+,
+ ['Rose Gold Glam','#fff6f2','#4a2a2a','#5e4040','#d4a08a','#b76e79','#ffffff'],
+ ['Champagne Classic','#faf6ee','#2b2418','#4a4030','#c8a96a','#8c7245','#ffffff'],
+ ['Royal Blue & Silver','#0d2a6b','#ffffff','#d8e0f0','#c0c8d8','#081a45','#ffffff'],
+ ['Midnight Teal','#0b2f36','#ffffff','#cfe6e8','#3cc7c2','#061f24','#ffffff'],
+ ['Plum & Peach','#3a1734','#ffffff','#f1d9ea','#ffb38a','#24091f','#ffb38a'],
+ ['Mint Fresh','#f1fbf6','#14432f','#2f5c48','#3fbf86','#1f7a52','#ffffff'],
+ ['Lemon Bright','#fffbe6','#2a2a2a','#444444','#f2c200','#2a2a2a','#ffffff'],
+ ['Hot Pink Pop','#ffffff','#2a0d1f','#4a2a3c','#ff3e8a','#d81b6a','#ffffff'],
+ ['Navy & Coral','#ffffff','#14213d','#2e3a55','#ff7a59','#14213d','#ffffff'],
+ ['Olive & Cream','#f8f5ea','#3b3a20','#55543a','#9a9a3a','#5e5e24','#ffffff'],
+ ['Ruby Red','#ffffff','#1a1a1a','#333333','#e0115f','#9b0d3f','#ffffff'],
+ ['Graphite Neon','#1a1a1a','#ffffff','#cccccc','#39ff88','#0d0d0d','#39ff88'],
+ ['Pastel Lilac','#faf5ff','#4b2e83','#5e4a86','#c9a7ff','#7c5cc4','#ffffff'],
+ ['Desert Sand','#f6efe3','#4a3a24','#665538','#d9a45b','#8c6239','#ffffff'],
+ ['Ice Blue','#f0f8ff','#123a5a','#2d4f6c','#7cc4f0','#1e5f8c','#ffffff'],
+ ['Bronze Elite','#1c1712','#f3e3c3','#d9c7a3','#cd7f32','#2b2118','#cd7f32']
 ];
 const FONTS_H=["Poppins","Montserrat","League Spartan","Oswald","Bebas Neue","Anton","Archivo Black","Raleway","Josefin Sans","Nunito","Quicksand","Playfair Display","DM Serif Display","Abril Fatface","Cinzel","Bodoni Moda","Libre Baskerville","Lora","Merriweather","Prata"];
 const FONTS_B=["Poppins","Montserrat","Lato","Raleway","Nunito","Quicksand","Josefin Sans","Lora","Merriweather","Libre Baskerville"];
@@ -209,8 +244,9 @@ const CAPTIONS_MORE=[
 
 const ALLCAPS=[];CAPTIONS.forEach(c=>ALLCAPS.push(c[0].startsWith('The ')?[c[0],'Main hook',c[1],c[2]]:['General topics',c[0],c[1],c[2]]));CAPTIONS_MORE.forEach(c=>ALLCAPS.push(c));
 (()=>{const groups={};ALLCAPS.forEach((c,i)=>{(groups[c[0]]=groups[c[0]]||[]).push([c,i])});$('capsel').innerHTML=Object.entries(groups).map(([g,arr])=>`<optgroup label="${g}">${arr.map(([c,i])=>`<option value="${i}">${g==='General topics'?c[1]:g.replace('The ','')+' — '+c[1]}</option>`).join('')}</optgroup>`).join('')})();
-function showCap(){const c=ALLCAPS[+$('capsel').value];$('captxt').value=c[2]+'\n\n'+c[3];$('caphint').textContent=''}
-$('capsel').onchange=showCap;$('capnext').onclick=()=>{$('capsel').value=(+$('capsel').value+1)%ALLCAPS.length;showCap()};
+function shortCap(t){const S=t.match(/[^.!?]+[.!?]+["”']?|[^.!?]+$/g)||[t];const last=S[S.length-1];let out=[],w=0;for(const x of S.slice(0,-1)){const n=x.trim().split(/\s+/).length;if(w+n>42)break;out.push(x.trim());w+=n}out.push(last.trim());return out.join(' ')}
+function showCap(){const c=ALLCAPS[+$('capsel').value];$('captxt').value=shortCap(c[2])+'\n\n'+c[3];$('caphint').textContent=''}
+$('capsel').onchange=showCap;$('capnext').onclick=()=>{let n;do n=Math.floor(Math.random()*ALLCAPS.length);while(n==+$('capsel').value&&ALLCAPS.length>1);$('capsel').value=n;showCap()};
 $('capcopy').onclick=async()=>{try{await navigator.clipboard.writeText($('captxt').value);$('caphint').textContent='Copied!'}catch(e){$('captxt').select();$('caphint').textContent='Press Ctrl+C / Cmd+C to copy.'}};
 showCap();
 const ANIM={on:false,t:1};
@@ -223,7 +259,7 @@ function font(w,sz,f){x.font=`${w} ${sz}px ${f}`}
 function fit(t,w,f,max,start){let s=start;font(w,s,f);while(x.measureText(t).width>max&&s>10){s-=1;font(w,s,f)}return s}
 function wrapLines(t,m){const w=t.split(' '),o=[];let l='';w.forEach(v=>{const n=l?l+' '+v:v;if(x.measureText(n).width>m&&l){o.push(l);l=v}else l=n});if(l)o.push(l);return o}
 function tx(t,X,Y,al){x.textAlign=al||'left';x.textBaseline='top';x.fillText(t,X,Y)}
-function logo(img,X,Y,w,al){if(!img.width)return 0;const h=img.height*w/img.width;const dx=al==='center'?X-w/2:al==='right'?X-w:X;x.drawImage(img,dx,Y,w,h);return h}
+function logo(img,X,Y,w,al){if(!img.width)return 0;const h=img.height*w/img.width;const dx=al==='center'?X-w/2:al==='right'?X-w:X;EW(img===em?'logo:empress':'logo:zonal',X,al||'left',w,h,()=>x.drawImage(img,dx,Y,w,h))(Y);return h}
 function logoH(img,w){return img.width?img.height*w/img.width:0}
 function hexA(h,a){const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`}
 function drawBg(dx,dy,dw,dh){const v=$('bg').value;x.save();x.beginPath();x.rect(dx,dy,dw,dh);x.clip();
@@ -239,10 +275,10 @@ function hline(x1,x2,y,col,wid){x.strokeStyle=col;x.lineWidth=wid||2;x.beginPath
 /* text block builders: each returns {h, d(y)} */
 function B_text(t,{w=400,f,size,max,col,al='center',X,lh=1.25,wrap=false,ls=0}){if(!t)return null;let arr,s;
  if(wrap){s=size;font(w,s,f);arr=wrapLines(t,max)}else{s=fit(t,w,f,max,size);arr=[t]}
- return{h:s*lh*arr.length-s*(lh-1),d:y=>{font(w,s,f);x.fillStyle=col;x.letterSpacing=ls+'px';arr.forEach((l,i)=>tx(l,X,y+i*s*lh,al));x.letterSpacing='0px'}}}
+ font(w,s,f);const bw=Math.max(...arr.map(l=>x.measureText(l).width));const hh=s*lh*arr.length-s*(lh-1);return{h:hh,d:EW(t,X,al,bw,hh,y=>{font(w,s,f);x.fillStyle=col;x.letterSpacing=ls+'px';arr.forEach((l,i)=>tx(l,X,y+i*s*lh,al));x.letterSpacing='0px'})}}
 function B_lines(arr,o){if(!arr.length)return null;const bs=arr.map(t=>B_text(t,o));const s=bs.map(b=>b.h);const g=(o.gap||0.45)*Math.max(...s);return{h:s.reduce((a,b)=>a+b,0)+g*(arr.length-1),d:y=>{bs.forEach((b,i)=>{b.d(y);y+=b.h+g})}}}
-function B_title(words,o){const hs=$('hsize').value/100;const size=Math.min(...words.map(w=>fit(w,o.w,o.f,o.max,o.size*hs)));return{h:size*o.lh*words.length-size*(o.lh-1),d:y=>{font(o.w,size,o.f);x.fillStyle=o.col;words.forEach((w,i)=>tx(w,o.X,y+i*size*o.lh,o.al))}}}
-function B_btn(label,o){font(o.w||600,o.size,o.f);const bw=Math.max(o.minW||0,x.measureText(label).width+o.size*2.4),bh=o.size*2.1;return{h:bh,d:y=>{const bx=o.al==='left'?o.X:o.X-bw/2;x.beginPath();x.roundRect(bx,y,bw,bh,o.r==null?bh/2:o.r);if(o.fill){x.fillStyle=o.col;x.fill();x.fillStyle=o.tcol}else{x.strokeStyle=o.col;x.lineWidth=3;x.stroke();x.fillStyle=o.col}font(o.w||600,o.size,o.f);tx(label,bx+bw/2,y+bh/2-o.size*0.52,'center')}}}
+function B_title(words,o){const hs=$('hsize').value/100;const size=Math.min(...words.map(w=>fit(w,o.w,o.f,o.max,o.size*hs)));font(o.w,size,o.f);const bw=Math.max(...words.map(w=>x.measureText(w).width)),hh=size*o.lh*words.length-size*(o.lh-1);return{h:hh,d:EW(words.join(' '),o.X,o.al,bw,hh,y=>{font(o.w,size,o.f);x.fillStyle=o.col;words.forEach((w,i)=>tx(w,o.X,y+i*size*o.lh,o.al))})}}
+function B_btn(label,o){font(o.w||600,o.size,o.f);const bw=Math.max(o.minW||0,x.measureText(label).width+o.size*2.4),bh=o.size*2.1;return{h:bh,d:EW(label,o.X,o.al==='left'?'left':'center',bw,bh,y=>{const bx=o.al==='left'?o.X:o.X-bw/2;x.beginPath();x.roundRect(bx,y,bw,bh,o.r==null?bh/2:o.r);if(o.fill){x.fillStyle=o.col;x.fill();x.fillStyle=o.tcol}else{x.strokeStyle=o.col;x.lineWidth=3;x.stroke();x.fillStyle=o.col}font(o.w||600,o.size,o.f);tx(label,bx+bw/2,y+bh/2-o.size*0.52,'center')})}}
 function contactLine(){const n=$('aname').value.trim(),p=$('aphone').value.trim();return [n,p?'📞 '+p:''].filter(Boolean).join('   |   ')}
 function btnC(label,o){const b=B_btn(label,o),t=contactLine();if(!t)return b;const cb=B_text(t,{w:600,f:BF(),size:Math.max(20,o.size*0.8),max:o.cmax||700,col:layout==='F'?T.barText:(layout==='D'?T.text:T.ink),X:o.al==='left'?o.X:o.X,al:o.al==='left'?'left':'center'});return pair(b,cb,18)}
 function B_rule(o){return{h:2,d:y=>hline(o.x1,o.x2,y,o.col,2)}}
@@ -275,7 +311,7 @@ function checklist(items,{X,col,tcol,size=28,gap=56,cols=1,colW=0}){const rows=M
 function badge(cx,cy,r,top,mid){x.save();x.fillStyle=T.accent;x.beginPath();for(let i=0;i<48;i++){const a=i/48*Math.PI*2,rr=i%2?r:r*0.9;x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}x.closePath();x.fill();x.strokeStyle=T.panel;x.lineWidth=3;x.beginPath();x.arc(cx,cy,r*0.78,0,7);x.stroke();x.fillStyle=T.panel;font(800,r*0.22,BF());tx(top,cx,cy-r*0.36,'center');font(900,r*0.36,HF());tx(mid,cx,cy-r*0.12,'center');x.restore()}
 
 /* ---------- layouts ---------- */
-function draw(){
+function draw(){BOXES=[];
  const [W0,H0]=$('size').value.split('x').map(Number);c.width=W0;c.height=H0;const f=Math.min(W0/1080,H0/1528);x.setTransform(f,0,0,f,0,0);const W=W0/f,H=H0/f;
  const k=$('kicker').value,ti=$('title').value,aud=$('aud').value,tag=$('tag').value,lbl=$('inlbl').value,locs=lines($('locs').value),cta=$('cta').value,blur=$('blur').checked;
  const PWs=$('pw').value/100;
@@ -508,7 +544,7 @@ function draw(){
  if($('showz').checked&&zl.width){const zw=Math.min(240,W*0.2),zh2=zl.height*zw/zl.width,left=['C','E','D'].includes(layout)?false:true;
   const pos={J:[W-60-Math.min(240,W*0.2),70],K:[60,60],L:[W-60-Math.min(240,W*0.2),60],M:[W-60-Math.min(240,W*0.2),60],A:[W-40-zw,40],B:[W*(0.55-PWs)-40-zw,40],C:[60,50],D:[W-60-zw,H-Math.max(60,H*0.04)-zh2-30],E:[60,50],F:[W-60-zw,70],G:[60,50],H:[W-60-zw,50],I:[W-50-zw,50]}[layout]||[40,40];
   const [zx,zy]=pos;const d=x.getImageData(zx*f,zy*f,Math.max(1,zw*f),Math.max(1,zh2*f)).data;let lum=0;for(let i=0;i<d.length;i+=16)lum+=(0.3*d[i]+0.59*d[i+1]+0.11*d[i+2]);lum/=d.length/16;
-  if(lum<120){const oc=document.createElement('canvas');oc.width=zl.width;oc.height=zl.height;const o=oc.getContext('2d');o.drawImage(zl,0,0);o.globalCompositeOperation='source-in';o.fillStyle='#ffffff';o.fillRect(0,0,oc.width,oc.height);x.drawImage(oc,zx,zy,zw,zh2)}else x.drawImage(zl,zx,zy,zw,zh2)}
+  if(lum<120){const oc=document.createElement('canvas');oc.width=zl.width;oc.height=zl.height;const o=oc.getContext('2d');o.drawImage(zl,0,0);o.globalCompositeOperation='source-in';o.fillStyle='#ffffff';o.fillRect(0,0,oc.width,oc.height);EW('logo:zonal',zx,'left',zw,zh2,()=>x.drawImage(oc,zx,zy,zw,zh2))(zy)}else EW('logo:zonal',zx,'left',zw,zh2,()=>x.drawImage(zl,zx,zy,zw,zh2))(zy)}
  $('out').style.display='none';
 }
 function runAnim(dur,onFrame,done){ANIM.on=true;const t0=performance.now();(function step(now){ANIM.t=Math.min(1,(now-t0)/(dur*0.55));draw();onFrame&&onFrame();if(now-t0<dur)requestAnimationFrame(step);else{ANIM.on=false;ANIM.t=1;draw();done&&done()}})(t0)}
@@ -519,7 +555,101 @@ $('rec').onclick=()=>{if(!c.captureStream||!window.MediaRecorder){alert('Video r
  rec.onstop=()=>{const b=new Blob(chunks,{type:type||'video/webm'});const v=$('vid');v.src=URL.createObjectURL(b);$('vout').style.display='block';$('vout').scrollIntoView({behavior:'smooth'})};
  $('rec').textContent='Recording…';rec.start();runAnim(8000,null,()=>{setTimeout(()=>{rec.stop();$('rec').textContent='🎬 Make video (8s)'},300)})};
 $('save').onclick=()=>{draw();$('outimg').src=c.toDataURL('image/png');$('out').style.display='block';$('out').scrollIntoView({behavior:'smooth'})};
-setLayoutDefaults();document.fonts.ready.then(draw);draw();
+setLayoutDefaults();$('size').value='1080x1350';document.fonts.ready.then(draw);draw();
+/* direct photo editing: drag, wheel/pinch zoom, toolbar */
+(function(){const C=$('c'),Z=$('zoom'),OX=$('ox'),OY=$('oy');const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+ function setZ(v){Z.value=cl(Math.round(v),+Z.min,+Z.max);$('zv').textContent=Z.value+'%';draw()}
+ const pts=new Map();let last=null,pd=0,pz=100;
+ C.addEventListener('pointerdown',e=>{if(!photo)return;C.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);C.classList.add('drag');last=[e.clientX,e.clientY];if(pts.size===2){const[a,b]=[...pts.values()];pd=Math.hypot(a[0]-b[0],a[1]-b[1]);pz=+Z.value}});
+ C.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+  if(pts.size>=2){const[a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pd)setZ(pz*d/pd);return}
+  const R=C.getBoundingClientRect(),dx=e.clientX-last[0],dy=e.clientY-last[1];last=[e.clientX,e.clientY];
+  OX.value=cl(+OX.value+dx/R.width*400,-300,300);OY.value=cl(+OY.value+dy/R.height*300,-300,300);draw()});
+ const up=e=>{pts.delete(e.pointerId);if(!pts.size)C.classList.remove('drag');pd=0;const v=[...pts.values()][0];if(v)last=v};
+ C.addEventListener('pointerup',up);C.addEventListener('pointercancel',up);
+ C.addEventListener('wheel',e=>{if(!photo)return;e.preventDefault();setZ(+Z.value*(e.deltaY<0?1.06:0.94))},{passive:false});
+ document.querySelectorAll('[data-pz]').forEach(b=>b.onclick=()=>setZ(+Z.value+ +b.dataset.pz));
+ 
+ 
+})();
+/* ===== editable text on poster ===== */
+var BOXES=[],EL={},SEL=null;
+function EW(key,X,al,w,h,d){return y=>{const e=(EL||{})[key]||{};if(e.del)return;const x0=al==='left'?X:al==='right'?X-w:X-w/2,cx=x0+w/2,cy=y+h/2,dx=e.dx||0,dy=e.dy||0,sc=e.s||1;
+ x.save();x.translate(cx+dx,cy+dy);x.scale(sc,sc);x.translate(-cx,-cy);d(y);x.restore();(BOXES=BOXES||[]).push({key,cx:cx+dx,cy:cy+dy,w:w*sc+16,h:h*sc+12})}}
+(function(){const C=$('c'),sb=$('selbox'),tb=$('ttb'),te=$('tedit');
+ const L=()=>{const f=Math.min(c.width/1080,c.height/1528),R=C.getBoundingClientRect();return{f,R,k:R.width/c.width*f}};
+ const toLog=e=>{const{R,k}=L();return[(e.clientX-R.left)/k,(e.clientY-R.top)/k]};
+ function hit(p){for(let i=BOXES.length-1;i>=0;i--){const b=BOXES[i];if(Math.abs(p[0]-b.cx)<=b.w/2&&Math.abs(p[1]-b.cy)<=b.h/2)return b}return null}
+ function place(){const b=BOXES.find(b=>b.key===SEL);if(!b){sb.style.display=tb.style.display='none';return}const{k}=L();const l=(b.cx-b.w/2)*k,t=(b.cy-b.h/2)*k;
+  Object.assign(sb.style,{display:'block',left:l+'px',top:t+'px',width:b.w*k+'px',height:b.h*k+'px'});tb.style.display='flex';tb.style.left=Math.max(0,l)+'px';tb.style.top=Math.max(0,t-40)+'px'}
+ const _d=draw;draw=function(){_d.apply(this,arguments);if(SEL)place()};
+ let drag=null;
+ C.addEventListener('pointerdown',e=>{const p=toLog(e),b=hit(p);if(!b){SEL=null;place();te.style.display='none';return}
+  e.stopImmediatePropagation();window.pushHist&&pushHist();SEL=b.key;const el=EL[SEL]=EL[SEL]||{};drag={p,dx:el.dx||0,dy:el.dy||0,id:e.pointerId};C.setPointerCapture(e.pointerId);place()},true);
+ C.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.stopImmediatePropagation();const p=toLog(e),el=EL[SEL];el.dx=drag.dx+p[0]-drag.p[0];el.dy=drag.dy+p[1]-drag.p[1];draw()},true);
+ const up=e=>{if(drag&&e.pointerId===drag.id){drag=null;e.stopImmediatePropagation()}};C.addEventListener('pointerup',up,true);C.addEventListener('pointercancel',up,true);
+ const FIELDS=['kicker','title','aud','tag','cta','inlbl'];
+ function fieldOf(key){const K=key.toUpperCase().trim();for(const f of FIELDS){const v=($(f).value||'').trim();if(v&&(v.toUpperCase()===K||v.split(/\s+/).join(' ').toUpperCase()===K))return{f}}for(const f of ['locs','perks']){const ls=($(f)?$(f).value:'').split('\n');const i=ls.findIndex(l=>l.trim()&&(l.trim().toUpperCase()===K||K.includes(l.trim().toUpperCase())));if(i>=0)return{f,i}}return null}
+ tb.addEventListener('click',e=>{const t=e.target.dataset.t;if(!t||!SEL)return;const el=EL[SEL]=EL[SEL]||{};
+  if(t==='+')el.s=Math.min(3,(el.s||1)*1.12);if(t==='-')el.s=Math.max(.3,(el.s||1)/1.12);
+  if(t==='d'){el.del=true;SEL=null;te.style.display='none';place()}
+  if(t==='e'){const fo=fieldOf(SEL);if(!fo){te.value=SEL;te.dataset.k='';}else{te.dataset.k=JSON.stringify(fo);te.value=fo.i!=null?$(fo.f).value.split('\n')[fo.i]:$(fo.f).value}const{k}=L();const b=BOXES.find(b=>b.key===SEL);te.style.top=((b.cy+b.h/2)*k+6)+'px';te.style.display='block';te.focus();return}
+  draw()});
+ te.addEventListener('input',()=>{const fo=te.dataset.k?JSON.parse(te.dataset.k):null;if(!fo)return;const old=EL[SEL];
+  if(fo.i!=null){const ls=$(fo.f).value.split('\n');ls[fo.i]=te.value;$(fo.f).value=ls.join('\n')}else $(fo.f).value=te.value;
+  draw();const nb=BOXES[BOXES.length-1];const match=BOXES.find(b=>b.key.toUpperCase().includes(te.value.toUpperCase().trim()))||null;if(match){EL[match.key]=Object.assign({},old);SEL=match.key;draw()}});
+ te.addEventListener('keydown',e=>{if(e.key==='Enter')te.style.display='none'});
+ $('tRestore').onclick=()=>{Object.values(EL).forEach(v=>v.del=false);draw()};
+ $('reset').addEventListener('click',()=>{EL={};SEL=null;place();draw()});
+ $('save').addEventListener('click',()=>{SEL=null;place()},true);
+})();
+
+/* ===== undo ===== */
+(function(){const H=[],IDS=['layout','size','pal','f_head','f_body','f_script','kicker','title','aud','tag','cta','perks','locs','inlbl','hsize','c_panel','c_ink','c_accent','c_bar'];
+ function snap(){const v={};IDS.forEach(i=>{if($(i))v[i]=$(i).value});return JSON.stringify({v,EL,lay:layout})}
+ window.pushHist=function(){const sn=snap();if(H[H.length-1]!==sn){H.push(sn);if(H.length>60)H.shift()}};
+ $('undoBtn').onclick=()=>{if(!H.length)return;const cur=snap();let sn=H.pop();if(sn===cur&&H.length)sn=H.pop();const o=JSON.parse(sn);
+  IDS.forEach(i=>{if($(i)&&o.v[i]!=null)$(i).value=o.v[i]});layout=o.lay;applyPal(+$('pal').value);['c_panel','c_ink','c_accent','c_bar'].forEach(i=>{$(i).value=o.v[i];$(i).dispatchEvent(new Event('input'))});EL=o.EL||{};SEL=null;$('selbox').style.display=$('ttb').style.display='none';draw()};
+ ['shAll','shLay','shCol','shuffle','tRestore','reset'].forEach(id=>$(id)&&$(id).addEventListener('click',pushHist,true));
+ $('c').addEventListener('pointerdown',pushHist,true);$('ttb').addEventListener('click',pushHist,true);$('tedit').addEventListener('focus',pushHist);
+})();
+
+/* ===== Agent profiles + shuffles + ChatGPT prompt ===== */
+(function(){
+const BASE='https://zonalhomesph-stack.github.io/EmpressPropertyDatabase/photos/agents/';
+const AG=[['Florence Alvarez','flo'],['Pia Roldan','pia'],['Jennifer Casem','jennifer'],['Precylyn Masangkay','precylyn'],['Vivian Guerra','vivian'],['Ma. Cristina Magadia','cristina'],['Bryan Kc Mae Bigtas','bryan'],['Marilyn Alvarez','marilyn'],['Alma Oyzon','alma']];
+const sel=$('agentSel');AG.forEach(([n,d],i)=>{const o=document.createElement('option');o.value=i;o.textContent=n;sel.appendChild(o)});
+let cur=null,pi=1;
+const LS=k=>{try{return JSON.parse(localStorage.getItem('hpm_'+k)||'null')}catch(e){return null}},SS=(k,v)=>{try{localStorage.setItem('hpm_'+k,JSON.stringify(v))}catch(e){}};
+function loadPhoto(d,n,tries){const im=new Image();im.crossOrigin='anonymous';im.onload=()=>{pi=n;photo=im;$('fitp').click();draw()};im.onerror=()=>{if((tries||0)<2)loadPhoto(d,n%3+1,(tries||0)+1)};im.src=BASE+d+'/'+n+'.png'}
+sel.onchange=()=>{const a=AG[sel.value];if(!a)return;cur=a;$('aname').value=a[0];const ph=LS('phone_'+a[1]);if(ph)$('aphone').value=ph;loadPhoto(a[1],1);SS('me',sel.value);draw()};
+$('aphone').addEventListener('change',()=>{if(cur)SS('phone_'+cur[1],$('aphone').value)});
+function nudge(){sel.focus();sel.style.outline='3px solid #e0457b';setTimeout(()=>sel.style.outline='',1500)}
+$('shPhoto').onclick=()=>{if(!cur){nudge();return}loadPhoto(cur[1],pi%3+1)};
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+function shLay(){const opts=[...$('layout').options].map(o=>o.value);let v;do v=rnd(opts);while(v===layout&&opts.length>1);$('layout').value=v;$('layout').dispatchEvent(new Event('change'))}
+function shCol(){const P=$('pal');P.value=rnd([...P.options]).value;P.onchange();['f_head','f_body','f_script'].forEach(id=>{const e=$(id);e.value=rnd([...e.options]).value});draw()}
+$('shLay').onclick=shLay;$('shCol').onclick=shCol;
+$('shAll').onclick=()=>{shLay();shCol();$('shuffle').click();if(cur)loadPhoto(cur[1],Math.floor(Math.random()*3)+1)};
+$('gptBtn').onclick=()=>{const v=id=>($(id)||{}).value||'';const t=`Make this real estate hiring poster look more premium and professional, ready for Facebook.
+
+Use the uploaded poster as the exact layout guide.
+KEEP ALL TEXT EXACTLY THE SAME, letter by letter. Do not change, add or remove any words, numbers or logos. Text for reference:
+- Top line: ${v('kicker')}
+- Position: ${v('title')}
+- For who: ${v('aud')}
+- Tagline: ${v('tag')}
+- Button: ${v('cta')}
+- Agent: ${v('aname')} ${v('aphone')}
+
+Keep the person's face exactly the same (same identity, same skin tone, no face changes). You may improve the lighting, make the outfit look neat and professional, and add a soft natural shadow so the person blends with the background.
+Keep the brand colors: ${v('c_panel')} panel, ${v('c_accent')} accent, ${v('c_bar')} bar.
+Style: clean, modern, elegant Filipino real estate brand. No extra text, no watermarks.
+Output: same aspect ratio as the uploaded poster.`;$('gptTxt').value=t;$('gptBox').style.display='block';$('gptBox').scrollIntoView({behavior:'smooth',block:'center'})};
+$('gptCopy').onclick=()=>{const t=$('gptTxt');t.select();try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}$('gptCopy').textContent='✅ Copied!';setTimeout(()=>$('gptCopy').textContent='📋 Copy prompt',1500)};
+const me=LS('me');if(me!==null&&AG[me]){sel.value=me;sel.onchange()}
+})();
+
 </script>
 </body>
 </html>
