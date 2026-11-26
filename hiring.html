@@ -42,6 +42,7 @@ h3{font-size:12px!important}label{font-size:11px!important}
 #tedit{position:absolute;display:none;z-index:6;width:80%!important;left:10%;font-size:14px!important}
 #ovl{position:absolute;bottom:8px;right:8px;display:flex;gap:6px;z-index:4}#ovl button{width:auto!important;margin:0!important;padding:5px 9px!important;font-size:11px!important;background:rgba(255,255,255,.9);color:#7a1020;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
 #ttb.isph button[data-t="e"],#ttb.isph button[data-t="d"]{display:none}
+#ttb .pr{display:none}#ttb.ispr .pr{display:inline-block}#ttb.ispr button[data-t="e"]{display:none}
 </style>
 </head>
 <body>
@@ -103,7 +104,7 @@ Grow with a strong team</textarea>
 
 </div>
 <div class="preview">
-    <div id="cwrap"><canvas id="c"></canvas><div id="selbox"></div><div id="ovl"><button type="button" id="undoBtn" title="Undo">↶ Undo</button><button type="button" id="propBtn" title="Add property photo">🏠 Property photo</button></div><div id="ttb"><button type="button" data-t="-">➖</button><button type="button" data-t="+">➕</button><button type="button" data-t="e">✏️</button><button type="button" data-t="d">🗑️</button></div><input id="tedit" type="text"></div>
+    <div id="cwrap"><canvas id="c"></canvas><div id="selbox"></div><div id="ovl"><button type="button" id="undoBtn" title="Undo">↶ Undo</button><button type="button" id="propBtn" title="Add property photo">🏠 Property photo</button></div><div id="ttb"><button type="button" data-t="-">➖</button><button type="button" data-t="+">➕</button><button type="button" data-t="e">✏️</button><button type="button" data-t="r" class="pr">🔄</button><button type="button" data-t="b" class="pr">💧</button><button type="button" data-t="d">🗑️</button></div><input type="file" id="prepl" accept="image/*" style="display:none"><input id="tedit" type="text"></div>
   <div class="acts">  <button type="button" class="sec" id="gptBtn">✨ ChatGPT prompt for my design</button>
   <div id="gptBox" style="display:none;margin-top:8px"><p class="hint">1) Save your poster as PNG below. 2) Open ChatGPT, upload the poster (and a nicer photo of you if you want). 3) Paste this prompt.</p><textarea id="gptTxt" style="min-height:170px"></textarea><button type="button" id="gptCopy">📋 Copy prompt</button></div>
 
@@ -264,7 +265,7 @@ function logo(img,X,Y,w,al){if(!img.width)return 0;const h=img.height*w/img.widt
 function logoH(img,w){return img.width?img.height*w/img.width:0}
 function hexA(h,a){const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`}
 function drawBg(dx,dy,dw,dh){const v=$('bg').value;x.save();x.beginPath();x.rect(dx,dy,dw,dh);x.clip();
- if(v==='upload'&&bgImg){coverImg(bgImg,dx,dy,dw,dh)}else if(v==='property'&&props[0]){coverImg(props[0],dx,dy,dw,dh)}else if(v==='brand'){const g=x.createLinearGradient(dx,dy,dx+dw*.4,dy+dh);g.addColorStop(0,T.bar);g.addColorStop(1,T.panel);x.fillStyle=g;x.fillRect(dx,dy,dw,dh)}else{const P={brand:['#eef0f1','#d6d9db'],property:['#eef0f1','#d6d9db'],office:['#eef0f1','#d6d9db'],cream:['#fbf5ec','#efe4d2'],white:['#ffffff','#f3f3f3'],maroon:['#8e1a2c','#5a0c18'],gold:['#f3e2b0','#c9a24a'],navy:['#1c3a6b','#0e1f3d'],upload:['#eef0f1','#d6d9db']}[v];const g=x.createLinearGradient(dx,dy,dx+dw*.3,dy+dh);g.addColorStop(0,P[0]);g.addColorStop(1,P[1]);x.fillStyle=g;x.fillRect(dx,dy,dw,dh)}
+ if(v==='upload'&&bgImg){coverImg(bgImg,dx,dy,dw,dh)}else if(v==='property'&&props[0]){propCover(0,dx,dy,dw,dh,1)}else if(v==='brand'){const g=x.createLinearGradient(dx,dy,dx+dw*.4,dy+dh);g.addColorStop(0,T.bar);g.addColorStop(1,T.panel);x.fillStyle=g;x.fillRect(dx,dy,dw,dh)}else{const P={brand:['#eef0f1','#d6d9db'],property:['#eef0f1','#d6d9db'],office:['#eef0f1','#d6d9db'],cream:['#fbf5ec','#efe4d2'],white:['#ffffff','#f3f3f3'],maroon:['#8e1a2c','#5a0c18'],gold:['#f3e2b0','#c9a24a'],navy:['#1c3a6b','#0e1f3d'],upload:['#eef0f1','#d6d9db']}[v];const g=x.createLinearGradient(dx,dy,dx+dw*.3,dy+dh);g.addColorStop(0,P[0]);g.addColorStop(1,P[1]);x.fillStyle=g;x.fillRect(dx,dy,dw,dh)}
  x.restore()}
 function coverImg(img,dx,dy,dw,dh){const r=Math.max(dw/img.width,dh/img.height)*(ANIM.on?1+0.08*ANIM.t:1),w=img.width*r,h=img.height*r;x.drawImage(img,dx+(dw-w)/2,dy+(dh-h)/2,w,h)}
 function drawPhoto(dx,dy,dw,dh,blur){drawBg(dx,dy,dw,dh);if(!photo){font(500,26,BF());x.fillStyle='rgba(0,0,0,.35)';tx('Upload photo',dx+dw/2,dy+dh/2-13,'center');return}
@@ -303,7 +304,8 @@ function bar(y,H,W,withIcons){x.fillStyle=T.bar;x.fillRect(0,y,W,H-y);const p=li
  else{x.fillStyle=T.barText;const s=p.map(t=>t.toUpperCase()).join('   ·   ');const fs=fit(s,500,BF(),W-120,Math.min(22,(H-y)*.22));x.letterSpacing='1px';tx(s,W/2,mid-fs*0.55,'center');x.letterSpacing='0px'}}
 
 
-function propImg(n,dx,dy,dw,dh,r){x.save();x.beginPath();x.roundRect(dx,dy,dw,dh,r||0);x.clip();const im=props[n]||props[0];if(im)coverImg(im,dx,dy,dw,dh);else{const g=x.createLinearGradient(dx,dy,dx,dy+dh);g.addColorStop(0,'#c9d3dc');g.addColorStop(1,'#8e9aa6');x.fillStyle=g;x.fillRect(dx,dy,dw,dh);
+function propCover(n,dx,dy,dw,dh,bg){const st=PS[n]=PS[n]||{};const im=props[n]||props[0];if(!im)return;(PROPB=PROPB||[]).push({key:'prop'+n,n,bg:!!bg,cx:dx+dw/2,cy:dy+dh/2,w:dw,h:dh});if(st.del)return;x.save();x.beginPath();x.rect(dx,dy,dw,dh);x.clip();const z=(st.z||1)*(ANIM.on?1+0.08*ANIM.t:1),rr=Math.max(dw/im.width,dh/im.height)*z,w=im.width*rr,h=im.height*rr;if(st.blur)x.filter='blur(10px)';x.drawImage(im,dx+(dw-w)/2+(st.ox||0),dy+(dh-h)/2+(st.oy||0),w,h);x.filter='none';x.restore()}
+function propImg(n,dx,dy,dw,dh,r){const st=PS[n]=PS[n]||{};const im=props[n]||props[0];if(im)(PROPB=PROPB||[]).push({key:'prop'+n,n,cx:dx+dw/2,cy:dy+dh/2,w:dw,h:dh});if(im&&st.del)return;x.save();x.beginPath();x.roundRect(dx,dy,dw,dh,r||0);x.clip();if(im){const z=(st.z||1)*(ANIM.on?1+0.08*ANIM.t:1),rr=Math.max(dw/im.width,dh/im.height)*z,w=im.width*rr,h=im.height*rr;if(st.blur)x.filter='blur(10px)';x.drawImage(im,dx+(dw-w)/2+(st.ox||0),dy+(dh-h)/2+(st.oy||0),w,h);x.filter='none'}else{const g=x.createLinearGradient(dx,dy,dx,dy+dh);g.addColorStop(0,'#c9d3dc');g.addColorStop(1,'#8e9aa6');x.fillStyle=g;x.fillRect(dx,dy,dw,dh);
  // simple house silhouette placeholder
  const cx=dx+dw/2,by=dy+dh*0.78,hw=Math.min(dw,dh)*0.32;x.fillStyle='rgba(255,255,255,.55)';x.beginPath();x.moveTo(cx-hw,by);x.lineTo(cx-hw,by-hw*0.9);x.lineTo(cx,by-hw*1.7);x.lineTo(cx+hw,by-hw*0.9);x.lineTo(cx+hw,by);x.closePath();x.fill();font(500,22,BF());x.fillStyle='rgba(255,255,255,.9)';tx('Upload property photo',cx,dy+dh*0.86,'center')}x.restore()}
 function agent(dx,dy,dw,dh,{anchor='bottom'}={}){if(!photo){x.save();x.globalAlpha=.6;font(500,24,BF());x.fillStyle='#ffffff';tx('Upload agent photo',dx+dw/2,dy+dh-60,'center');x.restore();return}
@@ -314,7 +316,7 @@ function badge(cx,cy,r,top,mid){EW('g:badge',cx,'center',r*2,r*2,()=>badge0(cx,c
 function badge0(cx,cy,r,top,mid){x.save();x.fillStyle=T.accent;x.beginPath();for(let i=0;i<48;i++){const a=i/48*Math.PI*2,rr=i%2?r:r*0.9;x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}x.closePath();x.fill();x.strokeStyle=T.panel;x.lineWidth=3;x.beginPath();x.arc(cx,cy,r*0.78,0,7);x.stroke();x.fillStyle=T.panel;font(800,r*0.22,BF());tx(top,cx,cy-r*0.36,'center');font(900,r*0.36,HF());tx(mid,cx,cy-r*0.12,'center');x.restore()}
 
 /* ---------- layouts ---------- */
-function draw(){BOXES=[];RC=0;PHB=null;
+function draw(){BOXES=[];RC=0;PHB=null;PROPB=[];
  const [W0,H0]=$('size').value.split('x').map(Number);c.width=W0;c.height=H0;const f=Math.min(W0/1080,H0/1528);x.setTransform(f,0,0,f,0,0);const W=W0/f,H=H0/f;
  const k=$('kicker').value,ti=$('title').value,aud=$('aud').value,tag=$('tag').value,lbl=$('inlbl').value,locs=lines($('locs').value),cta=$('cta').value,blur=$('blur').checked;
  const PWs=$('pw').value/100;
@@ -489,7 +491,7 @@ function draw(){BOXES=[];RC=0;PHB=null;
 
  const SH=(on)=>{x.shadowColor=on?'rgba(0,0,0,.55)':'transparent';x.shadowBlur=on?18:0;x.shadowOffsetY=on?3:0};
  if(layout==='J'){ // full-bleed photo, headline bottom, text only (no panels)
-  const M=70;if(props[0]&&!photo)coverImg(props[0],0,0,W,H);else drawPhoto(0,0,W,H,blur);
+  const M=70;if(props[0]&&!photo)propCover(0,0,0,W,H);else drawPhoto(0,0,W,H,blur);
   const g=x.createLinearGradient(0,H*0.45,0,H);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.72)');x.fillStyle=g;x.fillRect(0,H*0.45,W,H*0.55);
   logo(em,M,M,130);SH(true);
   stack([
@@ -505,7 +507,7 @@ function draw(){BOXES=[];RC=0;PHB=null;
   const M=70;x.fillStyle=T.panel;x.fillRect(0,0,W,H);
   const aw=W-M*2,ah=H*0.52,ax=M,ay=M+150;
   x.save();x.beginPath();x.moveTo(ax,ay+ah);x.lineTo(ax,ay+aw/2);x.arc(W/2,ay+aw/2,aw/2,Math.PI,0);x.lineTo(ax+aw,ay+ah);x.closePath();x.clip();
-  if(props[0]&&!photo)coverImg(props[0],ax,ay,aw,ah);else drawPhoto(ax,ay,aw,ah,blur);x.restore();
+  if(props[0]&&!photo)propCover(0,ax,ay,aw,ah);else drawPhoto(ax,ay,aw,ah,blur);x.restore();
   x.strokeStyle=T.accent;x.lineWidth=3;x.beginPath();x.moveTo(ax+24,ay+ah+24);x.lineTo(ax+24,ay+aw/2);x.arc(W/2,ay+aw/2,aw/2-24,Math.PI,0);x.lineTo(ax+aw-24,ay+ah+24);x.stroke();
   logo(em,W/2,M,120,'center');
   stack([
@@ -517,7 +519,7 @@ function draw(){BOXES=[];RC=0;PHB=null;
   ],ay+ah+60,H-M,{maxGap:44});
  }
  if(layout==='L'){ // full photo, centered big title, text only
-  const M=80;if(props[0]&&!photo)coverImg(props[0],0,0,W,H);else drawPhoto(0,0,W,H,blur);
+  const M=80;if(props[0]&&!photo)propCover(0,0,0,W,H);else drawPhoto(0,0,W,H,blur);
   x.fillStyle='rgba(0,0,0,.28)';x.fillRect(0,0,W,H);logo(em,W/2,M,140,'center');SH(true);
   stack([
    B_text(k.toUpperCase(),{w:600,f:bf,size:34,max:W-M*2,col:'#ffffff',X:W/2,ls:8}),
@@ -530,7 +532,7 @@ function draw(){BOXES=[];RC=0;PHB=null;
  }
  if(layout==='M'){ // dream home awaits: photo top, headline, 2 frames
   const M=60;x.fillStyle=T.panel;x.fillRect(0,0,W,H);const ph=H*0.5;
-  if(props[0]&&!photo)coverImg(props[0],0,0,W,ph);else drawPhoto(0,0,W,ph,blur);
+  if(props[0]&&!photo)propCover(0,0,0,W,ph);else drawPhoto(0,0,W,ph,blur);
   const g=x.createLinearGradient(0,ph*0.6,0,ph);g.addColorStop(0,hexA(T.panel,0));g.addColorStop(1,T.panel);x.fillStyle=g;x.fillRect(0,ph*0.6,W,ph*0.4+2);
   logo(em,W/2,M,130,'center');
   const fw=(W-M*3)/2,fh=fw*0.7;
@@ -582,25 +584,25 @@ setLayoutDefaults();$('size').value='1080x1350';document.fonts.ready.then(draw);
  
 })();
 /* ===== editable text on poster ===== */
-var BOXES=[],EL={},SEL=null,PHB=null;
+var BOXES=[],EL={},SEL=null,PHB=null,PS={},PROPB=[];
 function EW(key,X,al,w,h,d){return y=>{const e=(EL||{})[key]||{};if(e.del)return;const x0=al==='left'?X:al==='right'?X-w:X-w/2,cx=x0+w/2,cy=y+h/2,dx=e.dx||0,dy=e.dy||0,sc=e.s||1;
  x.save();x.translate(cx+dx,cy+dy);x.scale(sc,sc);x.translate(-cx,-cy);d(y);x.restore();(BOXES=BOXES||[]).push({key,cx:cx+dx,cy:cy+dy,w:w*sc+16,h:h*sc+12})}}
 (function(){const C=$('c'),sb=$('selbox'),tb=$('ttb'),te=$('tedit');
  const L=()=>{const f=Math.min(c.width/1080,c.height/1528),R=C.getBoundingClientRect();return{f,R,k:R.width/c.width*f}};
  const toLog=e=>{const{R,k}=L();return[(e.clientX-R.left)/k,(e.clientY-R.top)/k]};
- function hit(p){for(let i=BOXES.length-1;i>=0;i--){const b=BOXES[i];if(Math.abs(p[0]-b.cx)<=b.w/2&&Math.abs(p[1]-b.cy)<=b.h/2)return b}if(PHB&&photo&&Math.abs(p[0]-PHB.cx)<=PHB.w/2&&Math.abs(p[1]-PHB.cy)<=PHB.h/2)return PHB;return null}
- function place(){const b=SEL==='photo'?PHB:BOXES.find(b=>b.key===SEL);tb.classList.toggle('isph',SEL==='photo');if(!b){sb.style.display=tb.style.display='none';return}const{k}=L();const l=(b.cx-b.w/2)*k,t=(b.cy-b.h/2)*k;
+ function hit(p){for(let i=BOXES.length-1;i>=0;i--){const b=BOXES[i];if(Math.abs(p[0]-b.cx)<=b.w/2&&Math.abs(p[1]-b.cy)<=b.h/2)return b}for(const b of (PROPB||[]))if(!b.bg&&Math.abs(p[0]-b.cx)<=b.w/2&&Math.abs(p[1]-b.cy)<=b.h/2)return b;if(PHB&&photo&&Math.abs(p[0]-PHB.cx)<=PHB.w/2&&Math.abs(p[1]-PHB.cy)<=PHB.h/2)return PHB;for(const b of (PROPB||[]))if(b.bg&&Math.abs(p[0]-b.cx)<=b.w/2&&Math.abs(p[1]-b.cy)<=b.h/2)return b;return null}
+ function place(){const isP=/^prop/.test(SEL||'');const b=SEL==='photo'?PHB:isP?(PROPB||[]).find(b=>b.key===SEL):BOXES.find(b=>b.key===SEL);tb.classList.toggle('isph',SEL==='photo');tb.classList.toggle('ispr',isP);if(!b){sb.style.display=tb.style.display='none';return}const{k}=L();const l=(b.cx-b.w/2)*k,t=(b.cy-b.h/2)*k;
   Object.assign(sb.style,{display:'block',left:l+'px',top:t+'px',width:b.w*k+'px',height:b.h*k+'px'});tb.style.display='flex';tb.style.left=Math.max(0,l)+'px';tb.style.top=Math.max(0,t-40)+'px'}
  const _d=draw;draw=function(){_d.apply(this,arguments);if(SEL)place()};
  let drag=null;
  C.addEventListener('pointerdown',e=>{const p=toLog(e),b=hit(p);if(!b){SEL=null;place();te.style.display='none';return}
-  e.stopImmediatePropagation();window.pushHist&&pushHist();SEL=b.key;const el=EL[SEL]=EL[SEL]||{};drag={p,dx:el.dx||0,dy:el.dy||0,ox:+$('ox').value,oy:+$('oy').value,id:e.pointerId};C.setPointerCapture(e.pointerId);place()},true);
- C.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.stopImmediatePropagation();const p=toLog(e);if(SEL==='photo'){$('ox').value=Math.max(-300,Math.min(300,drag.ox+(p[0]-drag.p[0])/(PHB.w*.5)*100));$('oy').value=Math.max(-300,Math.min(300,drag.oy+(p[1]-drag.p[1])/(PHB.h*.5)*100));draw();return}const el=EL[SEL];el.dx=drag.dx+p[0]-drag.p[0];el.dy=drag.dy+p[1]-drag.p[1];draw()},true);
+  e.stopImmediatePropagation();window.pushHist&&pushHist();SEL=b.key;const el=EL[SEL]=EL[SEL]||{};const ps=/^prop/.test(SEL)?(PS[+SEL.slice(4)]=PS[+SEL.slice(4)]||{}):{};drag={p,pox:ps.ox||0,poy:ps.oy||0,dx:el.dx||0,dy:el.dy||0,ox:+$('ox').value,oy:+$('oy').value,id:e.pointerId};C.setPointerCapture(e.pointerId);place()},true);
+ C.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.stopImmediatePropagation();const p=toLog(e);if(/^prop/.test(SEL)){const st=PS[+SEL.slice(4)];st.ox=drag.pox+p[0]-drag.p[0];st.oy=drag.poy+p[1]-drag.p[1];draw();return}if(SEL==='photo'){$('ox').value=Math.max(-300,Math.min(300,drag.ox+(p[0]-drag.p[0])/(PHB.w*.5)*100));$('oy').value=Math.max(-300,Math.min(300,drag.oy+(p[1]-drag.p[1])/(PHB.h*.5)*100));draw();return}const el=EL[SEL];el.dx=drag.dx+p[0]-drag.p[0];el.dy=drag.dy+p[1]-drag.p[1];draw()},true);
  const up=e=>{if(drag&&e.pointerId===drag.id){drag=null;e.stopImmediatePropagation()}};C.addEventListener('pointerup',up,true);C.addEventListener('pointercancel',up,true);
  const FIELDS=['kicker','title','aud','tag','cta','inlbl'];
  function fieldOf(key){if(/📞/.test(key))return{f:'aphone'};const K=key.toUpperCase().trim();for(const f of FIELDS){const v=($(f).value||'').trim();if(v&&(v.toUpperCase()===K||v.split(/\s+/).join(' ').toUpperCase()===K))return{f}}for(const f of ['locs','perks']){const ls=($(f)?$(f).value:'').split('\n');const i=ls.findIndex(l=>l.trim()&&(l.trim().toUpperCase()===K||K.includes(l.trim().toUpperCase())));if(i>=0)return{f,i}}return null}
  tb.addEventListener('click',e=>{const t=e.target.dataset.t;if(!t||!SEL)return;const el=EL[SEL]=EL[SEL]||{};
-  if(SEL==='photo'){const Z=$('zoom');Z.value=Math.max(+Z.min,Math.min(+Z.max,Math.round(+Z.value*(t==='+'?1.1:1/1.1))));if($('zv'))$('zv').textContent=Z.value+'%';draw();return}if(t==='+')el.s=Math.min(3,(el.s||1)*1.12);if(t==='-')el.s=Math.max(.3,(el.s||1)/1.12);
+  if(/^prop/.test(SEL)){const n=+SEL.slice(4),st=PS[n]=PS[n]||{};if(t==='+')st.z=Math.min(4,(st.z||1)*1.1);if(t==='-')st.z=Math.max(.4,(st.z||1)/1.1);if(t==='b')st.blur=!st.blur;if(t==='d'){st.del=true;SEL=null;place()}if(t==='r'){const f=$('prepl');f.dataset.n=n;f.value='';f.click();return}draw();return}if(SEL==='photo'){const Z=$('zoom');Z.value=Math.max(+Z.min,Math.min(+Z.max,Math.round(+Z.value*(t==='+'?1.1:1/1.1))));if($('zv'))$('zv').textContent=Z.value+'%';draw();return}if(t==='+')el.s=Math.min(3,(el.s||1)*1.12);if(t==='-')el.s=Math.max(.3,(el.s||1)/1.12);
   if(t==='d'){el.del=true;SEL=null;te.style.display='none';place()}
   if(t==='e'){const fo=fieldOf(SEL);if(!fo){te.value=SEL;te.dataset.k='';}else{te.dataset.k=JSON.stringify(fo);te.value=fo.i!=null?$(fo.f).value.split('\n')[fo.i]:$(fo.f).value}const{k}=L();const b=BOXES.find(b=>b.key===SEL);te.style.top=((b.cy+b.h/2)*k+6)+'px';te.style.display='block';te.focus();return}
   draw()});
@@ -615,13 +617,17 @@ function EW(key,X,al,w,h,d){return y=>{const e=(EL||{})[key]||{};if(e.del)return
 
 /* ===== undo ===== */
 (function(){const H=[],IDS=['layout','size','pal','f_head','f_body','f_script','kicker','title','aud','tag','cta','perks','locs','inlbl','hsize','c_panel','c_ink','c_accent','c_bar'];
- function snap(){const v={};IDS.forEach(i=>{if($(i))v[i]=$(i).value});return JSON.stringify({v,EL,lay:layout})}
+ function snap(){const v={};IDS.forEach(i=>{if($(i))v[i]=$(i).value});return JSON.stringify({v,EL,PS,lay:layout})}
  window.pushHist=function(){const sn=snap();if(H[H.length-1]!==sn){H.push(sn);if(H.length>60)H.shift()}};
  $('undoBtn').onclick=()=>{if(!H.length)return;const cur=snap();let sn=H.pop();if(sn===cur&&H.length)sn=H.pop();const o=JSON.parse(sn);
-  IDS.forEach(i=>{if($(i)&&o.v[i]!=null)$(i).value=o.v[i]});layout=o.lay;applyPal(+$('pal').value);['c_panel','c_ink','c_accent','c_bar'].forEach(i=>{$(i).value=o.v[i];$(i).dispatchEvent(new Event('input'))});EL=o.EL||{};SEL=null;$('selbox').style.display=$('ttb').style.display='none';draw()};
+  IDS.forEach(i=>{if($(i)&&o.v[i]!=null)$(i).value=o.v[i]});layout=o.lay;applyPal(+$('pal').value);['c_panel','c_ink','c_accent','c_bar'].forEach(i=>{$(i).value=o.v[i];$(i).dispatchEvent(new Event('input'))});EL=o.EL||{};PS=o.PS||{};SEL=null;$('selbox').style.display=$('ttb').style.display='none';draw()};
  ['shAll','shLay','shCol','shuffle','reset'].forEach(id=>$(id)&&$(id).addEventListener('click',pushHist,true));
  $('c').addEventListener('pointerdown',pushHist,true);$('ttb').addEventListener('click',pushHist,true);$('tedit').addEventListener('focus',pushHist);
 })();
+
+/* property replace */
+(function(){$('prepl').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const n=+e.target.dataset.n;const rd=new FileReader();rd.onload=()=>{const i=new Image();i.onload=()=>{window.pushHist&&pushHist();props[n]=i;PS[n]={};draw()};i.src=rd.result};rd.readAsDataURL(f)});
+ $('props').addEventListener('change',()=>{PS={};if('EI'.includes(layout)){$('bg').value='property';$('bg').dispatchEvent(new Event('change'))}})})();
 
 /* property photo button */
 (function(){const b=$('propBtn');const upd=()=>{b.style.display='EFGHI'.includes(layout)?'':'none'};b.onclick=()=>{$('props').value='';$('props').click()};$('layout').addEventListener('change',upd);upd();const _d=draw;draw=function(){_d.apply(this,arguments);upd()}})();
