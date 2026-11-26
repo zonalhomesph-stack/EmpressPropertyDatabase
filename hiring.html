@@ -560,12 +560,9 @@ $('rec').onclick=()=>{if(!c.captureStream||!window.MediaRecorder){alert('Video r
  rec.onstop=()=>{const b=new Blob(chunks,{type:type||'video/webm'});const v=$('vid');v.src=URL.createObjectURL(b);const ext=(type||'').includes('mp4')?'mp4':'webm';$('vdl').onclick=()=>dl(b,fname()+'.'+ext);$('vout').style.display='block';$('vout').scrollIntoView({behavior:'smooth'})};
  $('rec').textContent='Recording…';rec.start();runAnim(8000,null,()=>{setTimeout(()=>{rec.stop();$('rec').textContent='🎬 Make video (8s)'},300)})};
 function d2b(u){const[h,d]=u.split(',');const m=h.match(/:(.*?);/)[1];const b=atob(d);const a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:m})}
-async function dl(url,name){try{const blob=url instanceof Blob?url:url.startsWith('data:')?d2b(url):await (await fetch(url)).blob();if(!(url instanceof Blob)&&!url.startsWith('data:'))url=url;const file=new File([blob],name,{type:blob.type});
- if(navigator.canShare&&navigator.canShare({files:[file]})&&/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)){try{await navigator.share({files:[file],title:name});return}catch(e){if(e.name==='AbortError')return}}
- const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}catch(e){window.open(typeof url==='string'?url:URL.createObjectURL(url),'_blank')}
- const h=$('dlhint');if(h)h.style.display='block'}
+function dl(url,name){const blob=url instanceof Blob?url:d2b(url);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();const h=$('dlhint');if(h)h.style.display='block'}
 const fname=()=>'Empress-Hiring-'+(($('aname').value||'poster').replace(/[^A-Za-z0-9]+/g,'-'));
-$('save').onclick=()=>{SEL=null;draw();const u=c.toDataURL('image/png');$('outimg').src=u;$('out').style.display='block';dl(u,fname()+'.png')};
+$('save').onclick=()=>{SEL=null;ANIM.on=false;draw();c.toBlob(b=>{dl(b,fname()+'.png');$('outimg').src=URL.createObjectURL(b);$('out').style.display='block'},'image/png')};
 setLayoutDefaults();$('size').value='1080x1350';document.fonts.ready.then(draw);draw();
 /* direct photo editing: drag, wheel/pinch zoom, toolbar */
 (function(){const C=$('c'),Z=$('zoom'),OX=$('ox'),OY=$('oy');const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
