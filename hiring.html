@@ -103,7 +103,7 @@ Grow with a strong team</textarea>
 
 </div>
 <div class="preview">
-    <div id="cwrap"><canvas id="c"></canvas><div id="selbox"></div><div id="ovl"><button type="button" id="undoBtn" title="Undo">↶ Undo</button><button type="button" id="tRestore" title="Restore deleted">↩ Restore</button></div><div id="ttb"><button type="button" data-t="-">➖</button><button type="button" data-t="+">➕</button><button type="button" data-t="e">✏️</button><button type="button" data-t="d">🗑️</button></div><input id="tedit" type="text"></div>
+    <div id="cwrap"><canvas id="c"></canvas><div id="selbox"></div><div id="ovl"><button type="button" id="undoBtn" title="Undo">↶ Undo</button><button type="button" id="propBtn" title="Add property photo">🏠 Property photo</button></div><div id="ttb"><button type="button" data-t="-">➖</button><button type="button" data-t="+">➕</button><button type="button" data-t="e">✏️</button><button type="button" data-t="d">🗑️</button></div><input id="tedit" type="text"></div>
   <div class="acts">  <button type="button" class="sec" id="gptBtn">✨ ChatGPT prompt for my design</button>
   <div id="gptBox" style="display:none;margin-top:8px"><p class="hint">1) Save your poster as PNG below. 2) Open ChatGPT, upload the poster (and a nicer photo of you if you want). 3) Paste this prompt.</p><textarea id="gptTxt" style="min-height:170px"></textarea><button type="button" id="gptCopy">📋 Copy prompt</button></div>
 
@@ -113,7 +113,7 @@ Grow with a strong team</textarea>
   </div>
   <div class="panel" style="width:100%;max-width:760px"><h3>Caption + hashtags</h3><select id="capsel"></select><textarea id="captxt" style="min-height:210px;margin-top:8px"></textarea><div class="row"><button id="capcopy" type="button">Copy caption + hashtags</button><button class="sec" id="capnext" type="button">🔀 Shuffle caption</button></div><p class="hint" id="caphint"></p></div>
   <div id="vout" style="display:none;text-align:center"><p class="hint"><b>Right-click → Save video as</b> (desktop) or <b>long-press → Download</b> (phone). If FB rejects the file, open it in CapCut and export as MP4.</p><video id="vid" controls playsinline style="max-width:300px;border-radius:6px"></video><button type="button" id="vdl">⬇️ Download video</button></div>
-  <div id="out"><p class="hint"><b>Right-click → Save image as</b> (desktop) or <b>long-press → Save</b> (phone).</p><img id="outimg" alt="Poster"></div>
+  <div id="out"><p class="hint"><b>Right-click → Save image as</b> (desktop) or <b>long-press → Save</b> (phone).</p><p id="dlhint" class="hint" style="display:none;text-align:center">📱 Hindi na-save? Pindutin nang matagal ang poster sa ibaba → <b>Save image / Download image</b>.</p><img id="outimg" alt="Poster"></div>
 </div>
 </div>
 <script>
@@ -555,9 +555,13 @@ $('anim').onclick=()=>runAnim(5000);
 $('rec').onclick=()=>{if(!c.captureStream||!window.MediaRecorder){alert('Video recording is not supported in this browser.');return}
  const types=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'];const type=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
  const st=c.captureStream(30),rec=new MediaRecorder(st,type?{mimeType:type,videoBitsPerSecond:8e6}:{});const chunks=[];rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
- rec.onstop=()=>{const b=new Blob(chunks,{type:type||'video/webm'});const v=$('vid');v.src=URL.createObjectURL(b);const ext=(type||'').includes('mp4')?'mp4':'webm';$('vdl').onclick=()=>dl(v.src,fname()+'.'+ext);dl(v.src,fname()+'.'+ext);$('vout').style.display='block';$('vout').scrollIntoView({behavior:'smooth'})};
+ rec.onstop=()=>{const b=new Blob(chunks,{type:type||'video/webm'});const v=$('vid');v.src=URL.createObjectURL(b);const ext=(type||'').includes('mp4')?'mp4':'webm';$('vdl').onclick=()=>dl(b,fname()+'.'+ext);$('vout').style.display='block';$('vout').scrollIntoView({behavior:'smooth'})};
  $('rec').textContent='Recording…';rec.start();runAnim(8000,null,()=>{setTimeout(()=>{rec.stop();$('rec').textContent='🎬 Make video (8s)'},300)})};
-function dl(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove()}
+function d2b(u){const[h,d]=u.split(',');const m=h.match(/:(.*?);/)[1];const b=atob(d);const a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:m})}
+async function dl(url,name){try{const blob=url instanceof Blob?url:url.startsWith('data:')?d2b(url):await (await fetch(url)).blob();if(!(url instanceof Blob)&&!url.startsWith('data:'))url=url;const file=new File([blob],name,{type:blob.type});
+ if(navigator.canShare&&navigator.canShare({files:[file]})&&/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)){try{await navigator.share({files:[file],title:name});return}catch(e){if(e.name==='AbortError')return}}
+ const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}catch(e){window.open(typeof url==='string'?url:URL.createObjectURL(url),'_blank')}
+ const h=$('dlhint');if(h)h.style.display='block'}
 const fname=()=>'Empress-Hiring-'+(($('aname').value||'poster').replace(/[^A-Za-z0-9]+/g,'-'));
 $('save').onclick=()=>{SEL=null;draw();const u=c.toDataURL('image/png');$('outimg').src=u;$('out').style.display='block';dl(u,fname()+'.png')};
 setLayoutDefaults();$('size').value='1080x1350';document.fonts.ready.then(draw);draw();
@@ -604,7 +608,7 @@ function EW(key,X,al,w,h,d){return y=>{const e=(EL||{})[key]||{};if(e.del)return
   if(fo.i!=null){const ls=$(fo.f).value.split('\n');ls[fo.i]=te.value;$(fo.f).value=ls.join('\n')}else $(fo.f).value=te.value;
   draw();const nb=BOXES[BOXES.length-1];const match=BOXES.find(b=>b.key.toUpperCase().includes(te.value.toUpperCase().trim()))||null;if(match){EL[match.key]=Object.assign({},old);SEL=match.key;draw()}});
  te.addEventListener('keydown',e=>{if(e.key==='Enter')te.style.display='none'});
- $('tRestore').onclick=()=>{Object.values(EL).forEach(v=>v.del=false);draw()};
+ 
  $('reset').addEventListener('click',()=>{EL={};SEL=null;place();draw()});
  $('save').addEventListener('click',()=>{SEL=null;place()},true);
 })();
@@ -615,9 +619,12 @@ function EW(key,X,al,w,h,d){return y=>{const e=(EL||{})[key]||{};if(e.del)return
  window.pushHist=function(){const sn=snap();if(H[H.length-1]!==sn){H.push(sn);if(H.length>60)H.shift()}};
  $('undoBtn').onclick=()=>{if(!H.length)return;const cur=snap();let sn=H.pop();if(sn===cur&&H.length)sn=H.pop();const o=JSON.parse(sn);
   IDS.forEach(i=>{if($(i)&&o.v[i]!=null)$(i).value=o.v[i]});layout=o.lay;applyPal(+$('pal').value);['c_panel','c_ink','c_accent','c_bar'].forEach(i=>{$(i).value=o.v[i];$(i).dispatchEvent(new Event('input'))});EL=o.EL||{};SEL=null;$('selbox').style.display=$('ttb').style.display='none';draw()};
- ['shAll','shLay','shCol','shuffle','tRestore','reset'].forEach(id=>$(id)&&$(id).addEventListener('click',pushHist,true));
+ ['shAll','shLay','shCol','shuffle','reset'].forEach(id=>$(id)&&$(id).addEventListener('click',pushHist,true));
  $('c').addEventListener('pointerdown',pushHist,true);$('ttb').addEventListener('click',pushHist,true);$('tedit').addEventListener('focus',pushHist);
 })();
+
+/* property photo button */
+(function(){const b=$('propBtn');const upd=()=>{b.style.display='EFGHI'.includes(layout)?'':'none'};b.onclick=()=>{$('props').value='';$('props').click()};$('layout').addEventListener('change',upd);upd();const _d=draw;draw=function(){_d.apply(this,arguments);upd()}})();
 
 /* ===== Agent profiles + shuffles + ChatGPT prompt ===== */
 (function(){
